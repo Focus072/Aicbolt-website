@@ -28,9 +28,6 @@ SCRAPER_API_KEY=your-secure-random-api-key-here
 # (Your app likely already has these)
 
 AUTH_SECRET=your_auth_secret_key
-STRIPE_SECRET_KEY=your_stripe_secret_key
-STRIPE_WEBHOOK_SECRET=your_stripe_webhook_secret
-NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=your_stripe_publishable_key
 ```
 
 ---

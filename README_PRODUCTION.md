@@ -144,7 +144,6 @@ NEXT_PUBLIC_APP_URL=https://yourdomain.com
 
 ```bash
 RESEND_API_KEY=re_xxxxx           # Email sending
-STRIPE_SECRET_KEY=sk_live_xxxxx   # Payments
 ```
 
 **Generate secure keys:**

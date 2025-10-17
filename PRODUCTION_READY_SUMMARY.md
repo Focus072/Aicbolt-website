@@ -160,7 +160,6 @@ npx tsx scripts/validate-env.ts
 **Optional Variables:**
 - `NEXT_PUBLIC_APP_URL` - For invite links
 - `RESEND_API_KEY` - Email sending
-- Stripe keys - Payment processing
 
 ---
 

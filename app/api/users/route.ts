@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db/drizzle';
-import { users, teams, teamMembers, invitations } from '@/lib/db/schema';
+import { users, teams, teamMembers } from '@/lib/db/schema';
 import { eq, and, desc } from 'drizzle-orm';
 import { getUser } from '@/lib/db/queries';
 import { hashPassword } from '@/lib/auth/session';
@@ -115,30 +115,18 @@ export async function POST(request: NextRequest) {
 
     const teamId = userTeam[0].team.id;
 
-    // Create invitation record
-    const [invitation] = await db
-      .insert(invitations)
-      .values({
-        teamId,
-        email,
-        role: teamRole,
-        invitedBy: user.id,
-        status: 'pending',
-      })
-      .returning();
-
-    // For now, we'll create the user with a temporary password
-    // In a real implementation, you'd send an email invitation
+    // Create user directly (no invitation system)
     const tempPassword = Math.random().toString(36).slice(-8);
     const passwordHash = await hashPassword(tempPassword);
 
     const [newUser] = await db
       .insert(users)
       .values({
-        email,
+        username: email, // Use email as username for now
         name,
         passwordHash,
         role: role || 'member',
+        organizationId: teamId,
       })
       .returning();
 
@@ -150,12 +138,6 @@ export async function POST(request: NextRequest) {
         teamId,
         role: teamRole,
       });
-
-    // Update invitation status
-    await db
-      .update(invitations)
-      .set({ status: 'accepted' })
-      .where(eq(invitations.id, invitation.id));
 
     return NextResponse.json({
       success: true,

@@ -107,10 +107,6 @@ NEXT_PUBLIC_APP_URL=https://yourdomain.com
 # Email (if using Resend)
 RESEND_API_KEY=re_xxxxxxxxxxxxx
 
-# Stripe (if using payments)
-STRIPE_SECRET_KEY=sk_live_xxxxxxxxxxxxx
-STRIPE_WEBHOOK_SECRET=whsec_xxxxxxxxxxxxx
-NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_live_xxxxxxxxxxxxx
 ```
 
 **Security Notes:**
