@@ -4,6 +4,9 @@ import { leads } from '@/lib/db/schema';
 import { getUser } from '@/lib/db/queries';
 import { sql } from 'drizzle-orm';
 
+// Force dynamic rendering for authenticated routes
+export const dynamic = 'force-dynamic';
+
 export async function GET(request: NextRequest) {
   try {
     // Check if user is admin

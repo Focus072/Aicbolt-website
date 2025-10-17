@@ -7,6 +7,9 @@ import {
 } from '@/lib/db/business-queries';
 import { getCachedData, setCachedData, CacheKeys } from '@/lib/cache';
 
+// Force dynamic rendering for authenticated routes
+export const dynamic = 'force-dynamic';
+
 export async function GET() {
   try {
     // Check cache first

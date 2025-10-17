@@ -4,6 +4,9 @@ import { webFormSubmissions } from '@/lib/db/schema';
 import { desc } from 'drizzle-orm';
 import { getUser } from '@/lib/db/queries';
 
+// Force dynamic rendering for authenticated routes
+export const dynamic = 'force-dynamic';
+
 export async function GET(request: NextRequest) {
   try {
     console.log('[Submissions API] GET request received');

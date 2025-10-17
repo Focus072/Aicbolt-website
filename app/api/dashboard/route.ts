@@ -1,6 +1,9 @@
 import { NextResponse } from 'next/server';
 import { getCompleteDashboardData } from '@/lib/db/queries';
 
+// Force dynamic rendering for authenticated routes
+export const dynamic = 'force-dynamic';
+
 export async function GET() {
   try {
     const dashboardData = await getCompleteDashboardData();
