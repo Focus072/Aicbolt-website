@@ -2,7 +2,7 @@
 
 import { useRef, useMemo } from "react"
 import { useFrame } from "@react-three/fiber"
-import * as THREE from "three"
+import { Mesh, ShaderMaterial, PlaneGeometry, Color, DoubleSide } from "three"
 // Custom shader material for advanced effects
 const vertexShader = `
   uniform float time;
@@ -58,14 +58,14 @@ export function ShaderPlane({
   color1?: string
   color2?: string
 }) {
-  const mesh = useRef<THREE.Mesh>(null)
+  const mesh = useRef<Mesh>(null)
 
   const uniforms = useMemo(
     () => ({
       time: { value: 0 },
       intensity: { value: 1.0 },
-      color1: { value: new THREE.Color(color1) },
-      color2: { value: new THREE.Color(color2) },
+      color1: { value: new Color(color1) },
+      color2: { value: new Color(color2) },
     }),
     [color1, color2],
   )
@@ -85,7 +85,7 @@ export function ShaderPlane({
         vertexShader={vertexShader}
         fragmentShader={fragmentShader}
         transparent
-        side={THREE.DoubleSide}
+        side={DoubleSide}
       />
     </mesh>
   )
@@ -98,7 +98,7 @@ export function EnergyRing({
   radius?: number
   position?: [number, number, number]
 }) {
-  const mesh = useRef<THREE.Mesh>(null)
+  const mesh = useRef<Mesh>(null)
 
   useFrame((state) => {
     if (mesh.current) {
@@ -116,7 +116,7 @@ export function EnergyRing({
   return (
     <mesh ref={mesh} position={position}>
       <ringGeometry args={[radius * 0.8, radius, 32]} />
-      <meshBasicMaterial color="#ff5722" transparent opacity={0.6} side={THREE.DoubleSide} />
+      <meshBasicMaterial color="#ff5722" transparent opacity={0.6} side={DoubleSide} />
     </mesh>
   )
 }
