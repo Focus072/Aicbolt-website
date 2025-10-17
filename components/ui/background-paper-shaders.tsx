@@ -2,6 +2,7 @@
 
 import { useRef, useMemo } from "react"
 import { useFrame } from "@react-three/fiber"
+// @ts-ignore
 import { Mesh, ShaderMaterial, PlaneGeometry, Color, DoubleSide } from "three"
 // Custom shader material for advanced effects
 const vertexShader = `
