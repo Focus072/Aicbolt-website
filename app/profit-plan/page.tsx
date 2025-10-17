@@ -2,13 +2,13 @@ import OnboardingForm from "@/components/ui/multistep-form";
 
 export default function ProfitPlanPage() {
   return (
-    <main className="min-h-[100svh] px-4 py-16 md:py-24">
-      {/* Keep your warm shader page background via your global/layout styles */}
-      <div className="mx-auto max-w-3xl text-center mb-10">
-        <h1 className="text-4xl md:text-5xl font-semibold tracking-tight text-gray-900">
-          Get your free AI Profit Plan
+    <main className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 px-4 py-16 md:py-24">
+      {/* Header */}
+      <div className="mx-auto max-w-4xl text-center mb-12">
+        <h1 className="text-5xl md:text-6xl font-bold tracking-tight text-white mb-6">
+          Get your free <span className="bg-gradient-to-r from-orange-400 to-red-500 bg-clip-text text-transparent">AI Profit Plan</span>
         </h1>
-        <p className="mt-3 text-base md:text-lg text-gray-700/90">
+        <p className="text-xl md:text-2xl text-gray-300 font-light leading-relaxed">
           Answer a few questions and we'll generate a tailored plan in minutes.
         </p>
       </div>
