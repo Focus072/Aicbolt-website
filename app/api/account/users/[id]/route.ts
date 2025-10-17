@@ -13,7 +13,7 @@ async function isAdmin(): Promise<boolean> {
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     // Check admin access
@@ -24,7 +24,8 @@ export async function DELETE(
       );
     }
 
-    const userId = parseInt(params.id);
+    const resolvedParams = await params;
+    const userId = parseInt(resolvedParams.id);
     
     if (isNaN(userId)) {
       return NextResponse.json(
@@ -85,7 +86,7 @@ export async function DELETE(
 
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const hasValidApiKey = validateApiKey(request);
@@ -100,7 +101,8 @@ export async function PATCH(
       );
     }
 
-    const id = parseInt(params.id);
+    const resolvedParams = await params;
+    const id = parseInt(resolvedParams.id);
     if (isNaN(id)) {
       return NextResponse.json({ error: 'Invalid ID' }, { status: 400 });
     }
