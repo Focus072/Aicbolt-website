@@ -5,7 +5,7 @@ export const hasPageAccess = (user: User | null | undefined, pageSlug: string): 
   if (!user) return false;
 
   // Super admin has access to everything
-  if (user.email === 'galaljobah@gmail.com') return true;
+  if (user.username === 'admin') return true;
 
   // Admins and owners have access to all pages
   if (user.role === 'admin' || user.role === 'owner') return true;
@@ -25,7 +25,7 @@ export const getAccessiblePages = (user: User | null | undefined): string[] => {
 
   // Super admin and admins get all pages
   if (
-    user.email === 'galaljobah@gmail.com' ||
+    user.username === 'admin' ||
     user.role === 'admin' ||
     user.role === 'owner'
   ) {
@@ -45,7 +45,7 @@ export const getAccessiblePages = (user: User | null | undefined): string[] => {
 export const isAdmin = (user: User | null | undefined): boolean => {
   if (!user) return false;
   return (
-    user.email === 'galaljobah@gmail.com' ||
+    user.username === 'admin' ||
     user.role === 'admin' ||
     user.role === 'owner'
   );
@@ -54,7 +54,7 @@ export const isAdmin = (user: User | null | undefined): boolean => {
 // Check if user is super admin (only galaljobah@gmail.com)
 export const isSuperAdmin = (user: User | null | undefined): boolean => {
   if (!user) return false;
-  return user.email === 'galaljobah@gmail.com' || user.username === 'admin';
+  return user.username === 'admin';
 };
 
 

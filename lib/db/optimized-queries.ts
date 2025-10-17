@@ -68,8 +68,8 @@ export async function getOptimizedAnalytics() {
     }).from(projects),
   ]);
 
-  const totalRevenue = revenueData[0]?.total || 0;
-  const totalExpenses = expensesData[0]?.total || 0;
+  const totalRevenue = Number(revenueData[0]?.total) || 0;
+  const totalExpenses = Number(expensesData[0]?.total) || 0;
   const netProfit = totalRevenue - totalExpenses;
   const profitMargin = totalRevenue > 0 ? (netProfit / totalRevenue) * 100 : 0;
 

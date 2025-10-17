@@ -61,9 +61,9 @@ const DashboardMetricCard: React.FC<DashboardMetricCardProps> = ({
           <CardTitle className="text-sm font-medium text-muted-foreground">
             {title}
           </CardTitle>
-          {IconComponent && (
-            <IconComponent className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
-          )}
+          {IconComponent && 
+            React.createElement(IconComponent, { className: "h-4 w-4 text-muted-foreground", "aria-hidden": "true" })
+          }
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold text-foreground mb-2">{value}</div>

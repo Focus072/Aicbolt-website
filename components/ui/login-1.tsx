@@ -2,7 +2,7 @@
 
 import { FcGoogle } from "react-icons/fc";
 import { ArrowLeft } from "lucide-react";
-import { signIn, signUp } from "@/app/(login)/actions";
+import { signIn } from "@/app/(login)/actions";
 import { useActionState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -38,7 +38,7 @@ const Login1 = ({
   mode = 'signin',
 }: Login1Props) => {
   const [state, formAction, pending] = useActionState(
-    mode === 'signin' ? signIn : signUp,
+    signIn,
     { error: '' }
   );
 

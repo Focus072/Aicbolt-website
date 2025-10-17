@@ -98,6 +98,7 @@ export async function POST(request: NextRequest) {
       address: body.address || null,
       gpsCoordinates: body.gps_coordinates || body.gpsCoordinates || null,
       types: body.types || null,
+      notes: body.notes || null,
     };
 
     // Check if lead already exists before upsert
@@ -146,7 +147,7 @@ export async function POST(request: NextRequest) {
             address: leadData.address,
             gpsCoordinates: leadData.gpsCoordinates,
             types: leadData.types,
-            notes: leadData.notes,
+            notes: leadData.notes || null,
           }
         })
         .returning();
@@ -223,16 +224,13 @@ export async function GET(request: NextRequest) {
     // Cap maximum limit for performance
     const cappedLimit = Math.min(limit, 1000);
     
-    let query = db.select().from(leads);
-    
-    if (status) {
-      query = query.where(eq(leads.status, status as any));
-    }
-    
-    const result = await query
+    const result = await db
+      .select()
+      .from(leads)
+      .where(status ? eq(leads.status, status as any) : undefined)
+      .orderBy(desc(leads.createdAt))
       .limit(cappedLimit)
-      .offset(offset)
-      .orderBy(desc(leads.createdAt));
+      .offset(offset);
     
     // Get total count for pagination
     const [countResult] = await db
@@ -240,7 +238,7 @@ export async function GET(request: NextRequest) {
       .from(leads)
       .where(status ? eq(leads.status, status as any) : undefined);
     
-    const total = countResult?.count || 0;
+    const total = Number(countResult?.count) || 0;
     
     const response = NextResponse.json({
       success: true,

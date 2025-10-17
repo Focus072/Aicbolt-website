@@ -1,4 +1,4 @@
-import { memo } from 'react';
+import React, { memo } from 'react';
 
 // Performance utilities for React components
 export const withMemo = <P extends object>(

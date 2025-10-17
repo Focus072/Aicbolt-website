@@ -5,6 +5,9 @@
     "build": "next build",
     "start": "next start",
     "validate-env": "tsx scripts/validate-env.ts",
+    "pre-deploy": "npx tsx scripts/pre-deploy-check.ts",
+    "fix-issues": "npx tsx scripts/fix-common-issues.ts",
+    "deploy-safe": "npm run pre-deploy && git add . && git commit -m 'Pre-deploy validation passed' && git push origin main",
     "db:setup": "npx tsx lib/db/setup.ts",
     "db:seed": "npx tsx lib/db/seed.ts",
     "db:generate": "drizzle-kit generate:pg",
@@ -55,5 +58,8 @@
     "tw-animate-css": "^1.3.0",
     "typescript": "^5.8.3",
     "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "@types/three": "^0.180.0"
   }
 }

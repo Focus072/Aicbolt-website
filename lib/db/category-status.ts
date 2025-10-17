@@ -67,7 +67,7 @@ export async function getActiveCategories() {
 
     const categoryIds = activeCategoryIds
       .map(row => row.categoryId)
-      .filter(Boolean);
+      .filter((id): id is number => id !== null && id !== undefined);
 
     if (categoryIds.length === 0) {
       return [];

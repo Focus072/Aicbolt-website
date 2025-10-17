@@ -14,7 +14,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Check if user is admin (galaljobah@gmail.com or has admin role)
-    const isMainAdmin = user.email === 'galaljobah@gmail.com';
+    const isMainAdmin = user.username === 'admin';
     const isAdmin = user.role === 'admin' || user.role === 'owner' || isMainAdmin;
     
     if (!isAdmin) {
@@ -40,7 +40,7 @@ export async function GET(request: NextRequest) {
       .select({
         id: users.id,
         name: users.name,
-        email: users.email,
+        username: users.username,
         role: users.role,
         teamRole: teamMembers.role,
         createdAt: users.createdAt,
@@ -70,7 +70,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Check if user is admin
-    const isMainAdmin = user.email === 'galaljobah@gmail.com';
+    const isMainAdmin = user.username === 'admin';
     const isAdmin = user.role === 'admin' || user.role === 'owner' || isMainAdmin;
     
     if (!isAdmin) {
@@ -78,11 +78,11 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { email, name, role, teamRole = 'member' } = body;
+    const { username, name, role, teamRole = 'member' } = body;
 
-    if (!email || !name) {
+    if (!username || !name) {
       return NextResponse.json(
-        { error: 'Email and name are required' },
+        { error: 'Username and name are required' },
         { status: 400 }
       );
     }
@@ -91,12 +91,12 @@ export async function POST(request: NextRequest) {
     const existingUser = await db
       .select()
       .from(users)
-      .where(eq(users.email, email))
+      .where(eq(users.username, username))
       .limit(1);
 
     if (existingUser.length > 0) {
       return NextResponse.json(
-        { error: 'User with this email already exists' },
+        { error: 'User with this username already exists' },
         { status: 400 }
       );
     }
@@ -122,7 +122,7 @@ export async function POST(request: NextRequest) {
     const [newUser] = await db
       .insert(users)
       .values({
-        username: email, // Use email as username for now
+        username,
         name,
         passwordHash,
         role: role || 'member',
@@ -143,13 +143,12 @@ export async function POST(request: NextRequest) {
       success: true,
       user: {
         id: newUser.id,
-        email: newUser.email,
+        username: newUser.username,
         name: newUser.name,
         role: newUser.role,
         teamRole,
         tempPassword, // Only for development - remove in production
       },
-      invitationId: invitation.id,
     });
   } catch (error) {
     console.error('Error creating user:', error);

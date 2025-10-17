@@ -12,7 +12,7 @@ async function seed() {
     .insert(users)
     .values([
       {
-        email: email,
+        username: email, // Using email as username for now
         passwordHash: passwordHash,
         role: "owner",
       },

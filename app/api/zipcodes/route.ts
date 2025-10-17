@@ -121,14 +121,14 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('❌ Error creating zip code requests:', error);
     console.error('❌ Error details:', {
-      message: error.message,
-      stack: error.stack,
-      name: error.name
+      message: error instanceof Error ? error.message : String(error),
+      stack: error instanceof Error ? error.stack : undefined,
+      name: error instanceof Error ? error.name : 'Unknown'
     });
     return NextResponse.json(
       { 
         error: 'Failed to create zip code requests',
-        details: error.message 
+        details: error instanceof Error ? error.message : String(error) 
       },
       { status: 500 }
     );
@@ -165,7 +165,7 @@ export async function GET(request: NextRequest) {
         }
 
     // Build query with category join
-    let query = db
+    const result = await db
       .select({
         id: zipRequests.id,
         zip: zipRequests.zip,
@@ -174,13 +174,8 @@ export async function GET(request: NextRequest) {
         categoryName: categories.name,
       })
       .from(zipRequests)
-      .leftJoin(categories, eq(zipRequests.categoryId, categories.id));
-
-    if (status) {
-      query = query.where(eq(zipRequests.status, status as any));
-    }
-
-    const result = await query
+      .leftJoin(categories, eq(zipRequests.categoryId, categories.id))
+      .where(status ? eq(zipRequests.status, status as any) : undefined)
       .orderBy(desc(zipRequests.createdAt))
       .limit(Math.min(limit, 1000)) // Cap at 1000
       .offset(offset);

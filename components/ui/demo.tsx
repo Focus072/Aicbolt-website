@@ -202,7 +202,6 @@ export default function DemoOne() {
             <DotOrbit
               className="w-full h-full"
               speed={speed}
-              intensity={intensity}
             />
           </div>
         )}
@@ -218,7 +217,6 @@ export default function DemoOne() {
               <DotOrbit
                 className="w-full h-full"
                 speed={speed * 1.5}
-                intensity={intensity * 0.8}
               />
             </div>
           </>
@@ -308,7 +306,6 @@ export default function DemoOne() {
                       flag={agentData.customerSupport.icon}
                       tagline={agentData.customerSupport.tagline}
                       themeColor={agentData.customerSupport.themeColor}
-                      phoneNumber={agentData.customerSupport.phoneNumber}
                       onShowDetails={() => setActiveModal('customerSupport')}
                     />
                   </div>
@@ -323,7 +320,6 @@ export default function DemoOne() {
                       flag={agentData.salesAssistant.icon}
                       tagline={agentData.salesAssistant.tagline}
                       themeColor={agentData.salesAssistant.themeColor}
-                      phoneNumber={agentData.salesAssistant.phoneNumber}
                       onShowDetails={() => setActiveModal('salesAssistant')}
                     />
                   </div>
@@ -338,7 +334,6 @@ export default function DemoOne() {
                       flag={agentData.technicalSupport.icon}
                       tagline={agentData.technicalSupport.tagline}
                       themeColor={agentData.technicalSupport.themeColor}
-                      phoneNumber={agentData.technicalSupport.phoneNumber}
                       onShowDetails={() => setActiveModal('technicalSupport')}
                     />
                   </div>
@@ -354,7 +349,6 @@ export default function DemoOne() {
                       tagline={agentData.customAgent.tagline}
                       themeColor={agentData.customAgent.themeColor}
                       isCustomAgent={true}
-                      buildLink="/profit-plan"
                       onShowDetails={() => setActiveModal('customAgent')}
                     />
                   </div>
@@ -374,7 +368,6 @@ export default function DemoOne() {
             personality={agentData.customerSupport.personality}
             useCases={agentData.customerSupport.useCases}
             themeColor={agentData.customerSupport.themeColor}
-            phoneNumber={agentData.customerSupport.phoneNumber}
           />
 
           <AgentDetailModal
@@ -387,7 +380,6 @@ export default function DemoOne() {
             personality={agentData.salesAssistant.personality}
             useCases={agentData.salesAssistant.useCases}
             themeColor={agentData.salesAssistant.themeColor}
-            phoneNumber={agentData.salesAssistant.phoneNumber}
           />
 
           <AgentDetailModal
@@ -400,7 +392,6 @@ export default function DemoOne() {
             personality={agentData.technicalSupport.personality}
             useCases={agentData.technicalSupport.useCases}
             themeColor={agentData.technicalSupport.themeColor}
-            phoneNumber={agentData.technicalSupport.phoneNumber}
           />
 
           <AgentDetailModal
@@ -413,7 +404,6 @@ export default function DemoOne() {
             personality={agentData.customAgent.personality}
             useCases={agentData.customAgent.useCases}
             themeColor={agentData.customAgent.themeColor}
-            buildLink="/profit-plan"
           />
         </main>
       </div>

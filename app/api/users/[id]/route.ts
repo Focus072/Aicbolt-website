@@ -16,7 +16,7 @@ export async function GET(
     }
 
     // Check if user is admin
-    const isMainAdmin = user.email === 'galaljobah@gmail.com';
+    const isMainAdmin = user.username === 'admin';
     const isAdmin = user.role === 'admin' || user.role === 'owner' || isMainAdmin;
     
     if (!isAdmin) {
@@ -33,7 +33,7 @@ export async function GET(
       .select({
         id: users.id,
         name: users.name,
-        email: users.email,
+        username: users.username,
         role: users.role,
         teamRole: teamMembers.role,
         createdAt: users.createdAt,
@@ -70,7 +70,7 @@ export async function PUT(
     }
 
     // Check if user is admin
-    const isMainAdmin = user.email === 'galaljobah@gmail.com';
+    const isMainAdmin = user.username === 'admin';
     const isAdmin = user.role === 'admin' || user.role === 'owner' || isMainAdmin;
     
     if (!isAdmin) {
@@ -98,7 +98,7 @@ export async function PUT(
     }
 
     // Prevent non-main-admin from modifying main admin
-    if (existingUser.email === 'galaljobah@gmail.com' && user.email !== 'galaljobah@gmail.com') {
+    if (existingUser.username === 'admin' && user.username !== 'admin') {
       return NextResponse.json({ error: 'Cannot modify main admin account' }, { status: 403 });
     }
 
@@ -128,7 +128,7 @@ export async function PUT(
       success: true,
       user: {
         id: updatedUser.id,
-        email: updatedUser.email,
+        username: updatedUser.username,
         name: updatedUser.name,
         role: updatedUser.role,
         teamRole,
@@ -155,7 +155,7 @@ export async function DELETE(
     }
 
     // Check if user is admin
-    const isMainAdmin = user.email === 'galaljobah@gmail.com';
+    const isMainAdmin = user.username === 'admin';
     const isAdmin = user.role === 'admin' || user.role === 'owner' || isMainAdmin;
     
     if (!isAdmin) {
@@ -179,7 +179,7 @@ export async function DELETE(
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
 
-    if (targetUser.email === 'galaljobah@gmail.com') {
+    if (targetUser.username === 'admin') {
       return NextResponse.json({ error: 'Cannot delete main admin account' }, { status: 403 });
     }
 

@@ -18,7 +18,8 @@ export async function POST(
       );
     }
 
-    const { id } = params;
+    const resolvedParams = await params;
+    const { id } = resolvedParams;
 
     // Fetch the submission
     const [submission] = await db
@@ -76,13 +77,13 @@ ${submission.additionalInfo ? `\nAdditional Info: ${submission.additionalInfo}` 
       .update(webFormSubmissions)
       .set({
         status: 'accepted',
-        reviewedBy: user.email,
+        reviewedBy: user.username,
         reviewedAt: new Date(),
         updatedAt: new Date(),
       })
       .where(eq(webFormSubmissions.id, id));
 
-    console.log(`[Submissions] Accepted: ${id}, Created client: ${newClient.id} by ${user.email}`);
+    console.log(`[Submissions] Accepted: ${id}, Created client: ${newClient.id} by ${user.username}`);
 
     // Optional: Fire analytics
     // window.gtag?.('event', 'profit_plan_accepted');

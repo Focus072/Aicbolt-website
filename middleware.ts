@@ -23,22 +23,9 @@ export async function middleware(request: NextRequest) {
       
       // Check admin access for admin routes
       if (isAdminRoute) {
-        const isMainAdmin = parsed.email === 'galaljobah@gmail.com';
-        const isAdmin = parsed.role === 'admin' || parsed.role === 'owner' || isMainAdmin;
-        
-        // Debug: Log user info
-        console.log('Admin route access check:', {
-          email: parsed.email,
-          role: parsed.role,
-          isMainAdmin,
-          isAdmin
-        });
-        
-        // Temporarily allow access for any logged-in user for testing
-        // TODO: Remove this and implement proper admin check
-        // if (!isMainAdmin && !isAdmin) {
-        //   return NextResponse.redirect(new URL('/dashboard', request.url));
-        // }
+        // For now, allow access to any logged-in user
+        // TODO: Implement proper admin check by fetching user data from database
+        console.log('Admin route access check: allowing access for user ID:', parsed.user.id);
       }
 
       const expiresInOneDay = new Date(Date.now() + 24 * 60 * 60 * 1000);

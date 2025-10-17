@@ -10,7 +10,7 @@ export async function GET(request: NextRequest) {
     
     // Check authentication
     const user = await getUser();
-    console.log('[Submissions API] User:', user ? `${user.email} (${user.role})` : 'null');
+    console.log('[Submissions API] User:', user ? `${user.username} (${user.role})` : 'null');
     
     if (!user || (user.role !== 'owner' && user.role !== 'admin')) {
       console.log('[Submissions API] Unauthorized access attempt');

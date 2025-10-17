@@ -18,14 +18,15 @@ export async function DELETE(
       );
     }
 
-    const { id } = params;
+    const resolvedParams = await params;
+    const { id } = resolvedParams;
 
     // Delete the submission (hard delete as per requirements)
     await db
       .delete(webFormSubmissions)
       .where(eq(webFormSubmissions.id, id));
 
-    console.log(`[Submissions] Rejected and deleted: ${id} by ${user.email}`);
+    console.log(`[Submissions] Rejected and deleted: ${id} by ${user.username}`);
 
     // Optional: Fire analytics
     // window.gtag?.('event', 'profit_plan_rejected');

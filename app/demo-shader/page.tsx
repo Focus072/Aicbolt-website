@@ -379,7 +379,6 @@ export default function ShaderDemoPage() {
                       flag={agentData.customerSupport.icon}
                       tagline={agentData.customerSupport.tagline}
                       themeColor={agentData.customerSupport.themeColor}
-                      phoneNumber={agentData.customerSupport.phoneNumber}
                       onShowDetails={() => setActiveModal('customerSupport')}
                     />
                   </div>
@@ -394,7 +393,6 @@ export default function ShaderDemoPage() {
                       flag={agentData.salesAssistant.icon}
                       tagline={agentData.salesAssistant.tagline}
                       themeColor={agentData.salesAssistant.themeColor}
-                      phoneNumber={agentData.salesAssistant.phoneNumber}
                       onShowDetails={() => setActiveModal('salesAssistant')}
                     />
                   </div>
@@ -409,7 +407,6 @@ export default function ShaderDemoPage() {
                       flag={agentData.technicalSupport.icon}
                       tagline={agentData.technicalSupport.tagline}
                       themeColor={agentData.technicalSupport.themeColor}
-                      phoneNumber={agentData.technicalSupport.phoneNumber}
                       onShowDetails={() => setActiveModal('technicalSupport')}
                     />
                   </div>
@@ -425,7 +422,6 @@ export default function ShaderDemoPage() {
                       tagline={agentData.customAgent.tagline}
                       themeColor={agentData.customAgent.themeColor}
                       isCustomAgent={true}
-                      buildLink="/profit-plan"
                       onShowDetails={() => setActiveModal('customAgent')}
                     />
                   </div>
@@ -445,7 +441,6 @@ export default function ShaderDemoPage() {
             personality={agentData.customerSupport.personality}
             useCases={agentData.customerSupport.useCases}
             themeColor={agentData.customerSupport.themeColor}
-            phoneNumber={agentData.customerSupport.phoneNumber}
           />
 
           <AgentDetailModal
@@ -458,7 +453,6 @@ export default function ShaderDemoPage() {
             personality={agentData.salesAssistant.personality}
             useCases={agentData.salesAssistant.useCases}
             themeColor={agentData.salesAssistant.themeColor}
-            phoneNumber={agentData.salesAssistant.phoneNumber}
           />
 
           <AgentDetailModal
@@ -471,7 +465,6 @@ export default function ShaderDemoPage() {
             personality={agentData.technicalSupport.personality}
             useCases={agentData.technicalSupport.useCases}
             themeColor={agentData.technicalSupport.themeColor}
-            phoneNumber={agentData.technicalSupport.phoneNumber}
           />
 
           <AgentDetailModal
@@ -484,7 +477,6 @@ export default function ShaderDemoPage() {
             personality={agentData.customAgent.personality}
             useCases={agentData.customAgent.useCases}
             themeColor={agentData.customAgent.themeColor}
-            buildLink="/profit-plan"
           />
         </main>
       </div>

@@ -77,7 +77,7 @@ const RecentActivityFeed: React.FC<RecentActivityFeedProps> = ({
                     "flex-shrink-0 p-1 rounded-full",
                     activity.iconColorClass || "text-muted-foreground bg-muted" // Default styling
                   )}>
-                    <activity.icon className="h-4 w-4" aria-hidden="true" />
+                    {React.createElement(activity.icon, { className: "h-4 w-4", "aria-hidden": "true" })}
                   </div>
                   
                   {/* Message and Timestamp */}

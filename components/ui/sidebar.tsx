@@ -81,8 +81,8 @@ const variants = {
 };
 
 const transitionProps = {
-  type: "tween",
-  ease: "easeOut",
+  type: "tween" as const,
+  ease: "easeOut" as const,
   duration: 0.2,
   staggerChildren: 0.1,
 };
