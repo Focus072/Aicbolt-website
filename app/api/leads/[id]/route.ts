@@ -53,6 +53,7 @@ export async function PATCH(
       );
     }
 
+    const resolvedParams = await params;
     const id = parseInt(resolvedParams.id);
     
     if (isNaN(id)) {
@@ -111,6 +112,7 @@ export async function DELETE(
       );
     }
 
+    const resolvedParams = await params;
     const id = parseInt(resolvedParams.id);
     
     if (isNaN(id)) {

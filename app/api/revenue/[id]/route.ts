@@ -6,6 +6,7 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const resolvedParams = await params;
     const id = parseInt(resolvedParams.id);
     if (isNaN(id) || id <= 0) {
       return NextResponse.json({ error: 'Invalid revenue ID' }, { status: 400 });
@@ -30,6 +31,7 @@ export async function PUT(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const resolvedParams = await params;
     const id = parseInt(resolvedParams.id);
     if (isNaN(id) || id <= 0) {
       return NextResponse.json({ error: 'Invalid revenue ID' }, { status: 400 });
@@ -59,6 +61,7 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const resolvedParams = await params;
     const id = parseInt(resolvedParams.id);
     if (isNaN(id) || id <= 0) {
       return NextResponse.json({ error: 'Invalid revenue ID' }, { status: 400 });

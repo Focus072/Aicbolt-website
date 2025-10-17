@@ -37,6 +37,7 @@ export async function PATCH(
       );
     }
 
+    const resolvedParams = await params;
     const id = parseInt(resolvedParams.id);
     if (isNaN(id)) {
       return NextResponse.json({ error: 'Invalid ID' }, { status: 400 });
@@ -101,6 +102,7 @@ export async function DELETE(
       );
     }
 
+    const resolvedParams = await params;
     const id = parseInt(resolvedParams.id);
     if (isNaN(id)) {
       return NextResponse.json({ error: 'Invalid ID' }, { status: 400 });
