@@ -65,8 +65,8 @@ const nextConfig: NextConfig = {
     }
     return config;
   },
-  // Enable static optimization
-  output: 'standalone',
+  // Enable static optimization (commented out for local development)
+  // output: 'standalone',
   // Optimize bundle - swcMinify is deprecated in Next.js 15
 };
 
