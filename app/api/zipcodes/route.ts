@@ -24,12 +24,12 @@ export async function POST(request: NextRequest) {
     // Check authentication (API key or admin session)
     const hasValidApiKey = validateApiKey(request);
     const user = await getUser();
-    const isMainAdmin = user?.email === 'galaljobah@gmail.com';
+    const isMainAdmin = user?.username === 'admin';
     const isAdmin = user?.role === 'admin' || user?.role === 'owner' || isMainAdmin;
 
     console.log('🔐 POST Authentication check:', {
       hasValidApiKey,
-      userEmail: user?.email,
+      userUsername: user?.username,
       userRole: user?.role,
       isMainAdmin,
       isAdmin
@@ -141,7 +141,7 @@ export async function GET(request: NextRequest) {
     // Check authentication (API key or admin session)
     const hasValidApiKey = validateApiKey(request);
     const user = await getUser();
-    const isMainAdmin = user?.email === 'galaljobah@gmail.com';
+    const isMainAdmin = user?.username === 'admin';
     const isAdmin = user?.role === 'admin' || user?.role === 'owner' || isMainAdmin;
 
     if (!hasValidApiKey && !isAdmin) {

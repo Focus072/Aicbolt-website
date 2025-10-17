@@ -27,7 +27,7 @@ export async function PATCH(
     // Check authentication (API key or admin session)
     const hasValidApiKey = validateApiKey(request);
     const user = await getUser();
-    const isMainAdmin = user?.email === 'galaljobah@gmail.com';
+    const isMainAdmin = user?.username === 'admin';
     const isAdmin = user?.role === 'admin' || user?.role === 'owner' || isMainAdmin;
 
     if (!hasValidApiKey && !isAdmin) {
@@ -91,7 +91,7 @@ export async function DELETE(
     // Check authentication (API key or admin session)
     const hasValidApiKey = validateApiKey(request);
     const user = await getUser();
-    const isMainAdmin = user?.email === 'galaljobah@gmail.com';
+    const isMainAdmin = user?.username === 'admin';
     const isAdmin = user?.role === 'admin' || user?.role === 'owner' || isMainAdmin;
 
     if (!hasValidApiKey && !isAdmin) {

@@ -34,7 +34,7 @@ async function isAuthorized(request: NextRequest): Promise<boolean> {
 
   // Check if user is authenticated and admin
   const user = await getUser();
-  const isMainAdmin = user?.email === 'galaljobah@gmail.com';
+  const isMainAdmin = user?.username === 'admin';
   const isAdmin = user?.role === 'admin' || user?.role === 'owner' || isMainAdmin;
   
   return !!isAdmin;

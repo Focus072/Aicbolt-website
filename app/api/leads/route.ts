@@ -195,7 +195,7 @@ export async function GET(request: NextRequest) {
     // Check for API key (external) or session auth (internal dashboard)
     const hasValidApiKey = validateApiKey(request);
     const user = await getUser();
-    const isMainAdmin = user?.email === 'galaljobah@gmail.com';
+    const isMainAdmin = user?.username === 'admin';
     const isAdmin = user?.role === 'admin' || user?.role === 'owner' || isMainAdmin;
 
     // Allow access if either has valid API key OR is authenticated admin

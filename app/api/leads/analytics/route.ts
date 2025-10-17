@@ -8,7 +8,7 @@ export async function GET(request: NextRequest) {
   try {
     // Check if user is admin
     const user = await getUser();
-    const isMainAdmin = user?.email === 'galaljobah@gmail.com';
+    const isMainAdmin = user?.username === 'admin';
     const isAdmin = user?.role === 'admin' || user?.role === 'owner' || isMainAdmin;
 
     if (!isAdmin) {
