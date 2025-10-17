@@ -205,7 +205,7 @@ export const deleteAccount = validatedActionWithUser(
       .update(users)
       .set({
         deletedAt: sql`CURRENT_TIMESTAMP`,
-        email: sql`CONCAT(email, '-', id, '-deleted')` // Ensure email uniqueness
+        username: sql`CONCAT(username, '-', id, '-deleted')` // Ensure username uniqueness
       })
       .where(eq(users.id, user.id));
 
