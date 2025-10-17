@@ -3,6 +3,8 @@ import type { Metadata, Viewport } from 'next';
 import { Manrope } from 'next/font/google';
 import { getUser, getTeamForUser } from '@/lib/db/queries';
 import { SWRConfig } from 'swr';
+import { Toaster } from 'sonner';
+import { ThemeProvider } from '@/lib/theme-provider';
 
 export const metadata: Metadata = {
   title: 'Next.js SaaS Starter',
@@ -23,21 +25,39 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`bg-white dark:bg-gray-950 text-black dark:text-white ${manrope.className}`}
+      className={`bg-gray-950 text-white dark ${manrope.className}`}
+      suppressHydrationWarning
     >
-      <body className="min-h-[100dvh] bg-gray-50">
-        <SWRConfig
-          value={{
-            fallback: {
-              // We do NOT await here
-              // Only components that read this data will suspend
-              '/api/user': getUser(),
-              '/api/team': getTeamForUser()
-            }
+      <head>
+        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🤖</text></svg>" />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              try {
+                // Always force dark mode
+                document.documentElement.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+              } catch (e) {}
+            `,
           }}
-        >
-          {children}
-        </SWRConfig>
+        />
+      </head>
+      <body className="min-h-[100dvh] bg-gray-950">
+        <ThemeProvider>
+          <SWRConfig
+            value={{
+              fallback: {
+                // We do NOT await here
+                // Only components that read this data will suspend
+                '/api/user': getUser(),
+                '/api/team': getTeamForUser()
+              }
+            }}
+          >
+            {children}
+            <Toaster richColors position="top-center" />
+          </SWRConfig>
+        </ThemeProvider>
       </body>
     </html>
   );

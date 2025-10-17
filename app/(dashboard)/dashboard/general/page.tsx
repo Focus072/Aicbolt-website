@@ -22,13 +22,13 @@ type ActionState = {
 type AccountFormProps = {
   state: ActionState;
   nameValue?: string;
-  emailValue?: string;
+  usernameValue?: string;
 };
 
 function AccountForm({
   state,
   nameValue = '',
-  emailValue = ''
+  usernameValue = ''
 }: AccountFormProps) {
   return (
     <>
@@ -45,17 +45,22 @@ function AccountForm({
         />
       </div>
       <div>
-        <Label htmlFor="email" className="mb-2">
-          Email
+        <Label htmlFor="username" className="mb-2">
+          Username
         </Label>
         <Input
-          id="email"
-          name="email"
-          type="email"
-          placeholder="Enter your email"
-          defaultValue={emailValue}
+          id="username"
+          name="username"
+          type="text"
+          placeholder="Enter your username"
+          defaultValue={usernameValue}
           required
+          disabled
+          className="bg-gray-100"
         />
+        <p className="text-sm text-gray-500 mt-1">
+          Username cannot be changed
+        </p>
       </div>
     </>
   );
@@ -67,7 +72,7 @@ function AccountFormWithData({ state }: { state: ActionState }) {
     <AccountForm
       state={state}
       nameValue={user?.name ?? ''}
-      emailValue={user?.email ?? ''}
+      usernameValue={user?.username ?? ''}
     />
   );
 }

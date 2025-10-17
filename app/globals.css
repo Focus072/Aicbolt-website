@@ -55,6 +55,17 @@
   --radius-lg: var(--radius);
   --radius-md: calc(var(--radius) - 2px);
   --radius-sm: calc(var(--radius) - 4px);
+  
+  /* Max width utilities */
+  --max-width-container: 1280px;
+  
+  /* Animation utilities */
+  --animation-marquee: marquee var(--duration) linear infinite;
+}
+
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(calc(-100% - var(--gap))); }
 }
 
 /*
@@ -78,6 +89,121 @@
 @layer utilities {
   body {
     font-family: "Manrope", Arial, Helvetica, sans-serif;
+  }
+  
+  /* Max width container utility */
+  .max-w-container {
+    max-width: var(--max-width-container);
+  }
+  
+  /* Marquee animation utility */
+  .animate-marquee {
+    animation: var(--animation-marquee);
+  }
+  
+  /* Hero animation utilities */
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  
+  @keyframes slide-in-from-bottom-2 {
+    from {
+      transform: translateY(0.5rem);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+  
+  @keyframes slide-in-from-bottom-3 {
+    from {
+      transform: translateY(0.75rem);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+  
+  @keyframes slide-in-from-bottom-4 {
+    from {
+      transform: translateY(1rem);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+  
+  .animate-in {
+    animation-fill-mode: both;
+  }
+  
+  .fade-in {
+    animation-name: fade-in;
+  }
+  
+  .slide-in-from-bottom-2 {
+    animation-name: slide-in-from-bottom-2;
+  }
+  
+  .slide-in-from-bottom-3 {
+    animation-name: slide-in-from-bottom-3;
+  }
+  
+  .slide-in-from-bottom-4 {
+    animation-name: slide-in-from-bottom-4;
+  }
+  
+  .duration-700 {
+    animation-duration: 700ms;
+  }
+  
+  .fill-mode-both {
+    animation-fill-mode: both;
+  }
+  
+  /* Text wrap balance support */
+  [text-wrap\:balance] {
+    text-wrap: balance;
+  }
+  
+  /* Fallback for older browsers */
+  @supports not (text-wrap: balance) {
+    [text-wrap\:balance] {
+      text-wrap: pretty;
+    }
+  }
+  
+  /* Mobile headline optimization */
+  @media (max-width: 640px) {
+    h1 {
+      max-width: 90vw !important;
+      text-wrap: pretty;
+    }
+  }
+  
+  /* Tablet optimization */
+  @media (min-width: 641px) and (max-width: 768px) {
+    h1 {
+      max-width: 22ch !important;
+    }
+  }
+  
+  /* Desktop optimization */
+  @media (min-width: 1024px) {
+    h1 {
+      max-width: 26ch !important;
+    }
   }
 }
 

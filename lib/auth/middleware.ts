@@ -19,12 +19,22 @@ export function validatedAction<S extends z.ZodType<any, any>, T>(
   action: ValidatedActionFunction<S, T>
 ) {
   return async (prevState: ActionState, formData: FormData) => {
-    const result = schema.safeParse(Object.fromEntries(formData));
-    if (!result.success) {
-      return { error: result.error.errors[0].message };
-    }
+    try {
+      if (!formData || typeof formData.entries !== 'function') {
+        return { error: 'Invalid form data' };
+      }
+      
+      const formDataObject = Object.fromEntries(formData.entries());
+      const result = schema.safeParse(formDataObject);
+      
+      if (!result.success) {
+        return { error: result.error.errors[0].message };
+      }
 
-    return action(result.data, formData);
+      return action(result.data, formData);
+    } catch (error) {
+      return { error: 'Failed to process form data' };
+    }
   };
 }
 
@@ -39,17 +49,27 @@ export function validatedActionWithUser<S extends z.ZodType<any, any>, T>(
   action: ValidatedActionWithUserFunction<S, T>
 ) {
   return async (prevState: ActionState, formData: FormData) => {
-    const user = await getUser();
-    if (!user) {
-      throw new Error('User is not authenticated');
-    }
+    try {
+      const user = await getUser();
+      if (!user) {
+        throw new Error('User is not authenticated');
+      }
 
-    const result = schema.safeParse(Object.fromEntries(formData));
-    if (!result.success) {
-      return { error: result.error.errors[0].message };
-    }
+      if (!formData || typeof formData.entries !== 'function') {
+        return { error: 'Invalid form data' };
+      }
+      
+      const formDataObject = Object.fromEntries(formData.entries());
+      const result = schema.safeParse(formDataObject);
+      
+      if (!result.success) {
+        return { error: result.error.errors[0].message };
+      }
 
-    return action(result.data, formData, user);
+      return action(result.data, formData, user);
+    } catch (error) {
+      return { error: 'Failed to process form data' };
+    }
   };
 }
 

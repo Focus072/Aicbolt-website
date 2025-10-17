@@ -1,0 +1,27 @@
+CREATE TYPE "public"."lead_status" AS ENUM('new', 'contacted', 'qualified', 'converted', 'rejected');--> statement-breakpoint
+CREATE TABLE "leads" (
+	"id" serial PRIMARY KEY NOT NULL,
+	"place_id" varchar(255) NOT NULL,
+	"title" varchar(500) NOT NULL,
+	"phone" varchar(50),
+	"email" varchar(255),
+	"website" text,
+	"address" text,
+	"city" varchar(255),
+	"state" varchar(100),
+	"zip_code" varchar(20),
+	"country" varchar(100),
+	"latitude" varchar(50),
+	"longitude" varchar(50),
+	"rating" varchar(10),
+	"review_count" integer,
+	"category" varchar(255),
+	"business_status" varchar(50),
+	"google_maps_url" text,
+	"status" "lead_status" DEFAULT 'new' NOT NULL,
+	"notes" text,
+	"source" varchar(100) DEFAULT 'google_maps',
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL,
+	CONSTRAINT "leads_place_id_unique" UNIQUE("place_id")
+);

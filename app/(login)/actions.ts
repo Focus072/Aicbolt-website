@@ -21,6 +21,7 @@ import { redirect } from 'next/navigation';
 import { cookies } from 'next/headers';
 import { createCheckoutSession } from '@/lib/payments/stripe';
 import { getUser, getUserWithTeam } from '@/lib/db/queries';
+import { onTeamAction } from '@/lib/db/dashboard-updates';
 import {
   validatedAction,
   validatedActionWithUser
@@ -45,12 +46,12 @@ async function logActivity(
 }
 
 const signInSchema = z.object({
-  email: z.string().email().min(3).max(255),
+  username: z.string().min(3).max(50),
   password: z.string().min(8).max(100)
 });
 
 export const signIn = validatedAction(signInSchema, async (data, formData) => {
-  const { email, password } = data;
+  const { username, password } = data;
 
   const userWithTeam = await db
     .select({
@@ -60,13 +61,13 @@ export const signIn = validatedAction(signInSchema, async (data, formData) => {
     .from(users)
     .leftJoin(teamMembers, eq(users.id, teamMembers.userId))
     .leftJoin(teams, eq(teamMembers.teamId, teams.id))
-    .where(eq(users.email, email))
+    .where(eq(users.username, username))
     .limit(1);
 
   if (userWithTeam.length === 0) {
     return {
-      error: 'Invalid email or password. Please try again.',
-      email,
+      error: 'Invalid username or password. Please try again.',
+      username,
       password
     };
   }
@@ -80,8 +81,8 @@ export const signIn = validatedAction(signInSchema, async (data, formData) => {
 
   if (!isPasswordValid) {
     return {
-      error: 'Invalid email or password. Please try again.',
-      email,
+      error: 'Invalid username or password. Please try again.',
+      username,
       password
     };
   }
@@ -90,6 +91,11 @@ export const signIn = validatedAction(signInSchema, async (data, formData) => {
     setSession(foundUser),
     logActivity(foundTeam?.id, foundUser.id, ActivityType.SIGN_IN)
   ]);
+
+  // Update dashboard data
+  if (foundTeam?.id) {
+    await onTeamAction(foundTeam.id, ActivityType.SIGN_IN, foundUser.id);
+  }
 
   const redirectTo = formData.get('redirect') as string | null;
   if (redirectTo === 'checkout') {
@@ -100,131 +106,20 @@ export const signIn = validatedAction(signInSchema, async (data, formData) => {
   redirect('/dashboard');
 });
 
-const signUpSchema = z.object({
-  email: z.string().email(),
-  password: z.string().min(8),
-  inviteId: z.string().optional()
-});
-
-export const signUp = validatedAction(signUpSchema, async (data, formData) => {
-  const { email, password, inviteId } = data;
-
-  const existingUser = await db
-    .select()
-    .from(users)
-    .where(eq(users.email, email))
-    .limit(1);
-
-  if (existingUser.length > 0) {
-    return {
-      error: 'Failed to create user. Please try again.',
-      email,
-      password
-    };
-  }
-
-  const passwordHash = await hashPassword(password);
-
-  const newUser: NewUser = {
-    email,
-    passwordHash,
-    role: 'owner' // Default role, will be overridden if there's an invitation
-  };
-
-  const [createdUser] = await db.insert(users).values(newUser).returning();
-
-  if (!createdUser) {
-    return {
-      error: 'Failed to create user. Please try again.',
-      email,
-      password
-    };
-  }
-
-  let teamId: number;
-  let userRole: string;
-  let createdTeam: typeof teams.$inferSelect | null = null;
-
-  if (inviteId) {
-    // Check if there's a valid invitation
-    const [invitation] = await db
-      .select()
-      .from(invitations)
-      .where(
-        and(
-          eq(invitations.id, parseInt(inviteId)),
-          eq(invitations.email, email),
-          eq(invitations.status, 'pending')
-        )
-      )
-      .limit(1);
-
-    if (invitation) {
-      teamId = invitation.teamId;
-      userRole = invitation.role;
-
-      await db
-        .update(invitations)
-        .set({ status: 'accepted' })
-        .where(eq(invitations.id, invitation.id));
-
-      await logActivity(teamId, createdUser.id, ActivityType.ACCEPT_INVITATION);
-
-      [createdTeam] = await db
-        .select()
-        .from(teams)
-        .where(eq(teams.id, teamId))
-        .limit(1);
-    } else {
-      return { error: 'Invalid or expired invitation.', email, password };
-    }
-  } else {
-    // Create a new team if there's no invitation
-    const newTeam: NewTeam = {
-      name: `${email}'s Team`
-    };
-
-    [createdTeam] = await db.insert(teams).values(newTeam).returning();
-
-    if (!createdTeam) {
-      return {
-        error: 'Failed to create team. Please try again.',
-        email,
-        password
-      };
-    }
-
-    teamId = createdTeam.id;
-    userRole = 'owner';
-
-    await logActivity(teamId, createdUser.id, ActivityType.CREATE_TEAM);
-  }
-
-  const newTeamMember: NewTeamMember = {
-    userId: createdUser.id,
-    teamId: teamId,
-    role: userRole
-  };
-
-  await Promise.all([
-    db.insert(teamMembers).values(newTeamMember),
-    logActivity(teamId, createdUser.id, ActivityType.SIGN_UP),
-    setSession(createdUser)
-  ]);
-
-  const redirectTo = formData.get('redirect') as string | null;
-  if (redirectTo === 'checkout') {
-    const priceId = formData.get('priceId') as string;
-    return createCheckoutSession({ team: createdTeam, priceId });
-  }
-
-  redirect('/dashboard');
-});
+// SignUp functionality removed - accounts can only be created by admin through /account page
 
 export async function signOut() {
-  const user = (await getUser()) as User;
-  const userWithTeam = await getUserWithTeam(user.id);
-  await logActivity(userWithTeam?.teamId, user.id, ActivityType.SIGN_OUT);
+  try {
+    const user = await getUser();
+    if (user) {
+      const userWithTeam = await getUserWithTeam(user.id);
+      await logActivity(userWithTeam?.teamId, user.id, ActivityType.SIGN_OUT);
+    }
+  } catch (error) {
+    // User might not be authenticated, continue with sign out
+    console.log('User not authenticated, proceeding with sign out');
+  }
+  
   (await cookies()).delete('session');
 }
 
@@ -339,18 +234,17 @@ export const deleteAccount = validatedActionWithUser(
 );
 
 const updateAccountSchema = z.object({
-  name: z.string().min(1, 'Name is required').max(100),
-  email: z.string().email('Invalid email address')
+  name: z.string().min(1, 'Name is required').max(100)
 });
 
 export const updateAccount = validatedActionWithUser(
   updateAccountSchema,
   async (data, _, user) => {
-    const { name, email } = data;
+    const { name } = data;
     const userWithTeam = await getUserWithTeam(user.id);
 
     await Promise.all([
-      db.update(users).set({ name, email }).where(eq(users.id, user.id)),
+      db.update(users).set({ name }).where(eq(users.id, user.id)),
       logActivity(userWithTeam?.teamId, user.id, ActivityType.UPDATE_ACCOUNT)
     ]);
 
@@ -450,6 +344,9 @@ export const inviteTeamMember = validatedActionWithUser(
       user.id,
       ActivityType.INVITE_TEAM_MEMBER
     );
+
+    // Update dashboard data
+    await onTeamAction(userWithTeam.teamId, ActivityType.INVITE_TEAM_MEMBER, user.id);
 
     // TODO: Send invitation email and include ?inviteId={id} to sign-up URL
     // await sendInvitationEmail(email, userWithTeam.team.name, role)
