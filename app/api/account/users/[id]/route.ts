@@ -5,6 +5,17 @@ import { getUser } from '@/lib/db/queries';
 import { eq } from 'drizzle-orm';
 import { hashPassword } from '@/lib/auth/session';
 
+const VALID_API_KEY = process.env.SCRAPER_API_KEY;
+
+const validateApiKey = (request: NextRequest): boolean => {
+  const authHeader = request.headers.get('authorization');
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return false;
+  }
+  const token = authHeader.substring(7);
+  return token === VALID_API_KEY;
+};
+
 // Check if user is admin
 async function isAdmin(): Promise<boolean> {
   const currentUser = await getUser();
@@ -91,7 +102,7 @@ export async function PATCH(
   try {
     const hasValidApiKey = validateApiKey(request);
     const user = await getUser();
-    const isMainAdmin = user?.email === 'galaljobah@gmail.com';
+    const isMainAdmin = user?.username === 'admin';
     const isAdmin = user?.role === 'admin' || user?.role === 'owner' || isMainAdmin;
 
     if (!hasValidApiKey && !isAdmin) {
