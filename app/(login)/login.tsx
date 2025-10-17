@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useActionState } from 'react';
+import { useFormState } from 'react-dom';
 import { useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -13,7 +13,7 @@ import { ActionState } from '@/lib/auth/middleware';
 export function Login() {
   const searchParams = useSearchParams();
   const redirect = searchParams.get('redirect');
-  const [state, formAction, pending] = useActionState<ActionState, FormData>(
+  const [state, formAction, pending] = useFormState<ActionState, FormData>(
     signIn,
     { error: '' }
   );

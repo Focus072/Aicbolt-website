@@ -1,6 +1,6 @@
 'use client';
 
-import { useActionState } from 'react';
+import { useFormState } from 'react-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -78,7 +78,7 @@ function AccountFormWithData({ state }: { state: ActionState }) {
 }
 
 export default function GeneralPage() {
-  const [state, formAction, isPending] = useActionState<ActionState, FormData>(
+  const [state, formAction, isPending] = useFormState<ActionState, FormData>(
     updateAccount,
     {}
   );

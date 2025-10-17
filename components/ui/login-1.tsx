@@ -3,7 +3,7 @@
 import { FcGoogle } from "react-icons/fc";
 import { ArrowLeft } from "lucide-react";
 import { signIn } from "@/app/(login)/actions";
-import { useActionState } from "react";
+import { useFormState } from "react-dom";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -37,7 +37,7 @@ const Login1 = ({
   signupUrl = "https://shadcnblocks.com",
   mode = 'signin',
 }: Login1Props) => {
-  const [state, formAction, pending] = useActionState(
+  const [state, formAction, pending] = useFormState(
     signIn,
     { error: '' }
   );
