@@ -730,7 +730,7 @@ export default function ProjectsPage() {
               </Card>
             ) : (
               filteredProjects.map((project) => {
-                const ProjectIcon = PROJECT_TYPE_ICONS[project.projectType] || Settings;
+                const ProjectIcon = PROJECT_TYPE_ICONS[project.projectType as keyof typeof PROJECT_TYPE_ICONS] || Settings;
                 
                 return (
                   <Card key={project.id} className="hover:shadow-md transition-shadow cursor-pointer">
