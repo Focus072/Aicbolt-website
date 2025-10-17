@@ -2,6 +2,8 @@
 
 import { SessionNavBar } from '@/components/ui/sidebar';
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import useSWR from 'swr';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
@@ -53,7 +55,11 @@ interface FormSubmission {
   reviewedAt: string | null;
 }
 
+const fetcher = (url: string) => fetch(url).then((res) => res.json());
+
 export default function FormsPage() {
+  const router = useRouter();
+  const { data: currentUser } = useSWR('/api/user', fetcher);
   const [submissions, setSubmissions] = useState<FormSubmission[]>([]);
   const [filteredSubmissions, setFilteredSubmissions] = useState<FormSubmission[]>([]);
   const [loading, setLoading] = useState(true);
@@ -63,6 +69,17 @@ export default function FormsPage() {
   const [selectedSubmission, setSelectedSubmission] = useState<FormSubmission | null>(null);
   const [viewDialogOpen, setViewDialogOpen] = useState(false);
   const [processingId, setProcessingId] = useState<string | null>(null);
+
+  // Check if user is admin
+  const isAdmin = currentUser && (currentUser.role === 'admin' || currentUser.username === 'admin');
+
+  // Redirect non-admin users
+  useEffect(() => {
+    if (currentUser && !isAdmin) {
+      router.push('/dashboard');
+      toast.error('Access denied. Only admin users can access forms management.');
+    }
+  }, [currentUser, isAdmin, router]);
 
   useEffect(() => {
     console.log('FormsPage mounted');
@@ -194,6 +211,47 @@ export default function FormsPage() {
       </Badge>
     );
   };
+
+  // Show loading state while checking user permissions
+  if (!currentUser) {
+    return (
+      <div className="flex h-screen bg-gray-50 dark:bg-gray-950">
+        <SessionNavBar />
+        <div className="flex-1 bg-gray-50 dark:bg-gray-950 p-6 space-y-6 overflow-auto ml-12 lg:ml-60 transition-all duration-300">
+          <div className="flex items-center justify-center h-full">
+            <div className="text-center">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 dark:border-white mx-auto mb-4"></div>
+              <p className="text-gray-600 dark:text-gray-400">Loading...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Show access denied for non-admin users
+  if (!isAdmin) {
+    return (
+      <div className="flex h-screen bg-gray-50 dark:bg-gray-950">
+        <SessionNavBar />
+        <div className="flex-1 bg-gray-50 dark:bg-gray-950 p-6 space-y-6 overflow-auto ml-12 lg:ml-60 transition-all duration-300">
+          <div className="flex items-center justify-center h-full">
+            <div className="text-center">
+              <div className="bg-red-100 dark:bg-red-900/20 rounded-full p-4 w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+                <svg className="w-8 h-8 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                </svg>
+              </div>
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">Access Denied</h2>
+              <p className="text-gray-600 dark:text-gray-400">
+                Only admin users can access forms management.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex h-screen bg-gray-50 dark:bg-gray-950">

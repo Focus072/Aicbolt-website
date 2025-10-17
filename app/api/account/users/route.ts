@@ -6,36 +6,36 @@ import { eq } from 'drizzle-orm';
 import { checkRateLimit, getClientIdentifier, RateLimits } from '@/lib/rate-limit';
 import { hashPassword } from '@/lib/auth/session';
 
-// Check if user is super admin
-async function isSuperAdmin(): Promise<boolean> {
+// Check if user is admin
+async function isAdmin(): Promise<boolean> {
   const currentUser = await getUser();
-  return currentUser?.username === 'admin';
+  return currentUser?.role === 'admin' || currentUser?.role === 'owner' || currentUser?.username === 'admin';
 }
 
 export async function GET(request: NextRequest) {
   try {
-    // Check super admin access
-    if (!(await isSuperAdmin())) {
+    // Check admin access
+    if (!(await isAdmin())) {
       return NextResponse.json(
-        { error: 'Unauthorized - Super admin access required' },
+        { error: 'Unauthorized - Admin access required' },
         { status: 403 }
       );
     }
 
-    // Fetch all users except deleted ones
-    const allUsers = await db
-      .select({
-        id: users.id,
-        name: users.name,
-        username: users.username,
-        role: users.role,
-        allowedPages: users.allowedPages,
-        isActive: users.isActive,
-        createdAt: users.createdAt,
-      })
-      .from(users)
-      .where(eq(users.deletedAt, null as any))
-      .orderBy(users.createdAt);
+        // Fetch all users (no soft delete filter needed since we actually delete users)
+        const allUsers = await db
+          .select({
+            id: users.id,
+            name: users.name,
+            username: users.username,
+            role: users.role,
+            allowedPages: users.allowedPages,
+            organizationId: users.organizationId,
+            isActive: users.isActive,
+            createdAt: users.createdAt,
+          })
+          .from(users)
+          .orderBy(users.createdAt);
 
     return NextResponse.json({
       success: true,
@@ -64,10 +64,10 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Check super admin access
-    if (!(await isSuperAdmin())) {
+    // Check admin access
+    if (!(await isAdmin())) {
       return NextResponse.json(
-        { error: 'Unauthorized - Super admin access required' },
+        { error: 'Unauthorized - Admin access required' },
         { status: 403 }
       );
     }

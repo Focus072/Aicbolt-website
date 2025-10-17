@@ -81,7 +81,7 @@ const AgentDemoCard = React.forwardRef<HTMLDivElement, AgentDemoCardProps>(
                               shadow-[0_12px_40px_-8px_rgba(0,0,0,0.4)]
                               transition-all duration-500 group-hover:bg-gradient-to-br group-hover:from-gray-900/60 group-hover:to-gray-800/50 group-hover:border-orange-400/30">
                 <h3 className="text-3xl font-bold tracking-tight text-white mb-2.5" style={{ textShadow: '0 2px 8px rgba(0,0,0,0.4)' }}>
-                  {agentName} <span className="text-2xl ml-1.5">{flag}</span>
+                  {agentName}{flag && <span className="text-2xl ml-1.5">{flag}</span>}
                 </h3>
                 <p className="text-sm font-medium leading-relaxed" style={{ color: 'rgba(248, 250, 252, 0.9)', textShadow: '0 1px 4px rgba(0,0,0,0.3)' }}>{tagline}</p>
               </div>

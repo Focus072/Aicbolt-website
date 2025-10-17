@@ -118,13 +118,29 @@ const FinancePage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [monthFilter, setMonthFilter] = useState('all');
   const [categoryFilter, setCategoryFilter] = useState('all');
+  const [currentOrganization, setCurrentOrganization] = useState<any>(null);
 
   // Initialize date values after mount to prevent hydration issues
   useEffect(() => {
     const today = new Date().toISOString().split('T')[0];
     setRevenueFormData(prev => ({ ...prev, date: prev.date || today }));
     setExpenseFormData(prev => ({ ...prev, date: prev.date || today }));
+    
+    // Fetch current organization context
+    fetchCurrentOrganization();
   }, []);
+
+  const fetchCurrentOrganization = async () => {
+    try {
+      const response = await fetch('/api/organizations/switch');
+      if (response.ok) {
+        const data = await response.json();
+        setCurrentOrganization(data.currentOrganization);
+      }
+    } catch (error) {
+      console.error('Error fetching current organization:', error);
+    }
+  };
 
   const fetchFinanceData = async () => {
     try {
@@ -568,6 +584,14 @@ const FinancePage: React.FC = () => {
               <p className="text-gray-600 dark:text-gray-400">
                 Track your revenue, expenses, and net profit with detailed analytics
               </p>
+              {currentOrganization && (
+                <div className="mt-2">
+                  <span className="text-sm text-gray-500 dark:text-gray-400">Viewing: </span>
+                  <span className="text-sm font-medium text-orange-500">
+                    {currentOrganization.name}
+                  </span>
+                </div>
+              )}
             </div>
 
             {/* Analytics Overview */}

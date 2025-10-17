@@ -1,0 +1,15 @@
+# Production Environment Variables for Vercel
+# Copy these variables to your Vercel project settings
+
+POSTGRES_URL=postgres://username:password@host:port/database
+AUTH_SECRET=your-super-secret-key-here-make-it-long-and-random
+SCRAPER_API_KEY=your-actual-scraper-api-key
+NEXTAUTH_URL=https://your-project-name.vercel.app
+NODE_ENV=production
+
+# Instructions:
+# 1. Go to your Vercel project dashboard
+# 2. Click on "Settings" tab
+# 3. Click on "Environment Variables"
+# 4. Add each variable above with the correct values
+# 5. Make sure to set them for "Production" environment

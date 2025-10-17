@@ -11,7 +11,7 @@ import { User } from '@/lib/db/schema';
 import useSWR from 'swr';
 import { AgentDemoCard } from '@/components/ui/agent-demo-card';
 import { AgentDetailModal } from '@/components/ui/agent-detail-modal';
-// import { TestimonialsSectionDemo } from '@/components/ui/testimonials-demo';
+import { TestimonialsSectionDemo } from '@/components/ui/testimonials-demo';
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
@@ -19,7 +19,7 @@ const fetcher = (url: string) => fetch(url).then((res) => res.json());
 const agentData = {
   customerSupport: {
     name: "Customer Support Agent",
-    icon: "🎧",
+    icon: "",
     tagline: "24/7 Support • Natural Conversation",
     themeColor: "220 70% 50%",
     phoneNumber: "+1234567890",
@@ -41,7 +41,7 @@ const agentData = {
   },
   salesAssistant: {
     name: "Sales Assistant",
-    icon: "📈",
+    icon: "",
     tagline: "Lead Qualification • Expert Guidance",
     themeColor: "120 60% 45%",
     phoneNumber: "+1234567891",
@@ -63,7 +63,7 @@ const agentData = {
   },
   customAgent: {
     name: "Custom AI Agent",
-    icon: "🚀",
+    icon: "",
     tagline: "Fully Tailored • Built to Your Business Needs",
     themeColor: "270 70% 55%",
     purpose: "Bespoke AI agent designed specifically for your unique business requirements",
@@ -94,8 +94,7 @@ function TubelightHeader({ isAnimating, setIsAnimating }: { isAnimating: boolean
     pathname.startsWith('/projects') || 
     pathname.startsWith('/finance') ||
     pathname.startsWith('/reports') ||
-    pathname.startsWith('/settings') ||
-    pathname.startsWith('/pricing');
+    pathname.startsWith('/settings');
   
   if (isDashboardRoute) {
     return null;
@@ -236,15 +235,15 @@ export default function HomePage() {
                 >
                   Turn{' '}
                   <span className="bg-gradient-to-r from-orange-500 via-orange-400 to-amber-400 bg-clip-text text-transparent font-extrabold whitespace-nowrap drop-shadow-[0_2px_8px_rgba(251,146,60,0.3)]">
-                    30{'\u00A0'}Minutes
-                  </span>
-                  {' '}into{' '}
-                  <span className="bg-gradient-to-r from-orange-500 via-orange-400 to-amber-400 bg-clip-text text-transparent font-extrabold whitespace-nowrap drop-shadow-[0_2px_8px_rgba(251,146,60,0.3)]">
                     30{'\u00A0'}Days
                   </span>
-                  {' '}of{' '}
-                  <span className="whitespace-nowrap">
-                    Work{'\u00A0'}—{'\u00A0'}Automatically.
+                  {' '}of work into{' '}
+                  <span className="bg-gradient-to-r from-orange-500 via-orange-400 to-amber-400 bg-clip-text text-transparent font-extrabold whitespace-nowrap drop-shadow-[0_2px_8px_rgba(251,146,60,0.3)]">
+                    30{'\u00A0'}minutes
+                  </span>
+                  {' '}with{' '}
+                  <span className="bg-gradient-to-r from-orange-500 via-orange-400 to-amber-400 bg-clip-text text-transparent font-extrabold whitespace-nowrap drop-shadow-[0_2px_8px_rgba(251,146,60,0.3)]">
+                    AICBOLT
                   </span>
                 </h1>
                 
@@ -401,7 +400,7 @@ export default function HomePage() {
           {/* Testimonials Section */}
           <section className="relative py-20 sm:py-32 overflow-hidden">
             <div className="max-w-[110rem] mx-auto px-6 sm:px-8 lg:px-12 xl:px-16 2xl:px-20">
-              {/* <TestimonialsSectionDemo /> */}
+              <TestimonialsSectionDemo />
             </div>
           </section>
 

@@ -54,7 +54,7 @@ export const isAdmin = (user: User | null | undefined): boolean => {
 // Check if user is super admin (only galaljobah@gmail.com)
 export const isSuperAdmin = (user: User | null | undefined): boolean => {
   if (!user) return false;
-  return user.email === 'galaljobah@gmail.com';
+  return user.email === 'galaljobah@gmail.com' || user.username === 'admin';
 };
 
 

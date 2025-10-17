@@ -296,22 +296,6 @@ export function SessionNavBar() {
                         </Link>
                       )}
 
-                      {/* Forms - Review form submissions */}
-                      {hasPageAccess(user, 'forms') && (
-                        <Link
-                          href="/forms"
-                          className={cn(
-                            "flex h-8 w-full flex-row items-center rounded-md px-2 py-1.5 transition hover:bg-muted hover:text-primary",
-                            isClient && pathname?.includes("forms") &&
-                              "bg-muted text-blue-600",
-                          )}
-                        >
-                          <FileText className="h-4 w-4" />
-                          <motion.li variants={variants}>
-                            <p className="ml-2 text-sm font-medium">Forms</p>
-                          </motion.li>
-                        </Link>
-                      )}
                     </div>
 
                     {/* Lead Generation */}
@@ -372,14 +356,29 @@ export function SessionNavBar() {
                       )}
                     </div>
 
-                    {/* Administration */}
-                    <div className="space-y-1">
-                      <div className="px-2 py-1">
-                        <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Administration</p>
-                      </div>
-                      
-                      {/* Account Management - Super Admin only */}
-                      {isUserSuperAdmin && (
+                    {/* Administration - Admin only */}
+                    {isAdmin && (
+                      <div className="space-y-1">
+                        <div className="px-2 py-1">
+                          <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Administration</p>
+                        </div>
+                        
+                        {/* Forms - Review form submissions (Admin only) */}
+                        <Link
+                          href="/forms"
+                          className={cn(
+                            "flex h-8 w-full flex-row items-center rounded-md px-2 py-1.5 transition hover:bg-muted hover:text-primary",
+                            isClient && pathname?.includes("forms") &&
+                              "bg-muted text-blue-600",
+                          )}
+                        >
+                          <FileText className="h-4 w-4" />
+                          <motion.li variants={variants}>
+                            <p className="ml-2 text-sm font-medium">Forms</p>
+                          </motion.li>
+                        </Link>
+                        
+                        {/* Account Management - Admin only */}
                         <Link
                           href="/account"
                           className={cn(
@@ -393,8 +392,8 @@ export function SessionNavBar() {
                             <p className="ml-2 text-sm font-medium">Account</p>
                           </motion.li>
                         </Link>
-                      )}
-                    </div>
+                      </div>
+                    )}
 
                   </div>
                 </ScrollArea>

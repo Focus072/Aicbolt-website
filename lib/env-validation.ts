@@ -35,26 +35,6 @@ const ENV_VARIABLES: EnvConfig[] = [
     description: 'Public URL of your application (for invite links)',
     example: 'https://yourdomain.com',
   },
-  {
-    name: 'STRIPE_SECRET_KEY',
-    required: false,
-    description: 'Stripe secret key for payments',
-  },
-  {
-    name: 'STRIPE_WEBHOOK_SECRET',
-    required: false,
-    description: 'Stripe webhook secret',
-  },
-  {
-    name: 'NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY',
-    required: false,
-    description: 'Stripe publishable key',
-  },
-  {
-    name: 'RESEND_API_KEY',
-    required: false,
-    description: 'Resend API key for sending emails (if using Resend)',
-  },
 ];
 
 interface ValidationResult {

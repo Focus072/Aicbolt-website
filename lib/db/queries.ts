@@ -114,6 +114,37 @@ export async function getTeamForUser() {
     return null;
   }
 
+  // Check if user is admin and has switched to a different organization
+  if (user.role === 'admin' || user.username === 'admin') {
+    const orgCookie = (await cookies()).get('currentOrganizationId');
+    if (orgCookie?.value) {
+      const orgId = parseInt(orgCookie.value);
+      if (!isNaN(orgId)) {
+        // Get the organization/team that admin switched to
+        const switchedTeam = await db.query.teams.findFirst({
+          where: eq(teams.id, orgId),
+          with: {
+            teamMembers: {
+              with: {
+                user: {
+                  columns: {
+                    id: true,
+                    name: true,
+                    username: true
+                  }
+                }
+              }
+            }
+          }
+        });
+        if (switchedTeam) {
+          return switchedTeam;
+        }
+      }
+    }
+  }
+
+  // For regular users or admin without organization switch, get their default team
   const result = await db.query.teamMembers.findFirst({
     where: eq(teamMembers.userId, user.id),
     with: {
@@ -125,7 +156,7 @@ export async function getTeamForUser() {
                 columns: {
                   id: true,
                   name: true,
-                  email: true
+                  username: true
                 }
               }
             }
