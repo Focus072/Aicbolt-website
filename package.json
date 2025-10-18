@@ -13,7 +13,12 @@
     "db:generate": "drizzle-kit generate:pg",
     "db:push": "drizzle-kit push",
     "db:studio": "drizzle-kit studio",
-    "db:migrate": "node run-account-system-migration.js"
+    "db:migrate": "node run-account-system-migration.js",
+    "monitor:health": "node monitoring/health-check.js",
+    "monitor:performance": "node monitoring/performance-monitor.js",
+    "monitor:resilience": "node monitoring/resilience-test.js",
+    "monitor:all": "npm run monitor:health & npm run monitor:performance & npm run monitor:resilience",
+    "test:monitoring": "npm run monitor:health && npm run monitor:performance && npm run monitor:resilience"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
@@ -50,6 +55,7 @@
     "recharts": "^2.15.4",
     "server-only": "^0.0.1",
     "sonner": "^2.0.7",
+    "stripe": "^19.1.0",
     "swr": "^2.3.3",
     "tailwind-merge": "^3.3.0",
     "tailwindcss": "4.1.7",
@@ -58,5 +64,9 @@
     "zod": "^3.25.76"
   },
   "devDependencies": {
+    "axios": "^1.7.7",
+    "nodemailer": "^6.9.15",
+    "detect-secrets": "^1.4.0",
+    "audit-ci": "^7.0.1"
   }
 }
