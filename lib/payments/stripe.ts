@@ -7,9 +7,11 @@ import {
   updateTeamSubscription
 } from '@/lib/db/queries';
 
-export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2025-04-30.basil'
-});
+export const stripe = process.env.STRIPE_SECRET_KEY 
+  ? new Stripe(process.env.STRIPE_SECRET_KEY, {
+      apiVersion: '2025-08-27.basil'
+    })
+  : null;
 
 export async function createCheckoutSession({
   team,
@@ -18,6 +20,10 @@ export async function createCheckoutSession({
   team: Team | null;
   priceId: string;
 }) {
+  if (!stripe) {
+    throw new Error('Stripe is not configured');
+  }
+
   const user = await getUser();
 
   if (!team || !user) {
@@ -47,6 +53,10 @@ export async function createCheckoutSession({
 }
 
 export async function createCustomerPortalSession(team: Team) {
+  if (!stripe) {
+    throw new Error('Stripe is not configured');
+  }
+
   if (!team.stripeCustomerId || !team.stripeProductId) {
     redirect('/pricing');
   }
@@ -147,6 +157,10 @@ export async function handleSubscriptionChange(
 }
 
 export async function getStripePrices() {
+  if (!stripe) {
+    return [];
+  }
+
   const prices = await stripe.prices.list({
     expand: ['data.product'],
     active: true,
@@ -165,6 +179,10 @@ export async function getStripePrices() {
 }
 
 export async function getStripeProducts() {
+  if (!stripe) {
+    return [];
+  }
+
   const products = await stripe.products.list({
     active: true,
     expand: ['data.default_price']

@@ -2,15 +2,24 @@ import Stripe from 'stripe';
 import { handleSubscriptionChange, stripe } from '@/lib/payments/stripe';
 import { NextRequest, NextResponse } from 'next/server';
 
-const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET!;
+const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
 export async function POST(request: NextRequest) {
+  // Skip webhook processing if Stripe is not configured
+  if (!webhookSecret || !process.env.STRIPE_SECRET_KEY) {
+    console.log('Stripe webhook skipped - environment variables not configured');
+    return NextResponse.json({ received: true, skipped: true });
+  }
+
   const payload = await request.text();
   const signature = request.headers.get('stripe-signature') as string;
 
   let event: Stripe.Event;
 
   try {
+    if (!stripe) {
+      throw new Error('Stripe is not configured');
+    }
     event = stripe.webhooks.constructEvent(payload, signature, webhookSecret);
   } catch (err) {
     console.error('Webhook signature verification failed.', err);
