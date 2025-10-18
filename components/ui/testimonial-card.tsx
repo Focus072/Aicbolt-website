@@ -19,17 +19,17 @@ export const TestimonialCard: React.FC<TestimonialCardProps> = ({
   rating = 5,
 }) => {
   return (
-    <div className="flex-shrink-0 w-80 bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6 shadow-lg">
-      <div className="flex items-center gap-4 mb-4">
-        <Avatar className="h-12 w-12">
+    <div className="flex-shrink-0 w-72 sm:w-80 md:w-80 bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-4 sm:p-6 shadow-lg hover:shadow-xl transition-all duration-300">
+      <div className="flex items-center gap-3 sm:gap-4 mb-4">
+        <Avatar className="h-10 w-10 sm:h-12 sm:w-12">
           <AvatarImage src={avatar} alt={name} />
           <AvatarFallback className="bg-orange-500/20 text-orange-400">
             {name.split(' ').map(n => n[0]).join('')}
           </AvatarFallback>
         </Avatar>
-        <div>
-          <h4 className="font-semibold text-white">{name}</h4>
-          <p className="text-sm text-gray-400">{role} at {company}</p>
+        <div className="min-w-0 flex-1">
+          <h4 className="font-semibold text-white text-sm sm:text-base truncate">{name}</h4>
+          <p className="text-xs sm:text-sm text-gray-400 truncate">{role} at {company}</p>
         </div>
       </div>
       
@@ -37,7 +37,7 @@ export const TestimonialCard: React.FC<TestimonialCardProps> = ({
         {[...Array(5)].map((_, i) => (
           <svg
             key={i}
-            className={`w-4 h-4 ${i < rating ? 'text-orange-400' : 'text-gray-600'}`}
+            className={`w-3 h-3 sm:w-4 sm:h-4 ${i < rating ? 'text-orange-400' : 'text-gray-600'}`}
             fill="currentColor"
             viewBox="0 0 20 20"
           >
@@ -46,7 +46,7 @@ export const TestimonialCard: React.FC<TestimonialCardProps> = ({
         ))}
       </div>
       
-      <p className="text-gray-300 leading-relaxed">
+      <p className="text-gray-300 leading-relaxed text-sm sm:text-base">
         "{content}"
       </p>
     </div>

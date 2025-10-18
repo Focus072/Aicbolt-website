@@ -160,10 +160,10 @@ export const TestimonialsSectionDemo: React.FC = () => {
 
       {/* Testimonials Carousel */}
       <div className="relative">
-        {/* Navigation Arrows */}
+        {/* Navigation Arrows - Hidden on mobile, visible on desktop */}
         <Button
           onClick={goToPrevious}
-          className="absolute left-4 top-1/2 -translate-y-1/2 z-10 bg-white/10 hover:bg-white/20 border border-white/20 text-white backdrop-blur-xl"
+          className="hidden md:flex absolute left-4 top-1/2 -translate-y-1/2 z-10 bg-white/20 hover:bg-white/30 border border-white/30 text-white backdrop-blur-xl transition-all duration-300"
           size="sm"
         >
           <ChevronLeft className="h-4 w-4" />
@@ -171,24 +171,24 @@ export const TestimonialsSectionDemo: React.FC = () => {
         
         <Button
           onClick={goToNext}
-          className="absolute right-4 top-1/2 -translate-y-1/2 z-10 bg-white/10 hover:bg-white/20 border border-white/20 text-white backdrop-blur-xl"
+          className="hidden md:flex absolute right-4 top-1/2 -translate-y-1/2 z-10 bg-white/20 hover:bg-white/30 border border-white/30 text-white backdrop-blur-xl transition-all duration-300"
           size="sm"
         >
           <ChevronRight className="h-4 w-4" />
         </Button>
 
-        {/* Testimonials Container */}
-        <div className="flex items-center justify-center gap-6 px-16">
+        {/* Testimonials Container - Mobile optimized */}
+        <div className="flex items-center justify-center gap-4 md:gap-6 px-4 md:px-16 overflow-hidden">
           {visibleTestimonials.map((testimonial, i) => (
             <div
               key={testimonial.index}
-              className={`transition-all duration-500 ${
+              className={`transition-all duration-700 ease-in-out ${
                 testimonial.isCenter
                   ? 'scale-100 opacity-100 z-20'
-                  : 'scale-90 opacity-70 z-10'
+                  : 'scale-90 opacity-60 z-10'
               }`}
               style={{
-                transform: testimonial.isCenter ? 'none' : 'translateY(20px)',
+                transform: testimonial.isCenter ? 'none' : 'translateY(10px)',
               }}
             >
               <TestimonialCard {...testimonial} />
@@ -197,27 +197,27 @@ export const TestimonialsSectionDemo: React.FC = () => {
         </div>
 
         {/* Dots Indicator */}
-        <div className="flex justify-center gap-2 mt-8">
+        <div className="flex justify-center gap-2 mt-6 sm:mt-8">
           {testimonials.map((_, index) => (
             <button
               key={index}
               onClick={() => goToSlide(index)}
-              className={`w-3 h-3 rounded-full transition-all duration-300 ${
+              className={`w-2 h-2 sm:w-3 sm:h-3 rounded-full transition-all duration-300 ${
                 index === currentIndex
                   ? 'bg-orange-400 scale-125'
-                  : 'bg-white/30 hover:bg-white/50'
+                  : 'bg-white/40 hover:bg-white/60'
               }`}
             />
           ))}
         </div>
 
         {/* Auto-play Toggle */}
-        <div className="flex justify-center mt-6">
+        <div className="flex justify-center mt-4 sm:mt-6">
           <Button
             onClick={() => setIsAutoPlaying(!isAutoPlaying)}
             variant="outline"
             size="sm"
-            className="bg-white/10 hover:bg-white/20 border border-white/20 text-white backdrop-blur-xl"
+            className="bg-white/20 hover:bg-white/30 border border-white/30 text-white backdrop-blur-xl transition-all duration-300 text-xs sm:text-sm"
           >
             {isAutoPlaying ? 'Pause' : 'Play'} Auto-rotation
           </Button>
