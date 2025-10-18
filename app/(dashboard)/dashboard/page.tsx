@@ -1,7 +1,4 @@
-"use client";
-
 import { SessionNavBar } from "@/components/ui/sidebar";
-import { useEffect, useState } from "react";
 import {
   TrendingUp,
   TrendingDown,
@@ -10,7 +7,6 @@ import {
   Briefcase,
   Activity,
   ArrowUpRight,
-  ArrowDownRight,
   Plus,
   Eye,
   Edit,
@@ -18,101 +14,83 @@ import {
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
-type AnalyticsData = {
-  analytics: {
-    totalRevenue: number;
-    totalExpenses: number;
-    netProfit: number;
-    clientCount: number;
-    activeProjects: number;
-    completedProjects: number;
-    profitMargin: number;
-  };
-  revenueByMonth: Array<{
-    month: string;
-    revenue: number;
-  }>;
-  expensesByCategory: Array<{
-    category: string;
-    total: number;
-  }>;
-  topClients: Array<{
-    id: number;
-    name: string;
-    totalRevenue: number;
-    projectCount: number;
-  }>;
+// Server action to get dashboard data
+async function getDashboardData() {
+  try {
+    // Mock data for now - in production, this would fetch from your database
+    return {
+      analytics: {
+        totalRevenue: 125000,
+        totalExpenses: 75000,
+        netProfit: 50000,
+        clientCount: 12,
+        activeProjects: 8,
+        completedProjects: 15,
+        profitMargin: 40.0,
+      },
+      revenueByMonth: [
+        { month: "Jan", revenue: 8500 },
+        { month: "Feb", revenue: 9200 },
+        { month: "Mar", revenue: 10800 },
+        { month: "Apr", revenue: 11500 },
+        { month: "May", revenue: 12200 },
+        { month: "Jun", revenue: 13000 },
+      ],
+      expensesByCategory: [
+        { category: "Marketing", total: 15000 },
+        { category: "Operations", total: 25000 },
+        { category: "Salaries", total: 35000 },
+      ],
+      topClients: [
+        { id: 1, name: "Acme Corp", totalRevenue: 25000, projectCount: 3 },
+        { id: 2, name: "TechStart", totalRevenue: 18000, projectCount: 2 },
+        { id: 3, name: "Global Inc", totalRevenue: 15000, projectCount: 1 },
+      ],
+      recentProjects: [
+        { id: 1, name: "Website Redesign", status: "active", description: "Complete website overhaul", startDate: "2024-01-15" },
+        { id: 2, name: "Mobile App", status: "completed", description: "iOS and Android app development", startDate: "2024-01-01" },
+      ],
+      recentClients: [
+        { id: 1, name: "New Client A", email: "contact@newclient.com" },
+        { id: 2, name: "New Client B", email: "hello@newclientb.com" },
+      ],
+    };
+  } catch (error) {
+    console.error('Error fetching dashboard data:', error);
+    return null;
+  }
+}
+
+const formatCurrency = (amount: number) => {
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+  }).format(amount);
 };
 
-export default function DashboardPage() {
-  const [analytics, setAnalytics] = useState<AnalyticsData | null>(null);
-  const [recentProjects, setRecentProjects] = useState<any[]>([]);
-  const [recentClients, setRecentClients] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+const formatPercentage = (value: number) => {
+  return `${value.toFixed(1)}%`;
+};
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [analyticsRes, projectsRes, clientsRes] = await Promise.all([
-          fetch('/api/analytics'),
-          fetch('/api/projects'),
-          fetch('/api/clients')
-        ]);
-
-        if (analyticsRes.ok) {
-          const data = await analyticsRes.json();
-          setAnalytics(data);
-        }
-
-        if (projectsRes.ok) {
-          const projects = await projectsRes.json();
-          setRecentProjects(projects.slice(0, 5));
-        }
-
-        if (clientsRes.ok) {
-          const clients = await clientsRes.json();
-          setRecentClients(clients.slice(0, 5));
-        }
-      } catch (error) {
-        console.error('Error fetching dashboard data:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, []);
-
-  const formatCurrency = (amount: number) => {
-    // Convert from cents to dollars
-    const dollars = amount / 100;
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-    }).format(dollars);
-  };
-
-  const formatPercentage = (value: number) => {
-    return `${value.toFixed(1)}%`;
-  };
-
-  if (loading) {
+export default async function DashboardPage() {
+  const data = await getDashboardData();
+  
+  if (!data) {
     return (
       <div className="flex min-h-screen w-full">
         <SessionNavBar />
         <div className="flex-1 bg-gray-50 dark:bg-gray-950 p-4 overflow-auto ml-12 lg:ml-60 transition-all duration-300">
           <div className="flex items-center justify-center h-full">
-            <div className="text-gray-500 dark:text-gray-400">Loading dashboard...</div>
+            <div className="text-gray-500 dark:text-gray-400">Error loading dashboard data</div>
           </div>
         </div>
       </div>
     );
   }
 
-  const stats = analytics?.analytics;
-  const revenueGrowth = analytics?.revenueByMonth || [];
-  const lastMonthRevenue = revenueGrowth[revenueGrowth.length - 1]?.revenue || 0;
-  const previousMonthRevenue = revenueGrowth[revenueGrowth.length - 2]?.revenue || 0;
+  const { analytics, revenueByMonth, expensesByCategory, topClients, recentProjects, recentClients } = data;
+  const lastMonthRevenue = revenueByMonth[revenueByMonth.length - 1]?.revenue || 0;
+  const previousMonthRevenue = revenueByMonth[revenueByMonth.length - 2]?.revenue || 0;
   const revenueChange = previousMonthRevenue > 0 
     ? ((lastMonthRevenue - previousMonthRevenue) / previousMonthRevenue) * 100 
     : 0;
@@ -134,7 +112,7 @@ export default function DashboardPage() {
         {/* Key Metrics Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
           {/* Total Revenue */}
-          <div key="metric-revenue" className="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-6 shadow-sm hover:shadow-md transition-shadow">
+          <div className="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-6 shadow-sm hover:shadow-md transition-shadow">
             <div className="flex items-center justify-between mb-2">
               <div className="p-2 bg-green-100 dark:bg-green-900/30 rounded-lg">
                 <DollarSign className="h-5 w-5 text-green-600 dark:text-green-400" />
@@ -145,7 +123,7 @@ export default function DashboardPage() {
               </div>
             </div>
             <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
-              {formatCurrency(stats?.totalRevenue || 0)}
+              {formatCurrency(analytics.totalRevenue)}
             </h3>
             <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">Total Revenue</p>
             <Link href="/finance" className="text-xs text-blue-600 dark:text-blue-400 hover:underline mt-2 inline-flex items-center">
@@ -154,7 +132,7 @@ export default function DashboardPage() {
           </div>
 
           {/* Total Clients */}
-          <div key="metric-clients" className="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-6 shadow-sm hover:shadow-md transition-shadow">
+          <div className="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-6 shadow-sm hover:shadow-md transition-shadow">
             <div className="flex items-center justify-between mb-2">
               <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
                 <Users className="h-5 w-5 text-blue-600 dark:text-blue-400" />
@@ -165,7 +143,7 @@ export default function DashboardPage() {
               </div>
             </div>
             <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
-              {stats?.clientCount || 0}
+              {analytics.clientCount}
             </h3>
             <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">Total Clients</p>
             <Link href="/clients" className="text-xs text-blue-600 dark:text-blue-400 hover:underline mt-2 inline-flex items-center">
@@ -174,17 +152,17 @@ export default function DashboardPage() {
           </div>
 
           {/* Active Projects */}
-          <div key="metric-projects" className="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-6 shadow-sm hover:shadow-md transition-shadow">
+          <div className="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-6 shadow-sm hover:shadow-md transition-shadow">
             <div className="flex items-center justify-between mb-2">
               <div className="p-2 bg-purple-100 dark:bg-purple-900/30 rounded-lg">
                 <Briefcase className="h-5 w-5 text-purple-600 dark:text-purple-400" />
               </div>
               <div className="flex items-center text-sm text-gray-600 dark:text-gray-400">
-                {stats?.completedProjects || 0} completed
+                {analytics.completedProjects} completed
               </div>
             </div>
             <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
-              {stats?.activeProjects || 0}
+              {analytics.activeProjects}
             </h3>
             <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">Active Projects</p>
             <Link href="/projects" className="text-xs text-blue-600 dark:text-blue-400 hover:underline mt-2 inline-flex items-center">
@@ -193,17 +171,17 @@ export default function DashboardPage() {
           </div>
 
           {/* Net Profit */}
-          <div key="metric-profit" className="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-6 shadow-sm hover:shadow-md transition-shadow">
+          <div className="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-6 shadow-sm hover:shadow-md transition-shadow">
             <div className="flex items-center justify-between mb-2">
               <div className="p-2 bg-orange-100 dark:bg-orange-900/30 rounded-lg">
                 <TrendingUp className="h-5 w-5 text-orange-600 dark:text-orange-400" />
               </div>
               <div className="flex items-center text-sm text-gray-600 dark:text-gray-400">
-                {formatPercentage(stats?.profitMargin || 0)} margin
+                {formatPercentage(analytics.profitMargin)} margin
               </div>
             </div>
             <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
-              {formatCurrency(stats?.netProfit || 0)}
+              {formatCurrency(analytics.netProfit)}
             </h3>
             <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">Net Profit</p>
             <Link href="/finance" className="text-xs text-blue-600 dark:text-blue-400 hover:underline mt-2 inline-flex items-center">
@@ -215,12 +193,12 @@ export default function DashboardPage() {
         {/* Content Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Revenue Trend & Quick Actions */}
-          <div key="main-content" className="lg:col-span-2 space-y-6">
+          <div className="lg:col-span-2 space-y-6">
             {/* Revenue Trend */}
-            <div key="revenue-trend" className="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-6 shadow-sm">
+            <div className="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-6 shadow-sm">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
-                  Revenue Trend (Last 12 Months)
+                  Revenue Trend (Last 6 Months)
                 </h3>
                 <Link href="/finance">
                   <Button variant="outline" size="sm" className="text-xs">
@@ -229,7 +207,7 @@ export default function DashboardPage() {
                 </Link>
               </div>
               <div className="space-y-3">
-                {revenueGrowth.slice(-6).map((month, index) => (
+                {revenueByMonth.slice(-6).map((month, index) => (
                   <div key={`revenue-${month.month}-${index}`} className="flex items-center gap-3">
                     <span className="text-xs text-gray-600 dark:text-gray-400 min-w-[60px]">
                       {month.month}
@@ -237,7 +215,7 @@ export default function DashboardPage() {
                     <div className="flex-1 bg-gray-200 dark:bg-gray-700 rounded-full h-8 relative overflow-hidden">
                       <div
                         className="bg-gradient-to-r from-green-500 to-emerald-500 h-8 rounded-full flex items-center justify-end px-3 transition-all duration-500"
-                        style={{ width: `${Math.min((month.revenue / (stats?.totalRevenue || 1)) * 100, 100)}%` }}
+                        style={{ width: `${Math.min((month.revenue / analytics.totalRevenue) * 100, 100)}%` }}
                       >
                         <span className="text-xs font-semibold text-white">
                           {formatCurrency(month.revenue)}
@@ -250,7 +228,7 @@ export default function DashboardPage() {
             </div>
 
             {/* Top Clients */}
-            <div key="top-clients" className="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-6 shadow-sm">
+            <div className="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-6 shadow-sm">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
                   Top Clients
@@ -262,8 +240,8 @@ export default function DashboardPage() {
                 </Link>
               </div>
               <div className="space-y-4">
-                {analytics?.topClients && analytics.topClients.length > 0 ? (
-                  analytics.topClients.map((client, index) => (
+                {topClients.length > 0 ? (
+                  topClients.map((client, index) => (
                     <div key={`client-${client.id}-${index}`} className="flex items-center justify-between p-3 rounded-lg bg-gray-50 dark:bg-gray-800/50 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
                       <div className="flex items-center gap-3">
                         <div className="h-10 w-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-white font-semibold">
@@ -285,7 +263,7 @@ export default function DashboardPage() {
                     </div>
                   ))
                 ) : (
-                  <p key="no-clients" className="text-sm text-gray-500 dark:text-gray-400 text-center py-4">
+                  <p className="text-sm text-gray-500 dark:text-gray-400 text-center py-4">
                     No client data available
                   </p>
                 )}
@@ -293,7 +271,7 @@ export default function DashboardPage() {
             </div>
 
             {/* Expenses by Category */}
-            <div key="expenses-category" className="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-6 shadow-sm">
+            <div className="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-6 shadow-sm">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
                   Expenses by Category
@@ -305,8 +283,8 @@ export default function DashboardPage() {
                 </Link>
               </div>
               <div className="space-y-3">
-                {analytics?.expensesByCategory && analytics.expensesByCategory.length > 0 ? (
-                  analytics.expensesByCategory.map((expense, index) => (
+                {expensesByCategory.length > 0 ? (
+                  expensesByCategory.map((expense, index) => (
                     <div key={`expense-${expense.category}-${index}`} className="flex items-center justify-between">
                       <span className="text-sm text-gray-600 dark:text-gray-400 capitalize">
                         {expense.category}
@@ -317,7 +295,7 @@ export default function DashboardPage() {
                     </div>
                   ))
                 ) : (
-                  <p key="no-expenses" className="text-sm text-gray-500 dark:text-gray-400 text-center py-4">
+                  <p className="text-sm text-gray-500 dark:text-gray-400 text-center py-4">
                     No expense data available
                   </p>
                 )}
@@ -326,7 +304,7 @@ export default function DashboardPage() {
                     Total Expenses
                   </span>
                   <span className="text-sm font-bold text-red-600 dark:text-red-400">
-                    {formatCurrency(stats?.totalExpenses || 0)}
+                    {formatCurrency(analytics.totalExpenses)}
                   </span>
                 </div>
               </div>
@@ -334,32 +312,32 @@ export default function DashboardPage() {
           </div>
 
           {/* Quick Actions & Recent Activity */}
-          <div key="sidebar-content" className="lg:col-span-1 space-y-6">
+          <div className="lg:col-span-1 space-y-6">
             {/* Quick Actions */}
-            <div key="quick-actions" className="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-6 shadow-sm">
+            <div className="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-6 shadow-sm">
               <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
                 Quick Actions
               </h3>
               <div className="space-y-2">
-                <Link key="add-client" href="/clients">
+                <Link href="/clients">
                   <button className="w-full flex items-center gap-3 p-3 rounded-lg bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/30 transition-colors">
                     <Plus className="h-4 w-4" />
                     <span className="text-sm font-medium">Add New Client</span>
                   </button>
                 </Link>
-                <Link key="create-project" href="/projects">
+                <Link href="/projects">
                   <button className="w-full flex items-center gap-3 p-3 rounded-lg bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400 hover:bg-purple-100 dark:hover:bg-purple-900/30 transition-colors">
                     <Plus className="h-4 w-4" />
                     <span className="text-sm font-medium">Create Project</span>
                   </button>
                 </Link>
-                <Link key="add-revenue" href="/finance">
+                <Link href="/finance">
                   <button className="w-full flex items-center gap-3 p-3 rounded-lg bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 hover:bg-green-100 dark:hover:bg-green-900/30 transition-colors">
                     <Plus className="h-4 w-4" />
                     <span className="text-sm font-medium">Add Revenue</span>
                   </button>
                 </Link>
-                <Link key="record-expense" href="/finance">
+                <Link href="/finance">
                   <button className="w-full flex items-center gap-3 p-3 rounded-lg bg-orange-50 dark:bg-orange-900/20 text-orange-600 dark:text-orange-400 hover:bg-orange-100 dark:hover:bg-orange-900/30 transition-colors">
                     <Plus className="h-4 w-4" />
                     <span className="text-sm font-medium">Record Expense</span>
@@ -369,7 +347,7 @@ export default function DashboardPage() {
             </div>
 
             {/* Recent Projects */}
-            <div key="recent-projects" className="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-6 shadow-sm">
+            <div className="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-6 shadow-sm">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
                   Recent Projects
@@ -411,7 +389,7 @@ export default function DashboardPage() {
                     </div>
                   ))
                 ) : (
-                  <p key="no-recent-projects" className="text-sm text-gray-500 dark:text-gray-400 text-center py-4">
+                  <p className="text-sm text-gray-500 dark:text-gray-400 text-center py-4">
                     No recent projects
                   </p>
                 )}
@@ -419,7 +397,7 @@ export default function DashboardPage() {
             </div>
 
             {/* Recent Clients */}
-            <div key="recent-clients" className="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-6 shadow-sm">
+            <div className="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-6 shadow-sm">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
                   Recent Clients
@@ -449,7 +427,7 @@ export default function DashboardPage() {
                     </div>
                   ))
                 ) : (
-                  <p key="no-recent-clients" className="text-sm text-gray-500 dark:text-gray-400 text-center py-4">
+                  <p className="text-sm text-gray-500 dark:text-gray-400 text-center py-4">
                     No recent clients
                   </p>
                 )}
