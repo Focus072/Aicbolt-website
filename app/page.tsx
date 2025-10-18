@@ -1,6 +1,6 @@
 'use client';
 
-import ShaderBackground from '@/components/ui/shader-background';
+import { ShaderBackground } from '@/components/ui/shader-background';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
@@ -197,7 +197,7 @@ export default function HomePage() {
   return (
     <div className="relative min-h-screen">
       {/* Shader Background - Behind everything */}
-      <ShaderBackground isAnimating={isAnimating} onLoaded={handleShaderLoaded} />
+      <ShaderBackground />
       
       {/* Original Homepage Content - Above shader */}
       <div className="relative z-10 flex flex-col min-h-screen">
