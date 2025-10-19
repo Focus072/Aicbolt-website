@@ -26,8 +26,10 @@ function UserMenu() {
 
   async function handleSignOut() {
     await signOut();
-    mutate('/api/user');
-    router.push('/');
+    // Clear SWR cache and force refresh
+    mutate('/api/user', null, { revalidate: false });
+    // Force a hard refresh to clear all state
+    window.location.reload();
   }
 
   if (!user) {
@@ -123,11 +125,15 @@ function TubelightHeader() {
             onClick={async () => {
               try {
                 await signOut();
-                window.location.href = '/';
+                // Clear SWR cache and force refresh
+                mutate('/api/user', null, { revalidate: false });
+                // Force a hard refresh to clear all state
+                window.location.reload();
               } catch (error) {
                 console.error('Sign out error:', error);
                 // Still redirect even if sign out fails
-                window.location.href = '/';
+                mutate('/api/user', null, { revalidate: false });
+                window.location.reload();
               }
             }}
             className="bg-background/5 border-border backdrop-blur-lg"

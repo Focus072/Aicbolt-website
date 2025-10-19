@@ -50,10 +50,32 @@ async function updateDashboardMetrics(teamId: number) {
   const automationsGrowth = totalActivities > 10 ? '+8%' : '+0%';
   const aiTasksGrowth = totalActivities > 5 ? '+3' : '+0';
 
-  // Update or insert metrics
-  await db
-    .insert(dashboardMetrics)
-    .values({
+  // Check if metrics exist for this team
+  const existingMetrics = await db
+    .select()
+    .from(dashboardMetrics)
+    .where(eq(dashboardMetrics.teamId, teamId))
+    .limit(1);
+
+  if (existingMetrics.length > 0) {
+    // Update existing metrics
+    await db
+      .update(dashboardMetrics)
+      .set({
+        totalRevenue: monthlyRevenue,
+        activeUsers: memberCount,
+        automations: Math.floor(totalActivities * 0.3),
+        aiTasks: Math.floor(totalActivities * 0.2),
+        revenueGrowth,
+        usersGrowth,
+        automationsGrowth,
+        aiTasksGrowth,
+        updatedAt: new Date()
+      })
+      .where(eq(dashboardMetrics.teamId, teamId));
+  } else {
+    // Insert new metrics
+    await db.insert(dashboardMetrics).values({
       teamId,
       totalRevenue: monthlyRevenue,
       activeUsers: memberCount,
@@ -64,21 +86,8 @@ async function updateDashboardMetrics(teamId: number) {
       automationsGrowth,
       aiTasksGrowth,
       updatedAt: new Date()
-    })
-    .onConflictDoUpdate({
-      target: dashboardMetrics.teamId,
-      set: {
-        totalRevenue: monthlyRevenue,
-        activeUsers: memberCount,
-        automations: Math.floor(totalActivities * 0.3),
-        aiTasks: Math.floor(totalActivities * 0.2),
-        revenueGrowth,
-        usersGrowth,
-        automationsGrowth,
-        aiTasksGrowth,
-        updatedAt: new Date()
-      }
     });
+  }
 }
 
 async function updateDashboardStats(teamId: number) {
@@ -98,25 +107,34 @@ async function updateDashboardStats(teamId: number) {
   const aiAccuracy = Math.min(99, Math.max(85, 95 - Math.floor(totalActivities / 100)));
   const taskCompletion = Math.min(98, Math.max(70, Math.floor((recentActivityCount / Math.max(totalActivities, 1)) * 100)));
 
-  // Update or insert stats
-  await db
-    .insert(dashboardStats)
-    .values({
+  // Check if stats exist for this team
+  const existingStats = await db
+    .select()
+    .from(dashboardStats)
+    .where(eq(dashboardStats.teamId, teamId))
+    .limit(1);
+
+  if (existingStats.length > 0) {
+    // Update existing stats
+    await db
+      .update(dashboardStats)
+      .set({
+        automationRate,
+        aiAccuracy,
+        taskCompletion,
+        updatedAt: new Date()
+      })
+      .where(eq(dashboardStats.teamId, teamId));
+  } else {
+    // Insert new stats
+    await db.insert(dashboardStats).values({
       teamId,
       automationRate,
       aiAccuracy,
       taskCompletion,
       updatedAt: new Date()
-    })
-    .onConflictDoUpdate({
-      target: dashboardStats.teamId,
-      set: {
-        automationRate,
-        aiAccuracy,
-        taskCompletion,
-        updatedAt: new Date()
-      }
     });
+  }
 }
 
 async function updateDashboardAutomations(teamId: number) {
