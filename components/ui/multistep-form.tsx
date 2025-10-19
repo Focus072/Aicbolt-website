@@ -128,7 +128,7 @@ export default function OnboardingForm() {
   };
 
   return (
-    <div className="w-full max-w-2xl mx-auto py-8">
+    <div className="w-full max-w-2xl mx-auto py-4 sm:py-8 px-2 sm:px-4">
       {/* Go Back Home Button - Hidden since it's now in the page header */}
       <motion.div 
         className="mb-6"
@@ -150,7 +150,7 @@ export default function OnboardingForm() {
 
       {/* Progress */}
       <motion.div
-        className="mb-8"
+        className="mb-6 sm:mb-8"
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
@@ -199,15 +199,15 @@ export default function OnboardingForm() {
                 {/* Step 1 - Your Info */}
                 {currentStep === 0 && (
                   <>
-                    <CardHeader className="text-center pb-6">
-                      <CardTitle className="text-2xl font-bold text-white mb-2">
+                    <CardHeader className="text-center pb-6 px-4 sm:px-6 lg:px-8">
+                      <CardTitle className="text-xl sm:text-2xl font-bold text-white mb-2">
                         Tell Us About You
                       </CardTitle>
-                      <CardDescription className="text-gray-300 text-base">
+                      <CardDescription className="text-gray-300 text-sm sm:text-base">
                         We'll use this info to tailor your AI Profit Plan.
                       </CardDescription>
                     </CardHeader>
-                    <CardContent className="space-y-6 px-8">
+                    <CardContent className="space-y-6 px-4 sm:px-6 lg:px-8">
                       <motion.div variants={fadeInUp} className="space-y-2">
                         <Label htmlFor="name" className="text-sm font-semibold text-white/90">
                           Full Name *
@@ -274,15 +274,15 @@ export default function OnboardingForm() {
                 {/* Step 2 - Your Goals */}
                 {currentStep === 1 && (
                   <>
-                    <CardHeader className="text-center pb-6">
-                      <CardTitle className="text-2xl font-bold text-white mb-2">
+                    <CardHeader className="text-center pb-6 px-4 sm:px-6 lg:px-8">
+                      <CardTitle className="text-xl sm:text-2xl font-bold text-white mb-2">
                         What Do You Want to Achieve?
                       </CardTitle>
-                      <CardDescription className="text-gray-300 text-base">
+                      <CardDescription className="text-gray-300 text-sm sm:text-base">
                         Select the areas where AI can grow your business.
                       </CardDescription>
                     </CardHeader>
-                    <CardContent className="space-y-6 px-8">
+                    <CardContent className="space-y-6 px-4 sm:px-6 lg:px-8">
                       <motion.div variants={fadeInUp} className="space-y-4">
                         <Label className="text-sm font-semibold text-white/90">
                           What are you interested in? *
@@ -346,7 +346,7 @@ export default function OnboardingForm() {
               </motion.div>
             </AnimatePresence>
 
-            <CardFooter className="flex justify-between pt-8 pb-6 px-8">
+            <CardFooter className="flex justify-between pt-6 sm:pt-8 pb-4 sm:pb-6 px-4 sm:px-6 lg:px-8">
               <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                 <Button 
                   type="button" 

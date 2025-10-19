@@ -2,8 +2,6 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { TestimonialCard } from './testimonial-card';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { Button } from './button';
 
 const testimonials = [
   {
@@ -58,14 +56,13 @@ const testimonials = [
 
 export const TestimonialsSectionDemo: React.FC = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [isAutoPlaying, setIsAutoPlaying] = useState(true);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   const startAutoPlay = () => {
     if (intervalRef.current) clearInterval(intervalRef.current);
     intervalRef.current = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % testimonials.length);
-    }, 3000);
+    }, 4000); // Slightly longer interval for better readability
   };
 
   const stopAutoPlay = () => {
@@ -76,28 +73,15 @@ export const TestimonialsSectionDemo: React.FC = () => {
   };
 
   useEffect(() => {
-    if (isAutoPlaying) {
-      startAutoPlay();
-    } else {
-      stopAutoPlay();
-    }
-
+    startAutoPlay();
     return () => stopAutoPlay();
-  }, [isAutoPlaying]);
-
-  const goToPrevious = () => {
-    setCurrentIndex((prev) => (prev - 1 + testimonials.length) % testimonials.length);
-    setIsAutoPlaying(false);
-  };
-
-  const goToNext = () => {
-    setCurrentIndex((prev) => (prev + 1) % testimonials.length);
-    setIsAutoPlaying(false);
-  };
+  }, []);
 
   const goToSlide = (index: number) => {
     setCurrentIndex(index);
-    setIsAutoPlaying(false);
+    // Restart auto-play after manual navigation
+    stopAutoPlay();
+    setTimeout(() => startAutoPlay(), 2000);
   };
 
   // Calculate which testimonials to show (3 at a time)
@@ -160,29 +144,12 @@ export const TestimonialsSectionDemo: React.FC = () => {
 
       {/* Testimonials Carousel */}
       <div className="relative">
-        {/* Navigation Arrows */}
-        <Button
-          onClick={goToPrevious}
-          className="absolute left-4 top-1/2 -translate-y-1/2 z-10 bg-white/10 hover:bg-white/20 border border-white/20 text-white backdrop-blur-xl"
-          size="sm"
-        >
-          <ChevronLeft className="h-4 w-4" />
-        </Button>
-        
-        <Button
-          onClick={goToNext}
-          className="absolute right-4 top-1/2 -translate-y-1/2 z-10 bg-white/10 hover:bg-white/20 border border-white/20 text-white backdrop-blur-xl"
-          size="sm"
-        >
-          <ChevronRight className="h-4 w-4" />
-        </Button>
-
         {/* Testimonials Container */}
         <div className="flex items-center justify-center gap-6 px-16">
           {visibleTestimonials.map((testimonial, i) => (
             <div
               key={testimonial.index}
-              className={`transition-all duration-500 ${
+              className={`transition-all duration-700 ease-in-out ${
                 testimonial.isCenter
                   ? 'scale-100 opacity-100 z-20'
                   : 'scale-90 opacity-70 z-10'
@@ -209,18 +176,6 @@ export const TestimonialsSectionDemo: React.FC = () => {
               }`}
             />
           ))}
-        </div>
-
-        {/* Auto-play Toggle */}
-        <div className="flex justify-center mt-6">
-          <Button
-            onClick={() => setIsAutoPlaying(!isAutoPlaying)}
-            variant="outline"
-            size="sm"
-            className="bg-white/10 hover:bg-white/20 border border-white/20 text-white backdrop-blur-xl"
-          >
-            {isAutoPlaying ? 'Pause' : 'Play'} Auto-rotation
-          </Button>
         </div>
       </div>
     </div>

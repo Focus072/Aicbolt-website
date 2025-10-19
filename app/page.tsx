@@ -346,11 +346,11 @@ export default function HomePage() {
                 </p>
               </div>
 
-              {/* Cards Grid - Enhanced Dark Glass Style with Optimized Layout */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 md:gap-10 lg:gap-12 xl:gap-16 relative max-w-[140rem] mx-auto">
+              {/* Cards Grid - Enhanced Dark Glass Style with Mobile-Optimized Layout */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-10 md:gap-12 lg:gap-14 xl:gap-16 relative max-w-[140rem] mx-auto">
                 {/* Customer Support Agent */}
-                <div className="flex justify-center">
-                  <div className="w-full max-w-[400px] sm:max-w-[450px] md:max-w-[500px] lg:max-w-[550px] xl:max-w-[600px] 2xl:max-w-[650px] h-[700px] sm:h-[750px] md:h-[800px] lg:h-[850px] xl:h-[900px]">
+                <div className="flex justify-center mb-8 sm:mb-0">
+                  <div className="w-full max-w-[400px] sm:max-w-[450px] md:max-w-[500px] lg:max-w-[550px] xl:max-w-[600px] 2xl:max-w-[650px] h-auto min-h-[600px] sm:h-[700px] md:h-[750px] lg:h-[800px] xl:h-[850px]">
                     <AgentDemoCard
                       imageUrl="https://images.unsplash.com/photo-1556761175-b413da4baf72?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0"
                       agentName={agentData.customerSupport.name}
@@ -364,8 +364,8 @@ export default function HomePage() {
                 </div>
 
                 {/* Sales Assistant */}
-                <div className="flex justify-center">
-                  <div className="w-full max-w-[400px] sm:max-w-[450px] md:max-w-[500px] lg:max-w-[550px] xl:max-w-[600px] 2xl:max-w-[650px] h-[700px] sm:h-[750px] md:h-[800px] lg:h-[850px] xl:h-[900px]">
+                <div className="flex justify-center mb-8 sm:mb-0">
+                  <div className="w-full max-w-[400px] sm:max-w-[450px] md:max-w-[500px] lg:max-w-[550px] xl:max-w-[600px] 2xl:max-w-[650px] h-auto min-h-[600px] sm:h-[700px] md:h-[750px] lg:h-[800px] xl:h-[850px]">
                     <AgentDemoCard
                       imageUrl="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0"
                       agentName={agentData.salesAssistant.name}
@@ -379,8 +379,8 @@ export default function HomePage() {
                 </div>
 
                 {/* Custom AI Agent */}
-                <div className="flex justify-center md:col-span-2 lg:col-span-1">
-                  <div className="w-full max-w-[400px] sm:max-w-[450px] md:max-w-[500px] lg:max-w-[550px] xl:max-w-[600px] 2xl:max-w-[650px] h-[700px] sm:h-[750px] md:h-[800px] lg:h-[850px] xl:h-[900px]">
+                <div className="flex justify-center md:col-span-2 lg:col-span-1 mb-8 sm:mb-0">
+                  <div className="w-full max-w-[400px] sm:max-w-[450px] md:max-w-[500px] lg:max-w-[550px] xl:max-w-[600px] 2xl:max-w-[650px] h-auto min-h-[600px] sm:h-[700px] md:h-[750px] lg:h-[800px] xl:h-[850px]">
                     <AgentDemoCard
                       imageUrl="https://images.unsplash.com/photo-1677442136019-21780ecad995?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0"
                       agentName={agentData.customAgent.name}
