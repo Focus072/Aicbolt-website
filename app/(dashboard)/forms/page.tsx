@@ -256,8 +256,24 @@ export default function FormsPage() {
   return (
     <div className="flex h-screen bg-gray-50 dark:bg-gray-950">
       <SessionNavBar />
-      <div className="flex-1 bg-gray-50 dark:bg-gray-950 p-6 space-y-6 overflow-auto ml-12 lg:ml-60 transition-all duration-300">
-        <div>
+      <div className="flex-1 bg-gray-50 dark:bg-gray-950 p-4 md:p-6 space-y-6 overflow-auto ml-0 md:ml-12 lg:ml-60 transition-all duration-300">
+        {/* Mobile Header */}
+        <div className="md:hidden">
+          <div className="py-6">
+            <div className="flex items-center justify-center px-4">
+              <div className="text-center">
+                <h1 className="text-xl font-bold text-gray-900 dark:text-gray-100">Form Submissions</h1>
+                <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                  Review and manage AI Profit Plan form submissions
+                </p>
+              </div>
+            </div>
+            <div className="mt-6 h-px bg-white/10 mx-4"></div>
+          </div>
+        </div>
+
+        {/* Desktop Header */}
+        <div className="hidden md:block">
           <h1 className="text-3xl font-bold tracking-tight">Form Submissions</h1>
           <p className="text-muted-foreground">
             Review and manage AI Profit Plan form submissions

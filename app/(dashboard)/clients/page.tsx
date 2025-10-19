@@ -335,10 +335,25 @@ export default function ClientsPage() {
       <SessionNavBar />
       
       {/* Main Content */}
-      <div className="flex-1 overflow-auto bg-gray-50 dark:bg-gray-900 ml-12 lg:ml-60 transition-all duration-300">
-        <div className="p-6">
-          {/* Header */}
-          <div className="mb-6">
+      <div className="flex-1 overflow-auto bg-gray-50 dark:bg-gray-900 ml-0 md:ml-12 lg:ml-60 transition-all duration-300">
+        <div className="p-4 md:p-6">
+          {/* Mobile Header */}
+          <div className="md:hidden mb-6">
+            <div className="py-6">
+              <div className="flex items-center justify-center px-4">
+                <div className="text-center">
+                  <h1 className="text-xl font-bold text-gray-900 dark:text-gray-100">Client Management</h1>
+                  <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                    Manage your clients, track relationships, and monitor lifetime value
+                  </p>
+                </div>
+              </div>
+              <div className="mt-6 h-px bg-white/10 mx-4"></div>
+            </div>
+          </div>
+
+          {/* Desktop Header */}
+          <div className="hidden md:block mb-6">
             <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">
               Client Management
             </h1>
@@ -347,41 +362,71 @@ export default function ClientsPage() {
             </p>
           </div>
 
-          {/* Controls */}
-          <div className="mb-8 flex flex-col sm:flex-row gap-4">
-            <div className="flex-1">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-                <Input
-                  placeholder="Search clients by name, email, or company..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10"
-                />
-              </div>
+          {/* Mobile Controls */}
+          <div className="md:hidden mb-6 space-y-4">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+              <Input
+                placeholder="Search clients by name, email, or company..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10 h-12"
+              />
             </div>
-            
-            <div className="flex gap-3">
+            <div className="flex gap-2">
               <select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
-                className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 cursor-pointer"
+                className="flex-1 px-3 py-3 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 h-12"
               >
                 <option value="all">All Status</option>
                 <option value="active">Active</option>
                 <option value="inactive">Inactive</option>
                 <option value="lead">Lead</option>
               </select>
-              
-              <Button className="flex items-center gap-2" onClick={handleAddClient}>
+              <Button className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white h-12 px-4" onClick={handleAddClient}>
                 <Plus className="h-4 w-4" />
-                Add Client
               </Button>
             </div>
           </div>
 
+          {/* Desktop Controls */}
+          <div className="hidden md:block mb-8">
+            <div className="flex flex-col sm:flex-row gap-4">
+              <div className="flex-1">
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                  <Input
+                    placeholder="Search clients by name, email, or company..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="pl-10"
+                  />
+                </div>
+              </div>
+              
+              <div className="flex gap-3">
+                <select
+                  value={statusFilter}
+                  onChange={(e) => setStatusFilter(e.target.value)}
+                  className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 cursor-pointer"
+                >
+                  <option value="all">All Status</option>
+                  <option value="active">Active</option>
+                  <option value="inactive">Inactive</option>
+                  <option value="lead">Lead</option>
+                </select>
+                
+                <Button className="flex items-center gap-2" onClick={handleAddClient}>
+                  <Plus className="h-4 w-4" />
+                  Add Client
+                </Button>
+              </div>
+            </div>
+          </div>
+
           {/* Stats Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 md:gap-6 mb-6 md:mb-8 space-y-4 md:space-y-0">
             <Card>
               <CardContent className="p-4">
                 <div className="flex items-center justify-between">
@@ -444,7 +489,7 @@ export default function ClientsPage() {
           </div>
 
           {/* Clients List */}
-          <div className="grid gap-6">
+          <div className="grid gap-4 md:gap-6 space-y-4 md:space-y-0">
             {filteredClients.length === 0 ? (
               <Card>
                 <CardContent className="p-8 text-center">

@@ -27,6 +27,8 @@ import {
   Database,
   BarChart3,
   MapPin,
+  Menu,
+  X,
 } from "lucide-react";
 import Image from "next/image";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
@@ -47,7 +49,6 @@ import { signOut } from "@/app/(login)/actions";
 import useSWR from 'swr';
 import { hasPageAccess, isSuperAdmin } from "@/lib/permissions";
 
-const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 const sidebarVariants = {
   open: {
@@ -97,20 +98,31 @@ const staggerVariants = {
 export function SessionNavBar() {
   const [isCollapsed, setIsCollapsed] = useState(false); // Always expanded
   const [isClient, setIsClient] = useState(false);
+  const [isMobileOpen, setIsMobileOpen] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
   
   // Fetch current user data
-  const { data: user } = useSWR('/api/user', fetcher);
+  const { data: user, error: userError, isLoading: userLoading } = useSWR('/api/user');
   
-  // Check permissions
-  const isUserSuperAdmin = isSuperAdmin(user);
+  // Check permissions with fallback
+  const isUserSuperAdmin = user ? isSuperAdmin(user) : false;
   const isMainAdmin = user?.email === 'galaljobah@gmail.com';
   const isAdmin = user?.role === 'admin' || user?.role === 'owner' || isMainAdmin;
   
   useEffect(() => {
     setIsClient(true);
   }, []);
+
+  // Close mobile sidebar when clicking outside or on a link
+  const closeMobileSidebar = () => {
+    setIsMobileOpen(false);
+  };
+
+  // Close sidebar when route changes
+  useEffect(() => {
+    setIsMobileOpen(false);
+  }, [pathname]);
 
   const handleSignOut = async () => {
     try {
@@ -127,17 +139,58 @@ export function SessionNavBar() {
   if (!isClient) {
     return null;
   }
+
+  // Handle loading and error states
+  if (userLoading) {
+    return (
+      <>
+        {/* Mobile Hamburger Button */}
+        <button
+          onClick={() => setIsMobileOpen(!isMobileOpen)}
+          className="md:hidden fixed top-4 left-4 z-50 p-2 rounded-lg bg-gray-900/20 border border-gray-700/50 backdrop-blur-xl hover:bg-orange-600/20 hover:border-orange-400/50 text-white transition-all duration-300"
+        >
+          {isMobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+        </button>
+        <div className="hidden md:block fixed left-0 z-40 h-full w-12 bg-gray-50 dark:bg-gray-950 border-r border-gray-200 dark:border-gray-800" />
+      </>
+    );
+  }
+
+  if (userError) {
+    console.error('Error fetching user data:', userError);
+    // Still render sidebar but without user-specific features
+  }
   
   return (
-    <motion.div
-      className={cn(
-        "sidebar fixed left-0 z-40 h-full shrink-0 border-r fixed",
+    <>
+      {/* Mobile Hamburger Button */}
+      <button
+        onClick={() => setIsMobileOpen(!isMobileOpen)}
+        className="md:hidden fixed top-4 left-4 z-50 p-2 rounded-lg bg-gray-900/20 border border-gray-700/50 backdrop-blur-xl hover:bg-orange-600/20 hover:border-orange-400/50 text-white transition-all duration-300"
+      >
+        {isMobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+      </button>
+
+      {/* Mobile Overlay */}
+      {isMobileOpen && (
+        <div
+          className="md:hidden fixed inset-0 bg-black/50 z-40"
+          onClick={closeMobileSidebar}
+        />
       )}
-      initial="open"
-      animate="open"
-      variants={sidebarVariants}
-      transition={transitionProps}
-    >
+
+      {/* Sidebar */}
+      <motion.div
+        className={cn(
+          "sidebar fixed left-0 z-40 h-full shrink-0 border-r",
+          "hidden md:block", // Hidden on mobile by default, visible on desktop
+          isMobileOpen && "md:hidden block" // Show on mobile when open
+        )}
+        initial="open"
+        animate="open"
+        variants={sidebarVariants}
+        transition={transitionProps}
+      >
       <motion.div
         className={`relative z-40 flex text-muted-foreground h-full shrink-0 flex-col bg-white dark:bg-gray-950 transition-all border-r border-gray-200 dark:border-gray-800`}
         variants={contentVariants}
@@ -457,5 +510,6 @@ export function SessionNavBar() {
         </motion.ul>
       </motion.div>
     </motion.div>
+    </>
   );
 }

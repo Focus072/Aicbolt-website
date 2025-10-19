@@ -1,10 +1,9 @@
 import './globals.css';
 import type { Metadata, Viewport } from 'next';
 import { Manrope } from 'next/font/google';
-import { getUser, getTeamForUser } from '@/lib/db/queries';
-import { SWRConfig } from 'swr';
 import { Toaster } from 'sonner';
 import { ThemeProvider } from '@/lib/theme-provider';
+import { SWRProvider } from '@/components/providers/swr-provider';
 
 export const metadata: Metadata = {
   title: 'Next.js SaaS Starter',
@@ -44,19 +43,10 @@ export default function RootLayout({
       </head>
       <body className="min-h-[100dvh] bg-gray-950">
         <ThemeProvider>
-          <SWRConfig
-            value={{
-              fallback: {
-                // We do NOT await here
-                // Only components that read this data will suspend
-                '/api/user': getUser(),
-                '/api/team': getTeamForUser()
-              }
-            }}
-          >
+          <SWRProvider>
             {children}
             <Toaster richColors position="top-center" />
-          </SWRConfig>
+          </SWRProvider>
         </ThemeProvider>
       </body>
     </html>

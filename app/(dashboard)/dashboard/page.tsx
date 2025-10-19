@@ -100,7 +100,7 @@ export default function DashboardPage() {
     return (
       <div className="flex min-h-screen w-full">
         <SessionNavBar />
-        <div className="flex-1 bg-gray-50 dark:bg-gray-950 p-4 overflow-auto ml-12 lg:ml-60 transition-all duration-300">
+        <div className="flex-1 bg-gray-50 dark:bg-gray-950 p-4 overflow-auto ml-0 md:ml-12 lg:ml-60 transition-all duration-300">
           <div className="flex items-center justify-center h-full">
             <div className="text-gray-500 dark:text-gray-400">Loading dashboard...</div>
           </div>
@@ -120,21 +120,50 @@ export default function DashboardPage() {
   return (
     <div className="flex min-h-screen w-full">
       <SessionNavBar />
-      <div className="flex-1 bg-gray-50 dark:bg-gray-950 p-4 md:p-6 lg:p-8 overflow-auto ml-12 lg:ml-60 transition-all duration-300">
-        {/* Header */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">Dashboard</h1>
-            <p className="text-gray-600 dark:text-gray-400 mt-1">
-              Your business overview at a glance
-            </p>
+      
+      <div className="flex-1 bg-gray-50 dark:bg-gray-950 p-4 md:p-6 lg:p-8 overflow-auto ml-0 md:ml-12 lg:ml-60 transition-all duration-300">
+        {/* Mobile Header */}
+        <div className="md:hidden">
+          <div className="py-8">
+            <div className="flex items-center justify-between px-4">
+              {/* Left Spacer for Balance */}
+              <div className="w-9 h-9" />
+              
+              {/* Centered Title */}
+              <div className="flex-1 flex flex-col items-center justify-center">
+                <h1 className="text-2xl font-bold text-white text-center leading-tight">
+                  Dashboard
+                </h1>
+                <p className="text-sm text-gray-400 text-center mt-2 leading-tight">
+                  Your business overview at a glance
+                </p>
+              </div>
+              
+              {/* Right Spacer for Balance */}
+              <div className="w-9 h-9" />
+            </div>
+            
+            {/* Subtle Separator Line */}
+            <div className="mt-8 h-px bg-white/10 mx-4"></div>
+          </div>
+        </div>
+
+        {/* Desktop Header */}
+        <div className="hidden md:block mb-8">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div>
+              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100">Dashboard</h1>
+              <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 mt-1">
+                Your business overview at a glance
+              </p>
+            </div>
           </div>
         </div>
 
         {/* Key Metrics Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-8 space-y-4 md:space-y-0">
           {/* Total Revenue */}
-          <div key="metric-revenue" className="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-6 shadow-sm hover:shadow-md transition-shadow">
+          <div key="metric-revenue" className="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-6 shadow-sm hover:shadow-lg hover:brightness-105 transition-all duration-300 cursor-pointer">
             <div className="flex items-center justify-between mb-2">
               <div className="p-2 bg-green-100 dark:bg-green-900/30 rounded-lg">
                 <DollarSign className="h-5 w-5 text-green-600 dark:text-green-400" />
@@ -154,7 +183,7 @@ export default function DashboardPage() {
           </div>
 
           {/* Total Clients */}
-          <div key="metric-clients" className="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-6 shadow-sm hover:shadow-md transition-shadow">
+          <div key="metric-clients" className="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-6 shadow-sm hover:shadow-lg hover:brightness-105 transition-all duration-300 cursor-pointer">
             <div className="flex items-center justify-between mb-2">
               <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
                 <Users className="h-5 w-5 text-blue-600 dark:text-blue-400" />
@@ -174,7 +203,7 @@ export default function DashboardPage() {
           </div>
 
           {/* Active Projects */}
-          <div key="metric-projects" className="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-6 shadow-sm hover:shadow-md transition-shadow">
+          <div key="metric-projects" className="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-6 shadow-sm hover:shadow-lg hover:brightness-105 transition-all duration-300 cursor-pointer">
             <div className="flex items-center justify-between mb-2">
               <div className="p-2 bg-purple-100 dark:bg-purple-900/30 rounded-lg">
                 <Briefcase className="h-5 w-5 text-purple-600 dark:text-purple-400" />
@@ -193,7 +222,7 @@ export default function DashboardPage() {
           </div>
 
           {/* Net Profit */}
-          <div key="metric-profit" className="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-6 shadow-sm hover:shadow-md transition-shadow">
+          <div key="metric-profit" className="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-6 shadow-sm hover:shadow-lg hover:brightness-105 transition-all duration-300 cursor-pointer">
             <div className="flex items-center justify-between mb-2">
               <div className="p-2 bg-orange-100 dark:bg-orange-900/30 rounded-lg">
                 <TrendingUp className="h-5 w-5 text-orange-600 dark:text-orange-400" />
@@ -213,17 +242,17 @@ export default function DashboardPage() {
         </div>
 
         {/* Content Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
           {/* Revenue Trend & Quick Actions */}
           <div key="main-content" className="lg:col-span-2 space-y-6">
             {/* Revenue Trend */}
-            <div key="revenue-trend" className="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-6 shadow-sm">
+            <div key="revenue-trend" className="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-6 shadow-sm hover:shadow-lg hover:brightness-105 transition-all duration-300">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100">
                   Revenue Trend (Last 12 Months)
                 </h3>
                 <Link href="/finance">
-                  <Button variant="outline" size="sm" className="text-xs">
+                  <Button variant="outline" size="sm" className="text-xs h-8 px-3">
                     View Details
                   </Button>
                 </Link>
@@ -250,13 +279,13 @@ export default function DashboardPage() {
             </div>
 
             {/* Top Clients */}
-            <div key="top-clients" className="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-6 shadow-sm">
+            <div key="top-clients" className="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-6 shadow-sm hover:shadow-lg hover:brightness-105 transition-all duration-300">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100">
                   Top Clients
                 </h3>
                 <Link href="/clients">
-                  <Button variant="outline" size="sm" className="text-xs">
+                  <Button variant="outline" size="sm" className="text-xs h-8 px-3">
                     View All
                   </Button>
                 </Link>
@@ -293,13 +322,13 @@ export default function DashboardPage() {
             </div>
 
             {/* Expenses by Category */}
-            <div key="expenses-category" className="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-6 shadow-sm">
+            <div key="expenses-category" className="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-6 shadow-sm hover:shadow-lg hover:brightness-105 transition-all duration-300">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100">
                   Expenses by Category
                 </h3>
                 <Link href="/finance">
-                  <Button variant="outline" size="sm" className="text-xs">
+                  <Button variant="outline" size="sm" className="text-xs h-8 px-3">
                     Manage
                   </Button>
                 </Link>
@@ -336,8 +365,8 @@ export default function DashboardPage() {
           {/* Quick Actions & Recent Activity */}
           <div key="sidebar-content" className="lg:col-span-1 space-y-6">
             {/* Quick Actions */}
-            <div key="quick-actions" className="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-6 shadow-sm">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
+            <div key="quick-actions" className="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-6 shadow-sm hover:shadow-lg hover:brightness-105 transition-all duration-300">
+              <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4">
                 Quick Actions
               </h3>
               <div className="space-y-2">
@@ -369,13 +398,13 @@ export default function DashboardPage() {
             </div>
 
             {/* Recent Projects */}
-            <div key="recent-projects" className="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-6 shadow-sm">
+            <div key="recent-projects" className="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-6 shadow-sm hover:shadow-lg hover:brightness-105 transition-all duration-300">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100">
                   Recent Projects
                 </h3>
                 <Link href="/projects">
-                  <Button variant="outline" size="sm" className="text-xs">
+                  <Button variant="outline" size="sm" className="text-xs h-8 px-3">
                     View All
                   </Button>
                 </Link>
@@ -419,13 +448,13 @@ export default function DashboardPage() {
             </div>
 
             {/* Recent Clients */}
-            <div key="recent-clients" className="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-6 shadow-sm">
+            <div key="recent-clients" className="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-6 shadow-sm hover:shadow-lg hover:brightness-105 transition-all duration-300">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100">
                   Recent Clients
                 </h3>
                 <Link href="/clients">
-                  <Button variant="outline" size="sm" className="text-xs">
+                  <Button variant="outline" size="sm" className="text-xs h-8 px-3">
                     View All
                   </Button>
                 </Link>

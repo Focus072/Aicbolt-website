@@ -573,11 +573,34 @@ const FinancePage: React.FC = () => {
   return (
     <div className="flex h-screen bg-gray-50 dark:bg-gray-950">
       <SessionNavBar />
-      <div className="flex-1 bg-gray-50 dark:bg-gray-950 p-4 overflow-auto ml-12 lg:ml-60 transition-all duration-300">
+      <div className="flex-1 bg-gray-50 dark:bg-gray-950 p-4 overflow-auto ml-0 md:ml-12 lg:ml-60 transition-all duration-300">
         <ClientOnly>
           <div className="max-w-7xl mx-auto">
-            {/* Header */}
-            <div className="mb-8">
+            {/* Mobile Header */}
+            <div className="md:hidden mb-6">
+              <div className="py-6">
+                <div className="flex items-center justify-center px-4">
+                  <div className="text-center">
+                    <h1 className="text-xl font-bold text-gray-900 dark:text-gray-100">Finance Management</h1>
+                    <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                      Track your revenue, expenses, and net profit with detailed analytics
+                    </p>
+                    {currentOrganization && (
+                      <div className="mt-2">
+                        <span className="text-xs text-gray-500 dark:text-gray-400">Viewing: </span>
+                        <span className="text-xs font-medium text-orange-500">
+                          {currentOrganization.name}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+                <div className="mt-6 h-px bg-white/10 mx-4"></div>
+              </div>
+            </div>
+
+            {/* Desktop Header */}
+            <div className="hidden md:block mb-8">
               <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">
                 Finance Management
               </h1>
@@ -595,7 +618,7 @@ const FinancePage: React.FC = () => {
             </div>
 
             {/* Analytics Overview */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-6 md:mb-8 space-y-4 md:space-y-0">
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>

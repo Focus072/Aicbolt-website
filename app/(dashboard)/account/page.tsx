@@ -336,9 +336,32 @@ export default function AccountManagementPage() {
     <div className="flex h-screen bg-gray-950">
       <SessionNavBar />
       
-      <div className="flex-1 bg-gradient-to-br from-gray-950 via-gray-900 to-orange-950/20 p-6 space-y-6 overflow-auto ml-12 lg:ml-60 transition-all duration-300">
-        {/* Header */}
-        <div className="backdrop-blur-xl bg-white/5 rounded-2xl border border-white/10 p-6 shadow-2xl">
+      <div className="flex-1 bg-gradient-to-br from-gray-950 via-gray-900 to-orange-950/20 p-4 md:p-6 space-y-6 overflow-auto ml-0 md:ml-12 lg:ml-60 transition-all duration-300">
+        {/* Mobile Header */}
+        <div className="md:hidden">
+          <div className="py-6">
+            <div className="flex items-center justify-center px-4">
+              <div className="text-center">
+                <h1 className="text-xl font-bold text-white">Account Management</h1>
+                <p className="text-sm text-gray-400 mt-1">
+                  Create and manage user accounts with custom permissions
+                </p>
+                {currentOrganization && (
+                  <div className="mt-2">
+                    <span className="text-xs text-gray-500">Viewing: </span>
+                    <span className="text-xs font-medium text-orange-400">
+                      {currentOrganization.name}
+                    </span>
+                  </div>
+                )}
+              </div>
+            </div>
+            <div className="mt-6 h-px bg-white/10 mx-4"></div>
+          </div>
+        </div>
+
+        {/* Desktop Header */}
+        <div className="hidden md:block backdrop-blur-xl bg-white/5 rounded-2xl border border-white/10 p-6 shadow-2xl">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div>
               <h1 className="text-3xl font-bold text-white mb-2">
