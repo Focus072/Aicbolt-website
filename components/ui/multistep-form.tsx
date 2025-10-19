@@ -129,12 +129,13 @@ export default function OnboardingForm() {
 
   return (
     <div className="w-full max-w-2xl mx-auto py-8">
-      {/* Go Back Home Button */}
+      {/* Go Back Home Button - Hidden since it's now in the page header */}
       <motion.div 
         className="mb-6"
         initial={{ opacity: 0, x: -20 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.5 }}
+        style={{ display: 'none' }}
       >
         <Link href="/">
           <Button 
@@ -179,7 +180,7 @@ export default function OnboardingForm() {
           ))}
         </div>
         <div className="text-center">
-          <span className="text-sm font-medium text-gray-600">
+          <span className="text-sm font-medium text-white/80">
             Step {currentStep + 1} of {steps.length}: {steps[currentStep].title}
           </span>
         </div>
@@ -191,7 +192,7 @@ export default function OnboardingForm() {
         animate={{ opacity: 1, y: 0 }} 
         transition={{ duration: 0.5, delay: 0.2 }}
       >
-        <Card className="border-0 shadow-2xl rounded-3xl overflow-hidden backdrop-blur-xl bg-white/80">
+        <Card className="border border-gray-700/50 shadow-2xl rounded-3xl overflow-hidden backdrop-blur-xl bg-gray-900/20">
           <div>
             <AnimatePresence mode="wait">
               <motion.div key={currentStep} initial="hidden" animate="visible" exit="exit" variants={contentVariants}>
@@ -199,16 +200,16 @@ export default function OnboardingForm() {
                 {currentStep === 0 && (
                   <>
                     <CardHeader className="text-center pb-6">
-                      <CardTitle className="text-2xl font-bold text-gray-900 mb-2">
+                      <CardTitle className="text-2xl font-bold text-white mb-2">
                         Tell Us About You
                       </CardTitle>
-                      <CardDescription className="text-gray-600 text-base">
+                      <CardDescription className="text-gray-300 text-base">
                         We'll use this info to tailor your AI Profit Plan.
                       </CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-6 px-8">
                       <motion.div variants={fadeInUp} className="space-y-2">
-                        <Label htmlFor="name" className="text-sm font-semibold text-gray-700">
+                        <Label htmlFor="name" className="text-sm font-semibold text-white/90">
                           Full Name *
                         </Label>
                         <Input
@@ -216,12 +217,12 @@ export default function OnboardingForm() {
                           placeholder="John Doe"
                           value={formData.name}
                           onChange={(e) => updateFormData("name", e.target.value)}
-                          className="h-12 rounded-xl border-2 border-gray-200 focus:border-orange-500 focus:ring-4 focus:ring-orange-100 transition-all duration-300 text-base"
+                          className="h-12 rounded-xl border-2 border-gray-600/50 focus:border-orange-500 focus:ring-4 focus:ring-orange-500/20 transition-all duration-300 text-base bg-gray-800/50 backdrop-blur-sm text-white placeholder-gray-400"
                         />
                       </motion.div>
                       
                       <motion.div variants={fadeInUp} className="space-y-2">
-                        <Label htmlFor="email" className="text-sm font-semibold text-gray-700">
+                        <Label htmlFor="email" className="text-sm font-semibold text-white/90">
                           Email Address *
                         </Label>
                         <Input
@@ -230,12 +231,12 @@ export default function OnboardingForm() {
                           placeholder="john@example.com"
                           value={formData.email}
                           onChange={(e) => updateFormData("email", e.target.value)}
-                          className="h-12 rounded-xl border-2 border-gray-200 focus:border-orange-500 focus:ring-4 focus:ring-orange-100 transition-all duration-300 text-base"
+                          className="h-12 rounded-xl border-2 border-gray-600/50 focus:border-orange-500 focus:ring-4 focus:ring-orange-500/20 transition-all duration-300 text-base bg-gray-800/50 backdrop-blur-sm text-white placeholder-gray-400"
                         />
                       </motion.div>
                       
                       <motion.div variants={fadeInUp} className="space-y-2">
-                        <Label htmlFor="phone" className="text-sm font-semibold text-gray-700">
+                        <Label htmlFor="phone" className="text-sm font-semibold text-white/90">
                           Phone Number *
                         </Label>
                         <Input
@@ -244,25 +245,25 @@ export default function OnboardingForm() {
                           placeholder="+1 555-555-5555"
                           value={formData.phone}
                           onChange={(e) => updateFormData("phone", e.target.value)}
-                          className="h-12 rounded-xl border-2 border-gray-200 focus:border-orange-500 focus:ring-4 focus:ring-orange-100 transition-all duration-300 text-base"
+                          className="h-12 rounded-xl border-2 border-gray-600/50 focus:border-orange-500 focus:ring-4 focus:ring-orange-500/20 transition-all duration-300 text-base bg-gray-800/50 backdrop-blur-sm text-white placeholder-gray-400"
                         />
                       </motion.div>
                       
                       <motion.div variants={fadeInUp} className="space-y-2">
-                        <Label htmlFor="businessType" className="text-sm font-semibold text-gray-700">
+                        <Label htmlFor="businessType" className="text-sm font-semibold text-white/90">
                           Business Type
                         </Label>
                         <Select value={formData.businessType} onValueChange={(v) => updateFormData("businessType", v)}>
-                          <SelectTrigger className="h-12 rounded-xl border-2 border-gray-200 focus:border-orange-500 focus:ring-4 focus:ring-orange-100 transition-all duration-300 text-base">
+                          <SelectTrigger className="h-12 rounded-xl border-2 border-gray-600/50 focus:border-orange-500 focus:ring-4 focus:ring-orange-500/20 transition-all duration-300 text-base bg-gray-800/50 backdrop-blur-sm text-white">
                             <SelectValue placeholder="Select your business type" />
                           </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="ecommerce">E-commerce</SelectItem>
-                            <SelectItem value="agency">Agency</SelectItem>
-                            <SelectItem value="local-business">Local Business</SelectItem>
-                            <SelectItem value="saas">SaaS</SelectItem>
-                            <SelectItem value="freelancer">Freelancer</SelectItem>
-                            <SelectItem value="other">Other</SelectItem>
+                          <SelectContent className="bg-gray-800 border-gray-700">
+                            <SelectItem value="ecommerce" className="text-white hover:bg-gray-700">E-commerce</SelectItem>
+                            <SelectItem value="agency" className="text-white hover:bg-gray-700">Agency</SelectItem>
+                            <SelectItem value="local-business" className="text-white hover:bg-gray-700">Local Business</SelectItem>
+                            <SelectItem value="saas" className="text-white hover:bg-gray-700">SaaS</SelectItem>
+                            <SelectItem value="freelancer" className="text-white hover:bg-gray-700">Freelancer</SelectItem>
+                            <SelectItem value="other" className="text-white hover:bg-gray-700">Other</SelectItem>
                           </SelectContent>
                         </Select>
                       </motion.div>
@@ -274,16 +275,16 @@ export default function OnboardingForm() {
                 {currentStep === 1 && (
                   <>
                     <CardHeader className="text-center pb-6">
-                      <CardTitle className="text-2xl font-bold text-gray-900 mb-2">
+                      <CardTitle className="text-2xl font-bold text-white mb-2">
                         What Do You Want to Achieve?
                       </CardTitle>
-                      <CardDescription className="text-gray-600 text-base">
+                      <CardDescription className="text-gray-300 text-base">
                         Select the areas where AI can grow your business.
                       </CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-6 px-8">
                       <motion.div variants={fadeInUp} className="space-y-4">
-                        <Label className="text-sm font-semibold text-gray-700">
+                        <Label className="text-sm font-semibold text-white/90">
                           What are you interested in? *
                         </Label>
                         <div className="grid grid-cols-1 gap-3">
@@ -299,8 +300,8 @@ export default function OnboardingForm() {
                               className={cn(
                                 "flex items-center space-x-3 rounded-xl border-2 p-4 cursor-pointer transition-all duration-300",
                                 formData.interests.includes(interest.id)
-                                  ? "border-orange-500 bg-orange-50 shadow-md"
-                                  : "border-gray-200 hover:border-orange-300 hover:bg-gray-50"
+                                  ? "border-orange-500 bg-orange-500/20 shadow-md"
+                                  : "border-gray-600/50 hover:border-orange-400/50 hover:bg-gray-800/30"
                               )}
                               whileHover={{ scale: 1.02 }}
                               whileTap={{ scale: 0.98 }}
@@ -315,10 +316,10 @@ export default function OnboardingForm() {
                                 onCheckedChange={() => toggleInterest(interest.id)}
                                 className="cursor-pointer"
                               />
-                              <interest.icon className="h-5 w-5 text-gray-600" />
+                              <interest.icon className="h-5 w-5 text-gray-300" />
                               <Label 
                                 htmlFor={interest.id} 
-                                className="cursor-pointer w-full select-none text-base font-medium"
+                                className="cursor-pointer w-full select-none text-base font-medium text-white"
                               >
                                 {interest.label}
                               </Label>
@@ -328,7 +329,7 @@ export default function OnboardingForm() {
                       </motion.div>
                       
                       <motion.div variants={fadeInUp} className="space-y-2">
-                        <Label htmlFor="specificFocus" className="text-sm font-semibold text-gray-700">
+                        <Label htmlFor="specificFocus" className="text-sm font-semibold text-white/90">
                           Anything specific you'd like us to focus on?
                         </Label>
                         <Textarea
@@ -336,7 +337,7 @@ export default function OnboardingForm() {
                           placeholder="Tell us more about your specific needs or goals..."
                           value={formData.specificFocus}
                           onChange={(e) => updateFormData("specificFocus", e.target.value)}
-                          className="min-h-[100px] rounded-xl border-2 border-gray-200 focus:border-orange-500 focus:ring-4 focus:ring-orange-100 transition-all duration-300 text-base resize-none"
+                          className="min-h-[100px] rounded-xl border-2 border-gray-600/50 focus:border-orange-500 focus:ring-4 focus:ring-orange-500/20 transition-all duration-300 text-base resize-none bg-gray-800/50 backdrop-blur-sm text-white placeholder-gray-400"
                         />
                       </motion.div>
                     </CardContent>
@@ -352,7 +353,7 @@ export default function OnboardingForm() {
                   variant="outline" 
                   onClick={prevStep} 
                   disabled={currentStep === 0} 
-                  className="flex items-center gap-2 rounded-xl px-6 py-3 text-base font-medium border-2 border-gray-200 hover:border-gray-300 disabled:cursor-not-allowed disabled:opacity-50"
+                  className="flex items-center gap-2 rounded-xl px-6 py-3 text-base font-medium border-2 border-gray-600/50 hover:border-gray-500 text-white hover:bg-gray-800/30 disabled:cursor-not-allowed disabled:opacity-50 transition-all duration-300"
                 >
                   Back
                 </Button>
