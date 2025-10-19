@@ -4,7 +4,10 @@
 export const swrConfig = {
   fetcher: async (url: string) => {
     try {
-      const res = await fetch(url);
+      const res = await fetch(url, {
+        credentials: 'include', // Include cookies for authentication
+        cache: 'no-store', // Always fetch fresh data
+      });
       if (!res.ok) {
         throw new Error(`HTTP error! status: ${res.status}`);
       }
@@ -14,7 +17,11 @@ export const swrConfig = {
       throw error;
     }
   },
-  revalidateOnFocus: false,
+  revalidateOnFocus: true, // Revalidate when window regains focus
   revalidateOnReconnect: true,
-  dedupingInterval: 2000,
+  dedupingInterval: 1000, // Reduce deduping interval for faster updates
+  errorRetryCount: 3,
+  errorRetryInterval: 1000,
+  // Add refresh interval for user data to keep it fresh
+  refreshInterval: 30000, // Refresh every 30 seconds
 };

@@ -90,11 +90,18 @@ export const signIn = validatedAction(signInSchema, async (data, formData) => {
     logActivity(foundTeam?.id, foundUser.id, ActivityType.SIGN_IN)
   ]);
 
+  // Clear user cache to ensure fresh data
+  const { clearCache } = await import('@/lib/cache');
+  clearCache();
+
   // Update dashboard data
   if (foundTeam?.id) {
     await onTeamAction(foundTeam.id, ActivityType.SIGN_IN, foundUser.id);
   }
 
+  // Add a small delay to ensure session is properly set before redirect
+  await new Promise(resolve => setTimeout(resolve, 100));
+  
   redirect('/dashboard');
 });
 
@@ -111,6 +118,10 @@ export async function signOut() {
     // User might not be authenticated, continue with sign out
     console.log('User not authenticated, proceeding with sign out');
   }
+  
+  // Clear user cache to ensure fresh data
+  const { clearCache } = await import('@/lib/cache');
+  clearCache();
   
   (await cookies()).delete('session');
 }

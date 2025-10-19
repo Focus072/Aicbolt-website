@@ -21,7 +21,13 @@ const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 function UserMenu() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { data: user } = useSWR<User>('/api/user', fetcher);
+  const { data: user, error, isLoading } = useSWR<User>('/api/user', fetcher, {
+    revalidateOnFocus: true,
+    revalidateOnReconnect: true,
+    dedupingInterval: 1000,
+    errorRetryCount: 3,
+    errorRetryInterval: 1000,
+  });
   const router = useRouter();
 
   async function handleSignOut() {
@@ -82,7 +88,13 @@ function UserMenu() {
 }
 
 function TubelightHeader() {
-  const { data: user } = useSWR<User>('/api/user', fetcher);
+  const { data: user, error, isLoading } = useSWR<User>('/api/user', fetcher, {
+    revalidateOnFocus: true,
+    revalidateOnReconnect: true,
+    dedupingInterval: 1000,
+    errorRetryCount: 3,
+    errorRetryInterval: 1000,
+  });
   const pathname = usePathname();
   
   // Don't render header on dashboard-related pages

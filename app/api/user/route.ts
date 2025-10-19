@@ -2,26 +2,23 @@ import { getUser } from '@/lib/db/queries';
 import { getCachedData, setCachedData, CacheKeys } from '@/lib/cache';
 
 export async function GET() {
-  // Check cache first
-  const cached = getCachedData(CacheKeys.USER);
-  if (cached) {
-    return Response.json(cached, {
-      headers: {
-        'Cache-Control': 'public, max-age=30',
-        'X-Cache': 'HIT'
-      }
-    });
-  }
-
+  // Always fetch fresh user data to avoid stale authentication state
   const user = await getUser();
   
-  // Cache the result
-  setCachedData(CacheKeys.USER, user);
+  // Only cache if user is authenticated
+  if (user) {
+    setCachedData(CacheKeys.USER, user);
+  } else {
+    // Clear cache if user is not authenticated
+    const { clearCache } = await import('@/lib/cache');
+    clearCache();
+  }
   
   return Response.json(user, {
     headers: {
-      'Cache-Control': 'public, max-age=30',
-      'X-Cache': 'MISS'
+      'Cache-Control': 'no-cache, no-store, must-revalidate',
+      'Pragma': 'no-cache',
+      'Expires': '0'
     }
   });
 }
