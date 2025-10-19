@@ -507,7 +507,7 @@ export const leads = pgTable('leads', {
   address: text('address'),
   gpsCoordinates: text('gps_coordinates'),
   types: text('types'),
-  notes: text('notes'),
+  // notes: text('notes'), // Temporarily disabled - column doesn't exist in DB
   createdAt: timestamp('created_at').notNull().defaultNow(),
 });
 

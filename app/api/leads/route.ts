@@ -98,7 +98,7 @@ export async function POST(request: NextRequest) {
       address: body.address || null,
       gpsCoordinates: body.gps_coordinates || body.gpsCoordinates || null,
       types: body.types || null,
-      notes: body.notes || null,
+      // notes: body.notes || null, // Temporarily disabled - column doesn't exist in DB
     };
 
     // Check if lead already exists before upsert
@@ -147,7 +147,7 @@ export async function POST(request: NextRequest) {
             address: leadData.address,
             gpsCoordinates: leadData.gpsCoordinates,
             types: leadData.types,
-            notes: leadData.notes || null,
+            // notes: leadData.notes || null, // Temporarily disabled - column doesn't exist in DB
           }
         })
         .returning();

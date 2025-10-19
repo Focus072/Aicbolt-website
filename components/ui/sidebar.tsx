@@ -102,10 +102,15 @@ export function SessionNavBar() {
   const pathname = usePathname();
   const router = useRouter();
   
-  // Fetch current user data
-  const { data: user, error: userError, isLoading: userLoading } = useSWR('/api/user');
+  // Fetch current user data with better error handling
+  const { data: user, error: userError, isLoading: userLoading } = useSWR('/api/user', {
+    revalidateOnFocus: false,
+    dedupingInterval: 2000,
+    errorRetryCount: 3,
+    errorRetryInterval: 1000,
+  });
   
-  // Check permissions with fallback
+  // Check permissions with fallback - don't block rendering
   const isUserSuperAdmin = user ? isSuperAdmin(user) : false;
   const isMainAdmin = user?.email === 'galaljobah@gmail.com';
   const isAdmin = user?.role === 'admin' || user?.role === 'owner' || isMainAdmin;
@@ -140,22 +145,7 @@ export function SessionNavBar() {
     return null;
   }
 
-  // Handle loading and error states
-  if (userLoading) {
-    return (
-      <>
-        {/* Mobile Hamburger Button */}
-        <button
-          onClick={() => setIsMobileOpen(!isMobileOpen)}
-          className="md:hidden fixed top-4 left-4 z-50 p-2 rounded-lg bg-gray-900/20 border border-gray-700/50 backdrop-blur-xl hover:bg-orange-600/20 hover:border-orange-400/50 text-white transition-all duration-300"
-        >
-          {isMobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-        </button>
-        <div className="hidden md:block fixed left-0 z-40 h-full w-12 bg-gray-50 dark:bg-gray-950 border-r border-gray-200 dark:border-gray-800" />
-      </>
-    );
-  }
-
+  // Handle loading and error states - render sidebar immediately
   if (userError) {
     console.error('Error fetching user data:', userError);
     // Still render sidebar but without user-specific features
@@ -163,13 +153,15 @@ export function SessionNavBar() {
   
   return (
     <>
-      {/* Mobile Hamburger Button */}
-      <button
-        onClick={() => setIsMobileOpen(!isMobileOpen)}
-        className="md:hidden fixed top-4 left-4 z-50 p-2 rounded-lg bg-gray-900/20 border border-gray-700/50 backdrop-blur-xl hover:bg-orange-600/20 hover:border-orange-400/50 text-white transition-all duration-300"
-      >
-        {isMobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-      </button>
+      {/* Mobile Hamburger Button - Only show when sidebar is closed */}
+      {!isMobileOpen && (
+        <button
+          onClick={() => setIsMobileOpen(!isMobileOpen)}
+          className="md:hidden fixed top-4 left-4 z-50 p-2 rounded-lg bg-gray-900/20 border border-gray-700/50 backdrop-blur-xl hover:bg-orange-600/20 hover:border-orange-400/50 text-white transition-all duration-300"
+        >
+          <Menu className="h-5 w-5" />
+        </button>
+      )}
 
       {/* Mobile Overlay */}
       {isMobileOpen && (
@@ -197,14 +189,14 @@ export function SessionNavBar() {
       >
         <motion.ul variants={staggerVariants} className="flex h-full flex-col">
           <div className="flex grow flex-col items-center">
-            <div className="flex h-[54px] w-full shrink-0  border-b p-2">
-              <div className=" mt-[1.5px] flex w-full">
+            <div className="flex h-[54px] w-full shrink-0 border-b p-2">
+              <div className="mt-[1.5px] flex w-full items-center justify-between">
                 <DropdownMenu modal={false}>
                   <DropdownMenuTrigger className="w-full" asChild>
                     <Button
                       variant="ghost"
                       size="sm"
-                      className="flex w-fit items-center gap-2  px-2" 
+                      className="flex w-fit items-center gap-2 px-2" 
                     >
                       <Avatar className='rounded size-4'>
                         <AvatarFallback>O</AvatarFallback>
@@ -213,7 +205,7 @@ export function SessionNavBar() {
                         variants={variants}
                         className="flex w-fit items-center gap-2"
                       >
-                        <p className="text-sm font-medium  ">
+                        <p className="text-sm font-medium">
                           {"AICBOLT"}
                         </p>
                         <ChevronsUpDown className="h-4 w-4 text-muted-foreground/50" />
@@ -248,6 +240,14 @@ export function SessionNavBar() {
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
+                
+                {/* Mobile Close Button - Inside sidebar header */}
+                <button
+                  onClick={() => setIsMobileOpen(false)}
+                  className="md:hidden p-1.5 rounded-lg bg-gray-800/50 border border-gray-600/50 backdrop-blur-xl hover:bg-orange-600/20 hover:border-orange-400/50 text-white transition-all duration-300"
+                >
+                  <X className="h-4 w-4" />
+                </button>
               </div>
             </div>
 
