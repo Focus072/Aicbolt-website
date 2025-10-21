@@ -103,13 +103,17 @@ export function Login() {
               <div>
                 <Button
                   type="submit"
-                  className="w-full flex justify-center items-center py-3 px-4 border border-transparent rounded-xl shadow-lg text-sm font-medium text-white bg-gradient-to-r from-orange-600 to-amber-500 hover:from-orange-700 hover:to-amber-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
+                  className={`w-full flex justify-center items-center py-3 px-4 border border-transparent rounded-xl shadow-lg text-sm font-medium text-white transition-all duration-300 ${
+                    pending
+                      ? 'bg-gray-600 cursor-not-allowed scale-95' 
+                      : 'bg-gradient-to-r from-orange-600 to-amber-500 hover:from-orange-700 hover:to-amber-600 hover:scale-[1.02] active:scale-[0.98]'
+                  } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500`}
                   disabled={pending}
                 >
                   {pending ? (
                     <>
                       <Loader2 className="animate-spin mr-2 h-4 w-4" />
-                      Loading...
+                      Signing in...
                     </>
                   ) : (
                     'Sign in'

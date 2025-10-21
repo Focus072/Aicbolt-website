@@ -21,17 +21,18 @@ import {
   ChevronLeft,
   ChevronRight,
   ShieldAlert,
-  RefreshCw,
+  Plus,
   Trash2,
   CheckSquare,
   Square,
   MessageSquare,
-  Plus,
   Edit3,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
 import useSWR from 'swr';
+import { ClientFormModal } from '@/components/ui/client-form-modal';
+import { CreateLeadModal } from '@/components/ui/create-lead-modal';
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
@@ -62,11 +63,13 @@ export default function LeadsPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [updatingId, setUpdatingId] = useState<number | null>(null);
   const [selectedLeads, setSelectedLeads] = useState<Set<number>>(new Set());
-  const [lastRefresh, setLastRefresh] = useState<Date | null>(null);
   const [showNotesModal, setShowNotesModal] = useState(false);
   const [selectedLeadForNotes, setSelectedLeadForNotes] = useState<Lead | null>(null);
   const [notes, setNotes] = useState('');
   const [bulkAction, setBulkAction] = useState('');
+  const [showClientModal, setShowClientModal] = useState(false);
+  const [preFilledClientData, setPreFilledClientData] = useState<any>(null);
+  const [showCreateLeadModal, setShowCreateLeadModal] = useState(false);
   
   const itemsPerPage = 10;
 
@@ -86,13 +89,6 @@ export default function LeadsPage() {
   useEffect(() => {
     if (isSuperAdmin || isAdmin) {
       fetchLeads();
-      
-      // Also fetch again after 5 seconds to catch any new leads
-      const timeoutId = setTimeout(() => {
-        fetchLeads(true);
-      }, 5000);
-      
-      return () => clearTimeout(timeoutId);
     }
   }, [isSuperAdmin, isAdmin]);
 
@@ -105,16 +101,19 @@ export default function LeadsPage() {
     return () => clearTimeout(timeoutId);
   }, [search, statusFilter, leads]);
 
-  // Auto-refresh every 15 seconds for new leads, but less frequent for performance
-  useEffect(() => {
-    if (!isSuperAdmin && !isAdmin) return;
-    
-    const interval = setInterval(() => {
-      fetchLeads();
-    }, 15000); // 15 seconds - faster for new leads
-
-    return () => clearInterval(interval);
-  }, [isSuperAdmin, isAdmin]);
+  // DISABLED: Auto-refresh causes conflicts with manual updates
+  // useEffect(() => {
+  //   if (!isSuperAdmin && !isAdmin) return;
+  //   if (isUpdating) return;
+  //   
+  //   const interval = setInterval(() => {
+  //     if (!isUpdating) {
+  //       fetchLeads();
+  //     }
+  //   }, 15000);
+  //   
+  //   return () => clearInterval(interval);
+  // }, [isSuperAdmin, isAdmin, isUpdating]);
 
   const fetchLeads = async (showToast = false) => {
     try {
@@ -123,7 +122,8 @@ export default function LeadsPage() {
 
       if (response.ok) {
         const data = await response.json();
-        const newCount = data.data?.length || 0;
+        const serverLeads = data.data || [];
+        const newCount = serverLeads.length;
         const currentCount = leads.length;
         
         console.log('Fetched leads:', newCount, 'leads (was:', currentCount, ')');
@@ -134,8 +134,9 @@ export default function LeadsPage() {
           toast.success(`${newLeads} new lead${newLeads > 1 ? 's' : ''} received!`);
         }
         
-        setLeads(data.data || []);
-        setLastRefresh(new Date());
+        // Use server data directly - no smart merging to avoid race conditions
+        setLeads(serverLeads);
+        
       } else {
         const errorData = await response.json();
         console.error('Failed to load leads:', errorData);
@@ -173,44 +174,66 @@ export default function LeadsPage() {
   };
 
   const updateLeadStatus = async (id: number, status: string, action: string) => {
-    setUpdatingId(id);
+    // INSTANT UI UPDATE (Optimistic)
+    setLeads((prev) =>
+      prev.map((lead) =>
+        lead.id === id ? { ...lead, status, action } : lead
+      )
+    );
     
-    try {
-      const response = await fetch(`/api/leads/${id}`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ status, action }),
-      });
+    setFilteredLeads((prev) =>
+      prev.map((lead) =>
+        lead.id === id ? { ...lead, status, action } : lead
+      )
+    );
+    
+    toast.success(`Lead marked as ${status}`);
+    
+    // API call in background (don't wait for it)
+    fetch(`/api/leads/${id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ status, action }),
+    }).catch(error => {
+      console.error('Background update failed:', error);
+      // Optionally show error toast if needed
+    });
+  };
 
-      if (response.ok) {
-        const data = await response.json();
-        
-        // Update local state
-        setLeads((prev) =>
-          prev.map((lead) =>
-            lead.id === id ? { ...lead, status, action } : lead
-          )
-        );
-        
-        setFilteredLeads((prev) =>
-          prev.map((lead) =>
-            lead.id === id ? { ...lead, status, action } : lead
-          )
-        );
-        
-        toast.success(`Lead marked as ${status}`);
-      } else {
-        const errorData = await response.json();
-        toast.error(`Failed to update lead: ${errorData.error || 'Unknown error'}`);
-      }
-    } catch (error) {
-      console.error('Error updating lead:', error);
-      toast.error('Error updating lead');
-    } finally {
-      setUpdatingId(null);
-    }
+  const handleConvertToClient = async (lead: Lead) => {
+    // INSTANT UI UPDATE (Optimistic)
+    setLeads((prev) =>
+      prev.map((l) => l.id === lead.id ? { ...l, status: 'converted', action: 'success' } : l)
+    );
+    
+    setFilteredLeads((prev) =>
+      prev.map((l) => l.id === lead.id ? { ...l, status: 'converted', action: 'success' } : l)
+    );
+    
+    // Pre-fill client data from lead
+    setPreFilledClientData({
+      name: lead.title,
+      email: lead.email || '',
+      company: lead.title,
+      phone: lead.phone || '',
+      address: lead.address || '',
+      notes: lead.notes || `Converted from lead on ${new Date().toLocaleDateString()}`,
+      status: 'active',
+      lifetimeValue: 0,
+    });
+    
+    // Open client modal
+    setShowClientModal(true);
+    toast.success('Lead marked as converted. Create client now.');
+    
+    // API call in background (don't wait for it)
+    fetch(`/api/leads/${lead.id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ status: 'converted', action: 'success' }),
+    }).catch(error => {
+      console.error('Background conversion update failed:', error);
+    });
   };
 
   const deleteLead = async (id: number) => {
@@ -500,25 +523,13 @@ export default function LeadsPage() {
                 {loading && (
                   <span className="ml-2 text-blue-400 text-xs">Loading...</span>
                 )}
-                {lastRefresh && !loading && (
-                  <span className="ml-2 text-gray-500 text-xs">
-                    Last updated: {lastRefresh.toLocaleTimeString()}
-                  </span>
-                )}
               </div>
               <Button
-                onClick={() => fetchLeads(true)}
-                disabled={loading}
-                className="bg-white/5 hover:bg-white/10 text-white border border-white/10"
+                onClick={() => setShowCreateLeadModal(true)}
+                className="bg-orange-600 hover:bg-orange-700 text-white border border-orange-500"
               >
-                {loading ? (
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                ) : (
-                  <>
-                    <RefreshCw className="h-4 w-4 mr-2" />
-                    Refresh
-                  </>
-                )}
+                <Plus className="h-4 w-4 mr-2" />
+                Create Lead
               </Button>
             </div>
           </div>
@@ -545,6 +556,7 @@ export default function LeadsPage() {
                 <SelectItem value="new" className="text-white hover:bg-white/10">New</SelectItem>
                 <SelectItem value="called" className="text-white hover:bg-white/10">Called</SelectItem>
                 <SelectItem value="success" className="text-white hover:bg-white/10">Success</SelectItem>
+                <SelectItem value="converted" className="text-white hover:bg-white/10">Converted</SelectItem>
                 <SelectItem value="failed" className="text-white hover:bg-white/10">Failed</SelectItem>
               </SelectContent>
             </Select>
@@ -653,6 +665,16 @@ export default function LeadsPage() {
           <>
             {/* Mobile Card Layout */}
             <div className="block md:hidden space-y-4">
+              {/* Mobile Create Lead Button */}
+              <div className="mb-4">
+                <Button
+                  onClick={() => setShowCreateLeadModal(true)}
+                  className="w-full bg-orange-600 hover:bg-orange-700 text-white border border-orange-500 py-3"
+                >
+                  <Plus className="h-4 w-4 mr-2" />
+                  Create New Lead
+                </Button>
+              </div>
               {currentLeads.map((lead) => (
                 <div
                   key={lead.id}
@@ -732,7 +754,7 @@ export default function LeadsPage() {
                     </Button>
                     <Button
                       size="sm"
-                      onClick={() => updateLeadStatus(lead.id, 'success', 'converted')}
+                      onClick={() => handleConvertToClient(lead)}
                       disabled={updatingId === lead.id}
                       className="bg-green-500/10 hover:bg-green-500/20 text-green-400 border border-green-500/20 hover:border-green-500/40 transition-all h-8 px-3"
                     >
@@ -879,7 +901,7 @@ export default function LeadsPage() {
                             </Button>
                             <Button
                               size="sm"
-                              onClick={() => updateLeadStatus(lead.id, 'success', 'converted')}
+                              onClick={() => handleConvertToClient(lead)}
                               disabled={updatingId === lead.id}
                               className="bg-green-500/10 hover:bg-green-500/20 text-green-400 border border-green-500/20 hover:border-green-500/40 transition-all px-2 py-1"
                             >
@@ -1034,6 +1056,69 @@ export default function LeadsPage() {
               </div>
             </div>
           </div>
+        )}
+
+        {/* Convert to Client Modal */}
+        {showClientModal && preFilledClientData && (
+          <ClientFormModal
+            initialData={preFilledClientData}
+            onClose={() => {
+              setShowClientModal(false);
+              setPreFilledClientData(null);
+            }}
+            onSubmit={async (formData) => {
+              // Submit to clients API
+              const response = await fetch('/api/clients', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(formData),
+              });
+              
+              if (response.ok) {
+                toast.success('Client created successfully!');
+                setShowClientModal(false);
+                setPreFilledClientData(null);
+                // The lead status was already updated to "converted" when the modal opened
+                // No need to refresh - the UI should already show "Converted" status
+              } else {
+                toast.error('Failed to create client');
+              }
+            }}
+          />
+        )}
+
+        {/* Create Lead Modal */}
+        {showCreateLeadModal && (
+          <CreateLeadModal
+            onClose={() => setShowCreateLeadModal(false)}
+            onSubmit={async (formData) => {
+              try {
+                const response = await fetch('/api/leads', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({
+                    ...formData,
+                    status: 'new',
+                    action: null,
+                    placeId: `manual_${Date.now()}`, // Generate unique placeId for manual leads
+                  }),
+                });
+                
+                if (response.ok) {
+                  toast.success('Lead created successfully!');
+                  setShowCreateLeadModal(false);
+                  // Refresh leads to show the new lead
+                  fetchLeads();
+                } else {
+                  const errorData = await response.json();
+                  toast.error(`Failed to create lead: ${errorData.error || 'Unknown error'}`);
+                }
+              } catch (error) {
+                console.error('Error creating lead:', error);
+                toast.error('Failed to create lead');
+              }
+            }}
+          />
         )}
       </div>
     </div>

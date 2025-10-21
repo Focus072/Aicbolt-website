@@ -23,5 +23,6 @@ export const swrConfig = {
   errorRetryCount: 3,
   errorRetryInterval: 1000,
   // Add refresh interval for user data to keep it fresh
-  refreshInterval: 30000, // Refresh every 30 seconds
+  // refreshInterval: 30000, // DISABLED - No auto-refresh to prevent conflicts with manual updates
 };
+

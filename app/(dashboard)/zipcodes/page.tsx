@@ -53,7 +53,7 @@ export default function LeadFinderPage() {
 
   // Fetch zip codes data
   const { data: zipData, error, mutate } = useSWR('/api/zipcodes', fetcher, {
-    refreshInterval: 30000, // Refresh every 30 seconds
+    // refreshInterval: 30000, // DISABLED - No auto-refresh to prevent conflicts with manual updates
   });
 
   // Fetch categories data
