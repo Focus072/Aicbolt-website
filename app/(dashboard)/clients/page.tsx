@@ -426,7 +426,7 @@ export default function ClientsPage() {
           </div>
 
           {/* Stats Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 md:gap-6 mb-6 md:mb-8 space-y-4 md:space-y-0">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mb-6 md:mb-8 space-y-4 md:space-y-0">
             <Card>
               <CardContent className="p-4">
                 <div className="flex items-center justify-between">
@@ -512,77 +512,148 @@ export default function ClientsPage() {
             ) : (
               filteredClients.map((client) => (
                 <Card key={client.id} className="hover:shadow-md transition-shadow cursor-pointer">
-                  <CardContent className="p-6">
-                    <div className="flex items-start justify-between">
-                      <div className="flex-1">
-                        <div className="flex items-center gap-3 mb-4">
-                          <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
+                  <CardContent className="p-4 md:p-6">
+                    {/* Mobile Layout */}
+                    <div className="block md:hidden">
+                      <div className="flex items-start justify-between mb-3">
+                        <div className="flex-1">
+                          <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-1">
                             {client.name}
                           </h3>
                           <Badge className={getStatusColor(client.status)}>
                             {client.status.charAt(0).toUpperCase() + client.status.slice(1)}
                           </Badge>
                         </div>
-                        
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-5">
-                          <div className="flex items-center gap-2">
-                            <Mail className="h-4 w-4 text-gray-400" />
-                            <span className="text-sm text-gray-600 dark:text-gray-400">{client.email}</span>
-                          </div>
-                          
-                          {client.phone && (
-                            <div className="flex items-center gap-2">
-                              <Phone className="h-4 w-4 text-gray-400" />
-                              <span className="text-sm text-gray-600 dark:text-gray-400">{client.phone}</span>
-                            </div>
-                          )}
-                          
-                          {client.company && (
-                            <div className="flex items-center gap-2">
-                              <Building className="h-4 w-4 text-gray-400" />
-                              <span className="text-sm text-gray-600 dark:text-gray-400">{client.company}</span>
-                            </div>
-                          )}
-                          
-                          <div className="flex items-center gap-2">
-                            <Calendar className="h-4 w-4 text-gray-400" />
-                            <span className="text-sm text-gray-600 dark:text-gray-400">
-                              Added {formatDate(client.createdAt)}
-                            </span>
-                          </div>
+                      </div>
+                      
+                      <div className="space-y-2 mb-4">
+                        <div className="flex items-center gap-2">
+                          <Mail className="h-4 w-4 text-gray-400" />
+                          <span className="text-sm text-gray-600 dark:text-gray-400">{client.email}</span>
                         </div>
                         
+                        {client.phone && (
+                          <div className="flex items-center gap-2">
+                            <Phone className="h-4 w-4 text-gray-400" />
+                            <span className="text-sm text-gray-600 dark:text-gray-400">{client.phone}</span>
+                          </div>
+                        )}
+                        
+                        {client.company && (
+                          <div className="flex items-center gap-2">
+                            <Building className="h-4 w-4 text-gray-400" />
+                            <span className="text-sm text-gray-600 dark:text-gray-400">{client.company}</span>
+                          </div>
+                        )}
+                        
                         {client.address && (
-                          <div className="flex items-start gap-2 mb-4">
+                          <div className="flex items-start gap-2">
                             <MapPin className="h-4 w-4 text-gray-400 mt-0.5" />
                             <span className="text-sm text-gray-600 dark:text-gray-400">{client.address}</span>
                           </div>
                         )}
-                        
-                        {client.notes && (
-                          <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">{client.notes}</p>
-                        )}
-                        
-                        <div className="flex items-center gap-4">
-                          <div>
-                            <span className="text-sm text-gray-500 dark:text-gray-400">Lifetime Value:</span>
-                            <span className="ml-2 font-semibold text-green-600 dark:text-green-400">
-                              {formatCurrency(client.lifetimeValue)}
-                            </span>
-                          </div>
+                      </div>
+                      
+                      <div className="flex items-center justify-between mb-4">
+                        <div>
+                          <span className="text-sm text-gray-500 dark:text-gray-400">LTV:</span>
+                          <span className="ml-1 font-semibold text-green-600 dark:text-green-400">
+                            {formatCurrency(client.lifetimeValue)}
+                          </span>
+                        </div>
+                        <div className="text-xs text-gray-500 dark:text-gray-400">
+                          Added {formatDate(client.createdAt)}
                         </div>
                       </div>
                       
-                      <div className="flex items-center gap-3 ml-6">
-                        <Button variant="outline" size="sm" onClick={() => handleViewClient(client)}>
-                          <Eye className="h-4 w-4" />
+                      <div className="flex gap-2">
+                        <Button variant="outline" size="sm" onClick={() => handleViewClient(client)} className="flex-1">
+                          <Eye className="h-4 w-4 mr-1" />
+                          View
                         </Button>
-                        <Button variant="outline" size="sm" onClick={() => handleEditClient(client)}>
-                          <Edit className="h-4 w-4" />
+                        <Button variant="outline" size="sm" onClick={() => handleEditClient(client)} className="flex-1">
+                          <Edit className="h-4 w-4 mr-1" />
+                          Edit
                         </Button>
                         <Button variant="outline" size="sm" className="text-red-600 hover:text-red-700" onClick={() => handleDeleteClient(client.id)}>
                           <Trash2 className="h-4 w-4" />
                         </Button>
+                      </div>
+                    </div>
+                    
+                    {/* Desktop Layout */}
+                    <div className="hidden md:block">
+                      <div className="flex items-start justify-between">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-3 mb-4">
+                            <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
+                              {client.name}
+                            </h3>
+                            <Badge className={getStatusColor(client.status)}>
+                              {client.status.charAt(0).toUpperCase() + client.status.slice(1)}
+                            </Badge>
+                          </div>
+                          
+                          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-5">
+                            <div className="flex items-center gap-2">
+                              <Mail className="h-4 w-4 text-gray-400" />
+                              <span className="text-sm text-gray-600 dark:text-gray-400">{client.email}</span>
+                            </div>
+                            
+                            {client.phone && (
+                              <div className="flex items-center gap-2">
+                                <Phone className="h-4 w-4 text-gray-400" />
+                                <span className="text-sm text-gray-600 dark:text-gray-400">{client.phone}</span>
+                              </div>
+                            )}
+                            
+                            {client.company && (
+                              <div className="flex items-center gap-2">
+                                <Building className="h-4 w-4 text-gray-400" />
+                                <span className="text-sm text-gray-600 dark:text-gray-400">{client.company}</span>
+                              </div>
+                            )}
+                            
+                            <div className="flex items-center gap-2">
+                              <Calendar className="h-4 w-4 text-gray-400" />
+                              <span className="text-sm text-gray-600 dark:text-gray-400">
+                                Added {formatDate(client.createdAt)}
+                              </span>
+                            </div>
+                          </div>
+                          
+                          {client.address && (
+                            <div className="flex items-start gap-2 mb-4">
+                              <MapPin className="h-4 w-4 text-gray-400 mt-0.5" />
+                              <span className="text-sm text-gray-600 dark:text-gray-400">{client.address}</span>
+                            </div>
+                          )}
+                          
+                          {client.notes && (
+                            <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">{client.notes}</p>
+                          )}
+                          
+                          <div className="flex items-center gap-4">
+                            <div>
+                              <span className="text-sm text-gray-500 dark:text-gray-400">Lifetime Value:</span>
+                              <span className="ml-2 font-semibold text-green-600 dark:text-green-400">
+                                {formatCurrency(client.lifetimeValue)}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <div className="flex items-center gap-3 ml-6">
+                          <Button variant="outline" size="sm" onClick={() => handleViewClient(client)}>
+                            <Eye className="h-4 w-4" />
+                          </Button>
+                          <Button variant="outline" size="sm" onClick={() => handleEditClient(client)}>
+                            <Edit className="h-4 w-4" />
+                          </Button>
+                          <Button variant="outline" size="sm" className="text-red-600 hover:text-red-700" onClick={() => handleDeleteClient(client.id)}>
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
                       </div>
                     </div>
                   </CardContent>

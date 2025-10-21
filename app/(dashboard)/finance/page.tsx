@@ -618,7 +618,7 @@ const FinancePage: React.FC = () => {
             </div>
 
             {/* Analytics Overview */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-6 md:mb-8 space-y-4 md:space-y-0">
+            <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-6 md:mb-8 space-y-4 md:space-y-0">
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
@@ -744,53 +744,111 @@ const FinancePage: React.FC = () => {
                   </CardContent>
                 </Card>
               ) : (
-                <div className="bg-white dark:bg-gray-800 rounded-lg border overflow-hidden shadow-sm">
-                  <table className="w-full">
-                    <thead className="bg-gray-50 dark:bg-gray-700">
-                      <tr>
-                        <th className="py-4 px-4 text-left text-sm font-semibold text-gray-700 dark:text-gray-200">Date</th>
-                        <th className="py-4 px-4 text-left text-sm font-semibold text-gray-700 dark:text-gray-200">Source</th>
-                        <th className="py-4 px-4 text-left text-sm font-semibold text-gray-700 dark:text-gray-200">Amount</th>
-                        <th className="py-4 px-4 text-left text-sm font-semibold text-gray-700 dark:text-gray-200">Description</th>
-                        <th className="py-4 px-4 text-left text-sm font-semibold text-gray-700 dark:text-gray-200">Client</th>
-                        <th className="py-4 px-4 text-center text-sm font-semibold text-gray-700 dark:text-gray-200">Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {getFilteredRevenue().map((revenue) => (
-                        <tr key={revenue.id} className="border-b border-gray-50 dark:border-gray-700/50 transition-colors hover:bg-green-50/50 dark:hover:bg-green-900/10">
-                          <td className="py-4 px-4 text-gray-700 dark:text-gray-200">{formatDate(revenue.date)}</td>
-                          <td className="py-4 px-4 font-medium text-gray-700 dark:text-gray-200">{revenue.source || 'N/A'}</td>
-                          <td className="py-4 px-4 font-semibold text-green-600 dark:text-green-400">
-                            {formatCurrency(revenue.amount || 0)}
-                          </td>
-                          <td className="py-4 px-4 text-gray-600 dark:text-gray-300">{revenue.description || 'N/A'}</td>
-                          <td className="py-4 px-4 text-gray-600 dark:text-gray-300">{revenue.clientName || 'N/A'}</td>
-                          <td className="py-4 px-4">
-                            <div className="flex gap-2 justify-center">
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                onClick={() => handleEditRevenue(revenue)}
-                                className="cursor-pointer transition-all hover:scale-105"
-                              >
-                                <Edit className="h-3 w-3" />
-                              </Button>
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                onClick={() => handleDeleteRevenue(revenue.id)}
-                                className="text-red-600 hover:text-red-700 cursor-pointer transition-all hover:scale-105"
-                              >
-                                <Trash2 className="h-3 w-3" />
-                              </Button>
+                <>
+                  {/* Mobile Card Layout */}
+                  <div className="block md:hidden space-y-4">
+                    {getFilteredRevenue().map((revenue) => (
+                      <Card key={revenue.id} className="hover:shadow-md transition-shadow">
+                        <CardContent className="p-4">
+                          <div className="flex items-start justify-between mb-3">
+                            <div className="flex-1">
+                              <div className="flex items-center gap-2 mb-2">
+                                <DollarSign className="h-4 w-4 text-green-600" />
+                                <span className="font-semibold text-green-600 dark:text-green-400">
+                                  {formatCurrency(revenue.amount || 0)}
+                                </span>
+                              </div>
+                              <h3 className="font-medium text-gray-900 dark:text-gray-100 mb-1">
+                                {revenue.source || 'N/A'}
+                              </h3>
+                              <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
+                                {revenue.description || 'N/A'}
+                              </p>
                             </div>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
+                            <div className="text-right">
+                              <div className="text-xs text-gray-500 dark:text-gray-400 mb-1">
+                                {formatDate(revenue.date)}
+                              </div>
+                              <div className="text-xs text-gray-500 dark:text-gray-400">
+                                {revenue.clientName || 'N/A'}
+                              </div>
+                            </div>
+                          </div>
+                          <div className="flex gap-2">
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => handleEditRevenue(revenue)}
+                              className="flex-1"
+                            >
+                              <Edit className="h-3 w-3 mr-1" />
+                              Edit
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => handleDeleteRevenue(revenue.id)}
+                              className="text-red-600 hover:text-red-700"
+                            >
+                              <Trash2 className="h-3 w-3" />
+                            </Button>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+
+                  {/* Desktop Table Layout */}
+                  <div className="hidden md:block">
+                    <div className="bg-white dark:bg-gray-800 rounded-lg border overflow-hidden shadow-sm">
+                      <table className="w-full">
+                        <thead className="bg-gray-50 dark:bg-gray-700">
+                          <tr>
+                            <th className="py-4 px-4 text-left text-sm font-semibold text-gray-700 dark:text-gray-200">Date</th>
+                            <th className="py-4 px-4 text-left text-sm font-semibold text-gray-700 dark:text-gray-200">Source</th>
+                            <th className="py-4 px-4 text-left text-sm font-semibold text-gray-700 dark:text-gray-200">Amount</th>
+                            <th className="py-4 px-4 text-left text-sm font-semibold text-gray-700 dark:text-gray-200">Description</th>
+                            <th className="py-4 px-4 text-left text-sm font-semibold text-gray-700 dark:text-gray-200">Client</th>
+                            <th className="py-4 px-4 text-center text-sm font-semibold text-gray-700 dark:text-gray-200">Actions</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {getFilteredRevenue().map((revenue) => (
+                            <tr key={revenue.id} className="border-b border-gray-50 dark:border-gray-700/50 transition-colors hover:bg-green-50/50 dark:hover:bg-green-900/10">
+                              <td className="py-4 px-4 text-gray-700 dark:text-gray-200">{formatDate(revenue.date)}</td>
+                              <td className="py-4 px-4 font-medium text-gray-700 dark:text-gray-200">{revenue.source || 'N/A'}</td>
+                              <td className="py-4 px-4 font-semibold text-green-600 dark:text-green-400">
+                                {formatCurrency(revenue.amount || 0)}
+                              </td>
+                              <td className="py-4 px-4 text-gray-600 dark:text-gray-300">{revenue.description || 'N/A'}</td>
+                              <td className="py-4 px-4 text-gray-600 dark:text-gray-300">{revenue.clientName || 'N/A'}</td>
+                              <td className="py-4 px-4">
+                                <div className="flex gap-2 justify-center">
+                                  <Button
+                                    size="sm"
+                                    variant="outline"
+                                    onClick={() => handleEditRevenue(revenue)}
+                                    className="cursor-pointer transition-all hover:scale-105"
+                                  >
+                                    <Edit className="h-3 w-3" />
+                                  </Button>
+                                  <Button
+                                    size="sm"
+                                    variant="outline"
+                                    onClick={() => handleDeleteRevenue(revenue.id)}
+                                    className="text-red-600 hover:text-red-700 cursor-pointer transition-all hover:scale-105"
+                                  >
+                                    <Trash2 className="h-3 w-3" />
+                                  </Button>
+                                </div>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </>
               )}
             </div>
 
@@ -814,63 +872,127 @@ const FinancePage: React.FC = () => {
                   </CardContent>
                 </Card>
               ) : (
-                <div className="bg-white dark:bg-gray-800 rounded-lg border overflow-hidden shadow-sm">
-                  <table className="w-full">
-                    <thead className="bg-gray-50 dark:bg-gray-700">
-                      <tr>
-                        <th className="py-4 px-4 text-left text-sm font-semibold text-gray-700 dark:text-gray-200">Date</th>
-                        <th className="py-4 px-4 text-left text-sm font-semibold text-gray-700 dark:text-gray-200">Category</th>
-                        <th className="py-4 px-4 text-left text-sm font-semibold text-gray-700 dark:text-gray-200">Amount</th>
-                        <th className="py-4 px-4 text-left text-sm font-semibold text-gray-700 dark:text-gray-200">Description</th>
-                        <th className="py-4 px-4 text-left text-sm font-semibold text-gray-700 dark:text-gray-200">Vendor</th>
-                        <th className="py-4 px-4 text-center text-sm font-semibold text-gray-700 dark:text-gray-200">Frequency</th>
-                        <th className="py-4 px-4 text-center text-sm font-semibold text-gray-700 dark:text-gray-200">Paid By</th>
-                        <th className="py-4 px-4 text-center text-sm font-semibold text-gray-700 dark:text-gray-200">Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {getFilteredExpenses().map((expense) => (
-                        <tr key={expense.id} className="border-b border-gray-50 dark:border-gray-700/50 transition-colors hover:bg-red-50/50 dark:hover:bg-red-900/10">
-                          <td className="py-4 px-4 text-gray-700 dark:text-gray-200">{formatDate(expense.expenseDate)}</td>
-                          <td className="py-4 px-4">
-                            <Badge variant="secondary">{expense.category || 'Uncategorized'}</Badge>
-                          </td>
-                          <td className="py-4 px-4 font-semibold text-red-600 dark:text-red-400">
-                            {formatCurrency(expense.amount || 0)}
-                          </td>
-                          <td className="py-4 px-4 text-gray-600 dark:text-gray-300">{expense.description || 'N/A'}</td>
-                          <td className="py-4 px-4 text-gray-600 dark:text-gray-300">{expense.vendor || 'N/A'}</td>
-                          <td className="py-4 px-4 text-center">
-                            <Badge variant={expense.frequency === 'One-time' ? 'outline' : 'default'}>
-                              {expense.frequency || 'One-time'}
-                            </Badge>
-                          </td>
-                          <td className="py-4 px-4 text-center text-gray-600 dark:text-gray-300">{expense.paidBy || 'N/A'}</td>
-                          <td className="py-4 px-4">
-                            <div className="flex gap-2 justify-center">
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                onClick={() => handleEditExpense(expense)}
-                                className="cursor-pointer transition-all hover:scale-105"
-                              >
-                                <Edit className="h-3 w-3" />
-                              </Button>
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                onClick={() => handleDeleteExpense(expense.id)}
-                                className="text-red-600 hover:text-red-700 cursor-pointer transition-all hover:scale-105"
-                              >
-                                <Trash2 className="h-3 w-3" />
-                              </Button>
+                <>
+                  {/* Mobile Card Layout */}
+                  <div className="block md:hidden space-y-4">
+                    {getFilteredExpenses().map((expense) => (
+                      <Card key={expense.id} className="hover:shadow-md transition-shadow">
+                        <CardContent className="p-4">
+                          <div className="flex items-start justify-between mb-3">
+                            <div className="flex-1">
+                              <div className="flex items-center gap-2 mb-2">
+                                <TrendingDown className="h-4 w-4 text-red-600" />
+                                <span className="font-semibold text-red-600 dark:text-red-400">
+                                  {formatCurrency(expense.amount || 0)}
+                                </span>
+                              </div>
+                              <div className="flex items-center gap-2 mb-2">
+                                <Badge variant="secondary">{expense.category || 'Uncategorized'}</Badge>
+                                <Badge variant={expense.frequency === 'One-time' ? 'outline' : 'default'}>
+                                  {expense.frequency || 'One-time'}
+                                </Badge>
+                              </div>
+                              <h3 className="font-medium text-gray-900 dark:text-gray-100 mb-1">
+                                {expense.vendor || 'N/A'}
+                              </h3>
+                              <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
+                                {expense.description || 'N/A'}
+                              </p>
                             </div>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
+                            <div className="text-right">
+                              <div className="text-xs text-gray-500 dark:text-gray-400 mb-1">
+                                {formatDate(expense.expenseDate)}
+                              </div>
+                              <div className="text-xs text-gray-500 dark:text-gray-400">
+                                {expense.paidBy || 'N/A'}
+                              </div>
+                            </div>
+                          </div>
+                          <div className="flex gap-2">
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => handleEditExpense(expense)}
+                              className="flex-1"
+                            >
+                              <Edit className="h-3 w-3 mr-1" />
+                              Edit
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => handleDeleteExpense(expense.id)}
+                              className="text-red-600 hover:text-red-700"
+                            >
+                              <Trash2 className="h-3 w-3" />
+                            </Button>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+
+                  {/* Desktop Table Layout */}
+                  <div className="hidden md:block">
+                    <div className="bg-white dark:bg-gray-800 rounded-lg border overflow-hidden shadow-sm">
+                      <table className="w-full">
+                        <thead className="bg-gray-50 dark:bg-gray-700">
+                          <tr>
+                            <th className="py-4 px-4 text-left text-sm font-semibold text-gray-700 dark:text-gray-200">Date</th>
+                            <th className="py-4 px-4 text-left text-sm font-semibold text-gray-700 dark:text-gray-200">Category</th>
+                            <th className="py-4 px-4 text-left text-sm font-semibold text-gray-700 dark:text-gray-200">Amount</th>
+                            <th className="py-4 px-4 text-left text-sm font-semibold text-gray-700 dark:text-gray-200">Description</th>
+                            <th className="py-4 px-4 text-left text-sm font-semibold text-gray-700 dark:text-gray-200">Vendor</th>
+                            <th className="py-4 px-4 text-center text-sm font-semibold text-gray-700 dark:text-gray-200">Frequency</th>
+                            <th className="py-4 px-4 text-center text-sm font-semibold text-gray-700 dark:text-gray-200">Paid By</th>
+                            <th className="py-4 px-4 text-center text-sm font-semibold text-gray-700 dark:text-gray-200">Actions</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {getFilteredExpenses().map((expense) => (
+                            <tr key={expense.id} className="border-b border-gray-50 dark:border-gray-700/50 transition-colors hover:bg-red-50/50 dark:hover:bg-red-900/10">
+                              <td className="py-4 px-4 text-gray-700 dark:text-gray-200">{formatDate(expense.expenseDate)}</td>
+                              <td className="py-4 px-4">
+                                <Badge variant="secondary">{expense.category || 'Uncategorized'}</Badge>
+                              </td>
+                              <td className="py-4 px-4 font-semibold text-red-600 dark:text-red-400">
+                                {formatCurrency(expense.amount || 0)}
+                              </td>
+                              <td className="py-4 px-4 text-gray-600 dark:text-gray-300">{expense.description || 'N/A'}</td>
+                              <td className="py-4 px-4 text-gray-600 dark:text-gray-300">{expense.vendor || 'N/A'}</td>
+                              <td className="py-4 px-4 text-center">
+                                <Badge variant={expense.frequency === 'One-time' ? 'outline' : 'default'}>
+                                  {expense.frequency || 'One-time'}
+                                </Badge>
+                              </td>
+                              <td className="py-4 px-4 text-center text-gray-600 dark:text-gray-300">{expense.paidBy || 'N/A'}</td>
+                              <td className="py-4 px-4">
+                                <div className="flex gap-2 justify-center">
+                                  <Button
+                                    size="sm"
+                                    variant="outline"
+                                    onClick={() => handleEditExpense(expense)}
+                                    className="cursor-pointer transition-all hover:scale-105"
+                                  >
+                                    <Edit className="h-3 w-3" />
+                                  </Button>
+                                  <Button
+                                    size="sm"
+                                    variant="outline"
+                                    onClick={() => handleDeleteExpense(expense.id)}
+                                    className="text-red-600 hover:text-red-700 cursor-pointer transition-all hover:scale-105"
+                                  >
+                                    <Trash2 className="h-3 w-3" />
+                                  </Button>
+                                </div>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </>
               )}
             </div>
 

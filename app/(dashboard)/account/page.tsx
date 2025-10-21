@@ -407,93 +407,173 @@ export default function AccountManagementPage() {
             </div>
           </div>
         ) : (
-          <div className="backdrop-blur-xl bg-white/5 rounded-2xl border border-white/10 overflow-hidden shadow-2xl">
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead className="bg-white/5 border-b border-white/10">
-                  <tr>
-                    <th className="text-left p-4 text-sm font-semibold text-gray-300">Name</th>
-                    <th className="text-left p-4 text-sm font-semibold text-gray-300">Username</th>
-                    <th className="text-center p-4 text-sm font-semibold text-gray-300">Role</th>
-                    <th className="text-left p-4 text-sm font-semibold text-gray-300">Allowed Pages</th>
-                    <th className="text-center p-4 text-sm font-semibold text-gray-300">Status</th>
-                    <th className="text-center p-4 text-sm font-semibold text-gray-300">Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {users.map((user) => (
-                    <tr
-                      key={user.id}
-                      className="border-b border-white/5 hover:bg-white/5 transition-colors"
-                    >
-                      <td className="p-4">
-                        <div className="flex items-center gap-2">
-                          <User className="h-4 w-4 text-gray-400" />
-                          <span className="text-white font-medium">{user.name || 'N/A'}</span>
-                        </div>
-                      </td>
-                      <td className="p-4">
-                        <span className="text-gray-300 text-sm">{user.username}</span>
-                      </td>
-                      <td className="p-4 text-center">
-                        {getRoleBadge(user.role)}
-                      </td>
-                      <td className="p-4">
-                        <div className="flex flex-wrap gap-1">
-                          {user.role === 'admin' ? (
-                            <Badge className="bg-white/5 text-gray-400 border-white/10 text-xs">
-                              All Pages
-                            </Badge>
-                          ) : user.allowedPages && user.allowedPages.length > 0 ? (
-                            user.allowedPages.map((page) => (
-                              <Badge
-                                key={page}
-                                className="bg-orange-500/10 text-orange-400 border-orange-500/20 text-xs"
-                              >
-                                {page}
-                              </Badge>
-                            ))
-                          ) : (
-                            <span className="text-gray-500 text-xs">No access</span>
-                          )}
-                        </div>
-                      </td>
-                      <td className="p-4 text-center">
+          <>
+            {/* Mobile Card Layout */}
+            <div className="block md:hidden space-y-4">
+              {users.map((user) => (
+                <div
+                  key={user.id}
+                  className="backdrop-blur-xl bg-white/5 rounded-2xl border border-white/10 p-4 shadow-2xl"
+                >
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-2">
+                        <User className="h-4 w-4 text-gray-400" />
+                        <span className="text-white font-medium">{user.name || 'N/A'}</span>
+                      </div>
+                      <p className="text-gray-300 text-sm mb-2">@{user.username}</p>
+                    </div>
+                    <div className="text-right">
+                      {getRoleBadge(user.role)}
+                      <div className="mt-2">
                         {user.isActive ? (
-                          <Badge className="bg-green-500/10 text-green-400 border-green-500/20">
+                          <Badge className="bg-green-500/10 text-green-400 border-green-500/20 text-xs">
                             Active
                           </Badge>
                         ) : (
-                          <Badge className="bg-yellow-500/10 text-yellow-400 border-yellow-500/20">
+                          <Badge className="bg-yellow-500/10 text-yellow-400 border-yellow-500/20 text-xs">
                             Pending
                           </Badge>
                         )}
-                      </td>
-                      <td className="p-4">
-                        <div className="flex items-center justify-center gap-2">
-                          <Button
-                            size="sm"
-                            onClick={() => handleEditUser(user)}
-                            className="bg-blue-500/10 hover:bg-blue-500/20 text-blue-400 border border-blue-500/20 hover:border-blue-500/40 transition-all"
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="mb-4">
+                    <div className="text-xs text-gray-400 mb-2">Allowed Pages:</div>
+                    <div className="flex flex-wrap gap-1">
+                      {user.role === 'admin' ? (
+                        <Badge className="bg-white/5 text-gray-400 border-white/10 text-xs">
+                          All Pages
+                        </Badge>
+                      ) : user.allowedPages && user.allowedPages.length > 0 ? (
+                        user.allowedPages.map((page) => (
+                          <Badge
+                            key={page}
+                            className="bg-orange-500/10 text-orange-400 border-orange-500/20 text-xs"
                           >
-                            <Settings className="h-3 w-3" />
-                          </Button>
-                          <Button
-                            size="sm"
-                            onClick={() => handleDeleteUser(user.id)}
-                            disabled={user.username === currentUser?.username || user.username === 'admin'}
-                            className="bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 hover:border-red-500/40 transition-all disabled:opacity-50"
-                          >
-                            <Trash2 className="h-3 w-3" />
-                          </Button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+                            {page}
+                          </Badge>
+                        ))
+                      ) : (
+                        <span className="text-gray-500 text-xs">No access</span>
+                      )}
+                    </div>
+                  </div>
+                  
+                  <div className="flex gap-2">
+                    <Button
+                      size="sm"
+                      onClick={() => handleEditUser(user)}
+                      className="flex-1 bg-blue-500/10 hover:bg-blue-500/20 text-blue-400 border border-blue-500/20 hover:border-blue-500/40 transition-all"
+                    >
+                      <Settings className="h-3 w-3 mr-1" />
+                      Edit
+                    </Button>
+                    <Button
+                      size="sm"
+                      onClick={() => handleDeleteUser(user.id)}
+                      disabled={user.username === currentUser?.username || user.username === 'admin'}
+                      className="bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 hover:border-red-500/40 transition-all disabled:opacity-50"
+                    >
+                      <Trash2 className="h-3 w-3" />
+                    </Button>
+                  </div>
+                </div>
+              ))}
             </div>
-          </div>
+
+            {/* Desktop Table Layout */}
+            <div className="hidden md:block">
+              <div className="backdrop-blur-xl bg-white/5 rounded-2xl border border-white/10 overflow-hidden shadow-2xl">
+                <div className="overflow-x-auto">
+                  <table className="w-full">
+                    <thead className="bg-white/5 border-b border-white/10">
+                      <tr>
+                        <th className="text-left p-4 text-sm font-semibold text-gray-300">Name</th>
+                        <th className="text-left p-4 text-sm font-semibold text-gray-300">Username</th>
+                        <th className="text-center p-4 text-sm font-semibold text-gray-300">Role</th>
+                        <th className="text-left p-4 text-sm font-semibold text-gray-300">Allowed Pages</th>
+                        <th className="text-center p-4 text-sm font-semibold text-gray-300">Status</th>
+                        <th className="text-center p-4 text-sm font-semibold text-gray-300">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {users.map((user) => (
+                        <tr
+                          key={user.id}
+                          className="border-b border-white/5 hover:bg-white/5 transition-colors"
+                        >
+                          <td className="p-4">
+                            <div className="flex items-center gap-2">
+                              <User className="h-4 w-4 text-gray-400" />
+                              <span className="text-white font-medium">{user.name || 'N/A'}</span>
+                            </div>
+                          </td>
+                          <td className="p-4">
+                            <span className="text-gray-300 text-sm">{user.username}</span>
+                          </td>
+                          <td className="p-4 text-center">
+                            {getRoleBadge(user.role)}
+                          </td>
+                          <td className="p-4">
+                            <div className="flex flex-wrap gap-1">
+                              {user.role === 'admin' ? (
+                                <Badge className="bg-white/5 text-gray-400 border-white/10 text-xs">
+                                  All Pages
+                                </Badge>
+                              ) : user.allowedPages && user.allowedPages.length > 0 ? (
+                                user.allowedPages.map((page) => (
+                                  <Badge
+                                    key={page}
+                                    className="bg-orange-500/10 text-orange-400 border-orange-500/20 text-xs"
+                                  >
+                                    {page}
+                                  </Badge>
+                                ))
+                              ) : (
+                                <span className="text-gray-500 text-xs">No access</span>
+                              )}
+                            </div>
+                          </td>
+                          <td className="p-4 text-center">
+                            {user.isActive ? (
+                              <Badge className="bg-green-500/10 text-green-400 border-green-500/20">
+                                Active
+                              </Badge>
+                            ) : (
+                              <Badge className="bg-yellow-500/10 text-yellow-400 border-yellow-500/20">
+                                Pending
+                              </Badge>
+                            )}
+                          </td>
+                          <td className="p-4">
+                            <div className="flex items-center justify-center gap-2">
+                              <Button
+                                size="sm"
+                                onClick={() => handleEditUser(user)}
+                                className="bg-blue-500/10 hover:bg-blue-500/20 text-blue-400 border border-blue-500/20 hover:border-blue-500/40 transition-all"
+                              >
+                                <Settings className="h-3 w-3" />
+                              </Button>
+                              <Button
+                                size="sm"
+                                onClick={() => handleDeleteUser(user.id)}
+                                disabled={user.username === currentUser?.username || user.username === 'admin'}
+                                className="bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 hover:border-red-500/40 transition-all disabled:opacity-50"
+                              >
+                                <Trash2 className="h-3 w-3" />
+                              </Button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </>
         )}
 
         {/* Create User Dialog */}

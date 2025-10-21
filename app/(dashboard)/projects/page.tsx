@@ -542,9 +542,9 @@ export default function ProjectsPage() {
 
   if (loading) {
     return (
-      <div className="flex h-screen">
+      <div className="flex h-screen bg-gray-950">
         <SessionNavBar />
-        <div className="flex-1 flex items-center justify-center ml-12 lg:ml-60 transition-all duration-300">
+        <div className="flex-1 bg-gradient-to-br from-gray-950 via-gray-900 to-orange-950/20 flex items-center justify-center ml-0 md:ml-12 lg:ml-60 transition-all duration-300">
           <div className="text-center">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
             <p className="text-gray-600 dark:text-gray-400">Loading projects...</p>
@@ -597,11 +597,11 @@ export default function ProjectsPage() {
                 className="pl-10 h-12"
               />
             </div>
-            <div className="flex gap-2">
+            <div className="space-y-3">
               <select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value as "all" | ProjectStatus)}
-                className="flex-1 px-3 py-3 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 h-12"
+                className="w-full px-3 py-3 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 h-12"
               >
                 <option value="all">All Status</option>
                 <option value="Planning">Planning</option>
@@ -613,7 +613,7 @@ export default function ProjectsPage() {
               <select
                 value={typeFilter}
                 onChange={(e) => setTypeFilter(e.target.value)}
-                className="flex-1 px-3 py-3 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 h-12"
+                className="w-full px-3 py-3 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 h-12"
               >
                 <option value="all">All Types</option>
                 <option value="Voice AI Agents">Voice AI Agents</option>
@@ -799,14 +799,15 @@ export default function ProjectsPage() {
                 
                 return (
                   <Card key={project.id} className="hover:shadow-md transition-shadow cursor-pointer">
-                    <CardContent className="p-6">
-                      <div className="flex items-start justify-between">
-                        <div className="flex-1">
-                          <div className="flex items-center gap-3 mb-4">
+                    <CardContent className="p-4 md:p-6">
+                      {/* Mobile Layout */}
+                      <div className="block md:hidden">
+                        <div className="flex items-start justify-between mb-3">
+                          <div className="flex items-center gap-3 flex-1">
                             <div className="p-2 bg-blue-100 dark:bg-blue-900/50 rounded-lg">
                               <ProjectIcon className="h-5 w-5 text-blue-600 dark:text-blue-400" />
                             </div>
-                            <div>
+                            <div className="flex-1">
                               <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
                                 {project.name}
                               </h3>
@@ -814,86 +815,86 @@ export default function ProjectsPage() {
                                 {project.projectType}
                               </p>
                             </div>
-                            <Badge className={getStatusColor(project.status)}>
-                              {project.status}
-                            </Badge>
                           </div>
-                          
-                          <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
-                            {project.description}
-                          </p>
-                          
-                          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
-                            <div>
-                              <p className="text-xs text-gray-500 dark:text-gray-400">Tech Stack</p>
-                              <p className="text-sm font-medium text-gray-900 dark:text-gray-100">
-                                {project.stack || "Not specified"}
-                              </p>
-                            </div>
-                            <div>
-                              <p className="text-xs text-gray-500 dark:text-gray-400">Assigned To</p>
-                              <p className="text-sm font-medium text-gray-900 dark:text-gray-100">
-                                {project.assignedTo || "Unassigned"}
-                              </p>
-                            </div>
-                            <div>
-                              <p className="text-xs text-gray-500 dark:text-gray-400">Monthly ROI</p>
-                              <p className="text-sm font-medium text-green-600 dark:text-green-400">
-                                {formatCurrency(project.monthlyRoi)}
-                              </p>
-                            </div>
-                            <div>
-                              <p className="text-xs text-gray-500 dark:text-gray-400">Budget</p>
-                              <p className="text-sm font-medium text-blue-600 dark:text-blue-400">
-                                {formatCurrency(project.budget)}
-                              </p>
-                            </div>
+                          <Badge className={getStatusColor(project.status)}>
+                            {project.status}
+                          </Badge>
+                        </div>
+                        
+                        <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                          {project.description}
+                        </p>
+                        
+                        <div className="space-y-3 mb-4">
+                          <div className="flex justify-between">
+                            <span className="text-xs text-gray-500 dark:text-gray-400">Tech Stack</span>
+                            <span className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                              {project.stack || "Not specified"}
+                            </span>
                           </div>
-                          
-                          <div className="mb-4">
-                            <div className="flex items-center justify-between mb-2">
-                              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                                Progress
-                              </span>
-                              <span className="text-sm text-gray-500 dark:text-gray-400">
-                                {project.progressPercentage}%
-                              </span>
-                            </div>
-                            <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-                              <div
-                                className={`h-2 rounded-full ${getProgressColor(
-                                  project.progressPercentage
-                                )}`}
-                                style={{ width: `${project.progressPercentage}%` }}
-                              ></div>
-                            </div>
+                          <div className="flex justify-between">
+                            <span className="text-xs text-gray-500 dark:text-gray-400">Assigned To</span>
+                            <span className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                              {project.assignedTo || "Unassigned"}
+                            </span>
                           </div>
-                          
-                          <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
-                            <div className="flex items-center gap-4">
-                              {project.startDate && (
-                                <span className="flex items-center gap-1">
-                                  <Calendar className="h-3 w-3" />
-                                  Started {formatDate(project.startDate)}
-                                </span>
-                              )}
-                              {project.clientName && (
-                                <span className="flex items-center gap-1">
-                                  <User className="h-3 w-3" />
-                                  {project.clientName}
-                                </span>
-                              )}
-                            </div>
-                            <span>Updated {formatDate(project.updatedAt)}</span>
+                          <div className="flex justify-between">
+                            <span className="text-xs text-gray-500 dark:text-gray-400">Monthly ROI</span>
+                            <span className="text-sm font-medium text-green-600 dark:text-green-400">
+                              {formatCurrency(project.monthlyRoi)}
+                            </span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-xs text-gray-500 dark:text-gray-400">Budget</span>
+                            <span className="text-sm font-medium text-blue-600 dark:text-blue-400">
+                              {formatCurrency(project.budget)}
+                            </span>
                           </div>
                         </div>
                         
-                        <div className="flex items-center gap-2 ml-6">
-                          <Button variant="outline" size="sm" onClick={() => handleViewProject(project)}>
-                            <Eye className="h-4 w-4" />
+                        <div className="mb-4">
+                          <div className="flex items-center justify-between mb-2">
+                            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                              Progress
+                            </span>
+                            <span className="text-sm text-gray-500 dark:text-gray-400">
+                              {project.progressPercentage}%
+                            </span>
+                          </div>
+                          <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                            <div
+                              className={`h-2 rounded-full ${getProgressColor(
+                                project.progressPercentage
+                              )}`}
+                              style={{ width: `${project.progressPercentage}%` }}
+                            ></div>
+                          </div>
+                        </div>
+                        
+                        <div className="space-y-2 mb-4 text-xs text-gray-500 dark:text-gray-400">
+                          {project.startDate && (
+                            <div className="flex items-center gap-1">
+                              <Calendar className="h-3 w-3" />
+                              Started {formatDate(project.startDate)}
+                            </div>
+                          )}
+                          {project.clientName && (
+                            <div className="flex items-center gap-1">
+                              <User className="h-3 w-3" />
+                              {project.clientName}
+                            </div>
+                          )}
+                          <div>Updated {formatDate(project.updatedAt)}</div>
+                        </div>
+                        
+                        <div className="flex gap-2">
+                          <Button variant="outline" size="sm" onClick={() => handleViewProject(project)} className="flex-1">
+                            <Eye className="h-4 w-4 mr-1" />
+                            View
                           </Button>
-                          <Button variant="outline" size="sm" onClick={() => handleEditProject(project)}>
-                            <Edit className="h-4 w-4" />
+                          <Button variant="outline" size="sm" onClick={() => handleEditProject(project)} className="flex-1">
+                            <Edit className="h-4 w-4 mr-1" />
+                            Edit
                           </Button>
                           <Button
                             variant="outline"
@@ -903,6 +904,115 @@ export default function ProjectsPage() {
                           >
                             <Trash2 className="h-4 w-4" />
                           </Button>
+                        </div>
+                      </div>
+                      
+                      {/* Desktop Layout */}
+                      <div className="hidden md:block">
+                        <div className="flex items-start justify-between">
+                          <div className="flex-1">
+                            <div className="flex items-center gap-3 mb-4">
+                              <div className="p-2 bg-blue-100 dark:bg-blue-900/50 rounded-lg">
+                                <ProjectIcon className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                              </div>
+                              <div>
+                                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                                  {project.name}
+                                </h3>
+                                <p className="text-sm text-gray-600 dark:text-gray-400">
+                                  {project.projectType}
+                                </p>
+                              </div>
+                              <Badge className={getStatusColor(project.status)}>
+                                {project.status}
+                              </Badge>
+                            </div>
+                            
+                            <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                              {project.description}
+                            </p>
+                            
+                            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+                              <div>
+                                <p className="text-xs text-gray-500 dark:text-gray-400">Tech Stack</p>
+                                <p className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                                  {project.stack || "Not specified"}
+                                </p>
+                              </div>
+                              <div>
+                                <p className="text-xs text-gray-500 dark:text-gray-400">Assigned To</p>
+                                <p className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                                  {project.assignedTo || "Unassigned"}
+                                </p>
+                              </div>
+                              <div>
+                                <p className="text-xs text-gray-500 dark:text-gray-400">Monthly ROI</p>
+                                <p className="text-sm font-medium text-green-600 dark:text-green-400">
+                                  {formatCurrency(project.monthlyRoi)}
+                                </p>
+                              </div>
+                              <div>
+                                <p className="text-xs text-gray-500 dark:text-gray-400">Budget</p>
+                                <p className="text-sm font-medium text-blue-600 dark:text-blue-400">
+                                  {formatCurrency(project.budget)}
+                                </p>
+                              </div>
+                            </div>
+                            
+                            <div className="mb-4">
+                              <div className="flex items-center justify-between mb-2">
+                                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                                  Progress
+                                </span>
+                                <span className="text-sm text-gray-500 dark:text-gray-400">
+                                  {project.progressPercentage}%
+                                </span>
+                              </div>
+                              <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                                <div
+                                  className={`h-2 rounded-full ${getProgressColor(
+                                    project.progressPercentage
+                                  )}`}
+                                  style={{ width: `${project.progressPercentage}%` }}
+                                ></div>
+                              </div>
+                            </div>
+                            
+                            <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
+                              <div className="flex items-center gap-4">
+                                {project.startDate && (
+                                  <span className="flex items-center gap-1">
+                                    <Calendar className="h-3 w-3" />
+                                    Started {formatDate(project.startDate)}
+                                  </span>
+                                )}
+                                {project.clientName && (
+                                  <span className="flex items-center gap-1">
+                                    <User className="h-3 w-3" />
+                                    {project.clientName}
+                                  </span>
+                                )}
+                              </div>
+                              <span>Updated {formatDate(project.updatedAt)}</span>
+                            </div>
+                          </div>
+                          
+                          <div className="flex items-center gap-2 ml-6">
+                            <Button variant="outline" size="sm" onClick={() => handleViewProject(project)}>
+                              <Eye className="h-4 w-4" />
+                            </Button>
+                            <Button variant="outline" size="sm" onClick={() => handleEditProject(project)}>
+                              <Edit className="h-4 w-4" />
+                            </Button>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="text-red-600 hover:text-red-700"
+                              onClick={() => handleDeleteProject(project.id)}
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </div>
                         </div>
                       </div>
                     </CardContent>

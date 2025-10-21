@@ -486,40 +486,81 @@ export default function LeadFinderPage() {
               </p>
             </div>
           ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead>
-                  <tr className="border-b border-white/10">
-                    <th className="text-left py-3 px-4 text-white font-medium">Zip Code</th>
-                    <th className="text-left py-3 px-4 text-white font-medium">Category</th>
-                    <th className="text-left py-3 px-4 text-white font-medium">Status</th>
-                    <th className="text-left py-3 px-4 text-white font-medium">Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {zipRequests.map((request) => (
-                    <tr key={request.id} className="border-b border-white/5 hover:bg-white/5">
-                      <td className="py-3 px-4 text-white font-mono">{request.zip}</td>
-                      <td className="py-3 px-4 text-gray-300">
-                        {request.categoryName || <span className="text-gray-500 italic">No category</span>}
-                      </td>
-                      <td className="py-3 px-4">
+            <>
+              {/* Mobile Card Layout */}
+              <div className="block md:hidden space-y-4">
+                {zipRequests.map((request) => (
+                  <div
+                    key={request.id}
+                    className="backdrop-blur-xl bg-white/5 rounded-2xl border border-white/10 p-4 shadow-2xl"
+                  >
+                    <div className="flex items-start justify-between mb-3">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-2">
+                          <MapPin className="h-4 w-4 text-gray-400" />
+                          <span className="text-white font-mono text-lg">{request.zip}</span>
+                        </div>
+                        <p className="text-gray-300 text-sm">
+                          {request.categoryName || <span className="text-gray-500 italic">No category</span>}
+                        </p>
+                      </div>
+                      <div className="text-right">
                         {getStatusBadge(request.status)}
-                      </td>
-                      <td className="py-3 px-4">
-                        <Button
-                          onClick={() => handleDeleteRequest(request.id)}
-                          className="bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 px-2 py-1"
-                          size="sm"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                      </div>
+                    </div>
+                    
+                    <div className="flex gap-2">
+                      <Button
+                        onClick={() => handleDeleteRequest(request.id)}
+                        className="flex-1 bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20"
+                        size="sm"
+                      >
+                        <Trash2 className="h-4 w-4 mr-1" />
+                        Delete
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Desktop Table Layout */}
+              <div className="hidden md:block">
+                <div className="overflow-x-auto">
+                  <table className="w-full">
+                    <thead>
+                      <tr className="border-b border-white/10">
+                        <th className="text-left py-3 px-4 text-white font-medium">Zip Code</th>
+                        <th className="text-left py-3 px-4 text-white font-medium">Category</th>
+                        <th className="text-left py-3 px-4 text-white font-medium">Status</th>
+                        <th className="text-left py-3 px-4 text-white font-medium">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {zipRequests.map((request) => (
+                        <tr key={request.id} className="border-b border-white/5 hover:bg-white/5">
+                          <td className="py-3 px-4 text-white font-mono">{request.zip}</td>
+                          <td className="py-3 px-4 text-gray-300">
+                            {request.categoryName || <span className="text-gray-500 italic">No category</span>}
+                          </td>
+                          <td className="py-3 px-4">
+                            {getStatusBadge(request.status)}
+                          </td>
+                          <td className="py-3 px-4">
+                            <Button
+                              onClick={() => handleDeleteRequest(request.id)}
+                              className="bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 px-2 py-1"
+                              size="sm"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </>
           )}
         </div>
       </div>

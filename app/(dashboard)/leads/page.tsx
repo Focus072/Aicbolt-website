@@ -651,9 +651,145 @@ export default function LeadsPage() {
           </div>
         ) : (
           <>
-            <div className="backdrop-blur-xl bg-white/5 rounded-2xl border border-white/10 overflow-hidden shadow-2xl">
-              <div className="overflow-x-auto">
-                <table className="w-full">
+            {/* Mobile Card Layout */}
+            <div className="block md:hidden space-y-4">
+              {currentLeads.map((lead) => (
+                <div
+                  key={lead.id}
+                  className="backdrop-blur-xl bg-white/5 rounded-2xl border border-white/10 p-4 shadow-2xl hover:bg-white/10 transition-all duration-300"
+                >
+                  {/* Header with selection and status */}
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="flex items-start gap-3 flex-1">
+                      <Button
+                        size="sm"
+                        onClick={() => toggleLeadSelection(lead.id)}
+                        className="bg-transparent hover:bg-white/10 text-gray-300 p-1 h-6 w-6"
+                      >
+                        {selectedLeads.has(lead.id) ? (
+                          <CheckSquare className="h-4 w-4 text-orange-400" />
+                        ) : (
+                          <Square className="h-4 w-4" />
+                        )}
+                      </Button>
+                      <div className="flex flex-col flex-1">
+                        <span className="text-white font-medium text-lg leading-tight">{lead.title}</span>
+                        {lead.rating && (
+                          <div className="flex items-center gap-1 text-sm text-gray-400 mt-1">
+                            <span>⭐ {lead.rating}</span>
+                            <span>({lead.reviews} reviews)</span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                    <div className="ml-2">
+                      {getStatusBadge(lead.status)}
+                    </div>
+                  </div>
+
+                  {/* Contact Information */}
+                  <div className="space-y-2 mb-4">
+                    {lead.phone && (
+                      <div className="flex items-center gap-2 text-gray-300">
+                        <Phone className="h-4 w-4 text-gray-400" />
+                        <span className="text-sm">{lead.phone}</span>
+                      </div>
+                    )}
+                    {lead.email && (
+                      <div className="flex items-center gap-2 text-gray-300">
+                        <span className="text-sm">📧 {lead.email}</span>
+                      </div>
+                    )}
+                    {lead.address && (
+                      <div className="flex items-center gap-2 text-gray-300">
+                        <span className="text-sm">📍 {lead.address}</span>
+                      </div>
+                    )}
+                    {lead.notes && (
+                      <div className="flex items-center gap-2 text-blue-400">
+                        <MessageSquare className="h-4 w-4" />
+                        <span className="text-sm">Has notes</span>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Action Buttons */}
+                  <div className="flex flex-wrap gap-2">
+                    <Button
+                      size="sm"
+                      onClick={() => updateLeadStatus(lead.id, 'called', 'called')}
+                      disabled={updatingId === lead.id}
+                      className="bg-yellow-500/10 hover:bg-yellow-500/20 text-yellow-400 border border-yellow-500/20 hover:border-yellow-500/40 transition-all h-8 px-3"
+                    >
+                      {updatingId === lead.id ? (
+                        <Loader2 className="h-3 w-3 animate-spin" />
+                      ) : (
+                        <>
+                          <Phone className="h-3 w-3 mr-1" />
+                          Call
+                        </>
+                      )}
+                    </Button>
+                    <Button
+                      size="sm"
+                      onClick={() => updateLeadStatus(lead.id, 'success', 'converted')}
+                      disabled={updatingId === lead.id}
+                      className="bg-green-500/10 hover:bg-green-500/20 text-green-400 border border-green-500/20 hover:border-green-500/40 transition-all h-8 px-3"
+                    >
+                      {updatingId === lead.id ? (
+                        <Loader2 className="h-3 w-3 animate-spin" />
+                      ) : (
+                        <>
+                          <CheckCircle className="h-3 w-3 mr-1" />
+                          Success
+                        </>
+                      )}
+                    </Button>
+                    <Button
+                      size="sm"
+                      onClick={() => updateLeadStatus(lead.id, 'failed', 'rejected')}
+                      disabled={updatingId === lead.id}
+                      className="bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 hover:border-red-500/40 transition-all h-8 px-3"
+                    >
+                      {updatingId === lead.id ? (
+                        <Loader2 className="h-3 w-3 animate-spin" />
+                      ) : (
+                        <>
+                          <XCircle className="h-3 w-3 mr-1" />
+                          Failed
+                        </>
+                      )}
+                    </Button>
+                    <Button
+                      size="sm"
+                      onClick={() => openNotesModal(lead)}
+                      className="bg-blue-500/10 hover:bg-blue-500/20 text-blue-400 border border-blue-500/20 hover:border-blue-500/40 transition-all h-8 px-3"
+                    >
+                      <MessageSquare className="h-3 w-3 mr-1" />
+                      Notes
+                    </Button>
+                    <Button
+                      size="sm"
+                      onClick={() => deleteLead(lead.id)}
+                      disabled={updatingId === lead.id}
+                      className="bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 hover:border-red-500/40 transition-all h-8 px-3"
+                    >
+                      {updatingId === lead.id ? (
+                        <Loader2 className="h-3 w-3 animate-spin" />
+                      ) : (
+                        <Trash2 className="h-3 w-3" />
+                      )}
+                    </Button>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Desktop Table Layout */}
+            <div className="hidden md:block">
+              <div className="backdrop-blur-xl bg-white/5 rounded-2xl border border-white/10 overflow-hidden shadow-2xl">
+                <div className="overflow-x-auto">
+                  <table className="w-full">
                   <thead className="bg-white/5 border-b border-white/10">
                     <tr>
                       <th className="text-center p-4 text-sm font-semibold text-gray-300">
@@ -797,6 +933,7 @@ export default function LeadsPage() {
                   </tbody>
                 </table>
               </div>
+            </div>
             </div>
 
             {/* Pagination */}

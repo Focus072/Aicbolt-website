@@ -344,78 +344,173 @@ export default function FormsPage() {
                 </CardContent>
               </Card>
             ) : (
-              <Card>
-                <div className="overflow-x-auto">
-                  <table className="w-full">
-                    <thead className="bg-background sticky top-0 z-10">
-                      <tr className="border-b">
-                        <th className="text-left p-4 font-medium bg-background">Name</th>
-                        <th className="text-left p-4 font-medium bg-background">Email</th>
-                        <th className="text-left p-4 font-medium bg-background">Company</th>
-                        <th className="text-left p-4 font-medium bg-background">Goal</th>
-                        <th className="text-left p-4 font-medium bg-background">Budget</th>
-                        <th className="text-left p-4 font-medium bg-background">Timeline</th>
-                        <th className="text-left p-4 font-medium bg-background">Submitted</th>
-                        <th className="text-left p-4 font-medium bg-background">Status</th>
-                        <th className="text-right p-4 font-medium bg-background">Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {filteredSubmissions.map((submission) => (
-                        <tr key={submission.id} className="border-b hover:bg-muted/50">
-                          <td className="p-4">{submission.name}</td>
-                          <td className="p-4 text-sm text-muted-foreground">{submission.email}</td>
-                          <td className="p-4 text-sm">{submission.company || '—'}</td>
-                          <td className="p-4 text-sm">{submission.primaryGoal || '—'}</td>
-                          <td className="p-4 text-sm">{submission.budget || '—'}</td>
-                          <td className="p-4 text-sm">{submission.timeline || '—'}</td>
-                          <td className="p-4 text-sm text-muted-foreground">
-                            {formatDistanceToNow(new Date(submission.createdAt), { addSuffix: true })}
-                          </td>
-                          <td className="p-4">{getStatusBadge(submission.status)}</td>
-                          <td className="p-4">
-                            <div className="flex items-center justify-end gap-2">
+              <>
+                {/* Mobile Card Layout */}
+                <div className="block md:hidden space-y-4">
+                  {filteredSubmissions.map((submission) => (
+                    <Card key={submission.id} className="hover:shadow-md transition-shadow">
+                      <CardContent className="p-4">
+                        <div className="flex items-start justify-between mb-3">
+                          <div className="flex-1">
+                            <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-1">
+                              {submission.name}
+                            </h3>
+                            <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
+                              {submission.email}
+                            </p>
+                            {submission.company && (
+                              <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
+                                {submission.company}
+                              </p>
+                            )}
+                          </div>
+                          <div className="text-right">
+                            {getStatusBadge(submission.status)}
+                            <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                              {formatDistanceToNow(new Date(submission.createdAt), { addSuffix: true })}
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <div className="space-y-2 mb-4 text-sm">
+                          {submission.primaryGoal && (
+                            <div>
+                              <span className="text-gray-500 dark:text-gray-400">Goal:</span>
+                              <span className="ml-2 text-gray-900 dark:text-gray-100">{submission.primaryGoal}</span>
+                            </div>
+                          )}
+                          {submission.budget && (
+                            <div>
+                              <span className="text-gray-500 dark:text-gray-400">Budget:</span>
+                              <span className="ml-2 text-gray-900 dark:text-gray-100">{submission.budget}</span>
+                            </div>
+                          )}
+                          {submission.timeline && (
+                            <div>
+                              <span className="text-gray-500 dark:text-gray-400">Timeline:</span>
+                              <span className="ml-2 text-gray-900 dark:text-gray-100">{submission.timeline}</span>
+                            </div>
+                          )}
+                        </div>
+                        
+                        <div className="flex gap-2">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleView(submission)}
+                            className="flex-1"
+                          >
+                            <Eye className="h-4 w-4 mr-1" />
+                            View
+                          </Button>
+                          {submission.status === 'pending' && (
+                            <>
                               <Button
                                 variant="outline"
                                 size="sm"
-                                onClick={() => handleView(submission)}
+                                onClick={() => handleAccept(submission.id)}
+                                disabled={processingId === submission.id}
+                                className="text-green-600 hover:text-green-700"
                               >
-                                <Eye className="h-4 w-4" />
+                                {processingId === submission.id ? (
+                                  <Loader2 className="h-4 w-4 animate-spin" />
+                                ) : (
+                                  <Check className="h-4 w-4" />
+                                )}
                               </Button>
-                              {submission.status === 'pending' && (
-                                <>
-                                  <Button
-                                    variant="outline"
-                                    size="sm"
-                                    onClick={() => handleAccept(submission.id)}
-                                    disabled={processingId === submission.id}
-                                    className="text-green-600 hover:text-green-700"
-                                  >
-                                    {processingId === submission.id ? (
-                                      <Loader2 className="h-4 w-4 animate-spin" />
-                                    ) : (
-                                      <Check className="h-4 w-4" />
-                                    )}
-                                  </Button>
-                                  <Button
-                                    variant="outline"
-                                    size="sm"
-                                    onClick={() => handleReject(submission.id)}
-                                    disabled={processingId === submission.id}
-                                    className="text-red-600 hover:text-red-700"
-                                  >
-                                    <X className="h-4 w-4" />
-                                  </Button>
-                                </>
-                              )}
-                            </div>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => handleReject(submission.id)}
+                                disabled={processingId === submission.id}
+                                className="text-red-600 hover:text-red-700"
+                              >
+                                <X className="h-4 w-4" />
+                              </Button>
+                            </>
+                          )}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
                 </div>
-              </Card>
+
+                {/* Desktop Table Layout */}
+                <div className="hidden md:block">
+                  <Card>
+                    <div className="overflow-x-auto">
+                      <table className="w-full">
+                        <thead className="bg-background sticky top-0 z-10">
+                          <tr className="border-b">
+                            <th className="text-left p-4 font-medium bg-background">Name</th>
+                            <th className="text-left p-4 font-medium bg-background">Email</th>
+                            <th className="text-left p-4 font-medium bg-background">Company</th>
+                            <th className="text-left p-4 font-medium bg-background">Goal</th>
+                            <th className="text-left p-4 font-medium bg-background">Budget</th>
+                            <th className="text-left p-4 font-medium bg-background">Timeline</th>
+                            <th className="text-left p-4 font-medium bg-background">Submitted</th>
+                            <th className="text-left p-4 font-medium bg-background">Status</th>
+                            <th className="text-right p-4 font-medium bg-background">Actions</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {filteredSubmissions.map((submission) => (
+                            <tr key={submission.id} className="border-b hover:bg-muted/50">
+                              <td className="p-4">{submission.name}</td>
+                              <td className="p-4 text-sm text-muted-foreground">{submission.email}</td>
+                              <td className="p-4 text-sm">{submission.company || '—'}</td>
+                              <td className="p-4 text-sm">{submission.primaryGoal || '—'}</td>
+                              <td className="p-4 text-sm">{submission.budget || '—'}</td>
+                              <td className="p-4 text-sm">{submission.timeline || '—'}</td>
+                              <td className="p-4 text-sm text-muted-foreground">
+                                {formatDistanceToNow(new Date(submission.createdAt), { addSuffix: true })}
+                              </td>
+                              <td className="p-4">{getStatusBadge(submission.status)}</td>
+                              <td className="p-4">
+                                <div className="flex items-center justify-end gap-2">
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => handleView(submission)}
+                                  >
+                                    <Eye className="h-4 w-4" />
+                                  </Button>
+                                  {submission.status === 'pending' && (
+                                    <>
+                                      <Button
+                                        variant="outline"
+                                        size="sm"
+                                        onClick={() => handleAccept(submission.id)}
+                                        disabled={processingId === submission.id}
+                                        className="text-green-600 hover:text-green-700"
+                                      >
+                                        {processingId === submission.id ? (
+                                          <Loader2 className="h-4 w-4 animate-spin" />
+                                        ) : (
+                                          <Check className="h-4 w-4" />
+                                        )}
+                                      </Button>
+                                      <Button
+                                        variant="outline"
+                                        size="sm"
+                                        onClick={() => handleReject(submission.id)}
+                                        disabled={processingId === submission.id}
+                                        className="text-red-600 hover:text-red-700"
+                                      >
+                                        <X className="h-4 w-4" />
+                                      </Button>
+                                    </>
+                                  )}
+                                </div>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </Card>
+                </div>
+              </>
             )}
           </>
         )}

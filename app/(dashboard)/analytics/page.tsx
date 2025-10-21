@@ -142,58 +142,58 @@ export default function AnalyticsPage() {
         ) : analytics ? (
           <>
             {/* KPI Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              <div className="backdrop-blur-xl bg-white/5 rounded-2xl border border-white/10 p-6 shadow-2xl">
+            <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+              <div className="backdrop-blur-xl bg-white/5 rounded-2xl border border-white/10 p-4 md:p-6 shadow-2xl">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm text-gray-400 mb-1">Total Leads</p>
-                    <p className="text-3xl font-bold text-white">{analytics.totalLeads}</p>
+                    <p className="text-xs md:text-sm text-gray-400 mb-1">Total Leads</p>
+                    <p className="text-xl md:text-3xl font-bold text-white">{analytics.totalLeads}</p>
                   </div>
-                  <Database className="h-10 w-10 text-blue-400" />
+                  <Database className="h-6 w-6 md:h-10 md:w-10 text-blue-400" />
                 </div>
               </div>
 
-              <div className="backdrop-blur-xl bg-white/5 rounded-2xl border border-white/10 p-6 shadow-2xl">
+              <div className="backdrop-blur-xl bg-white/5 rounded-2xl border border-white/10 p-4 md:p-6 shadow-2xl">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm text-gray-400 mb-1">New Leads</p>
-                    <p className="text-3xl font-bold text-blue-400">
+                    <p className="text-xs md:text-sm text-gray-400 mb-1">New Leads</p>
+                    <p className="text-xl md:text-3xl font-bold text-blue-400">
                       {analytics.leadsByStatus.find(s => s.status === 'new')?.count || 0}
                     </p>
                   </div>
-                  <TrendingUp className="h-10 w-10 text-blue-400" />
+                  <TrendingUp className="h-6 w-6 md:h-10 md:w-10 text-blue-400" />
                 </div>
               </div>
 
-              <div className="backdrop-blur-xl bg-white/5 rounded-2xl border border-white/10 p-6 shadow-2xl">
+              <div className="backdrop-blur-xl bg-white/5 rounded-2xl border border-white/10 p-4 md:p-6 shadow-2xl">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm text-gray-400 mb-1">Converted</p>
-                    <p className="text-3xl font-bold text-green-400">
+                    <p className="text-xs md:text-sm text-gray-400 mb-1">Converted</p>
+                    <p className="text-xl md:text-3xl font-bold text-green-400">
                       {analytics.leadsByStatus.find(s => s.status === 'success')?.count || 0}
                     </p>
                   </div>
-                  <Users className="h-10 w-10 text-green-400" />
+                  <Users className="h-6 w-6 md:h-10 md:w-10 text-green-400" />
                 </div>
               </div>
 
-              <div className="backdrop-blur-xl bg-white/5 rounded-2xl border border-white/10 p-6 shadow-2xl">
+              <div className="backdrop-blur-xl bg-white/5 rounded-2xl border border-white/10 p-4 md:p-6 shadow-2xl">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm text-gray-400 mb-1">Last 7 Days</p>
-                    <p className="text-3xl font-bold text-orange-400">{analytics.recentLeads}</p>
+                    <p className="text-xs md:text-sm text-gray-400 mb-1">Last 7 Days</p>
+                    <p className="text-xl md:text-3xl font-bold text-orange-400">{analytics.recentLeads}</p>
                   </div>
-                  <Activity className="h-10 w-10 text-orange-400" />
+                  <Activity className="h-6 w-6 md:h-10 md:w-10 text-orange-400" />
                 </div>
               </div>
             </div>
 
             {/* Charts Row */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
               {/* Leads by Status - Pie Chart */}
-              <div className="backdrop-blur-xl bg-white/5 rounded-2xl border border-white/10 p-6 shadow-2xl">
-                <h2 className="text-xl font-bold text-white mb-6">Leads by Status</h2>
-                <ResponsiveContainer width="100%" height={300}>
+              <div className="backdrop-blur-xl bg-white/5 rounded-2xl border border-white/10 p-4 md:p-6 shadow-2xl">
+                <h2 className="text-lg md:text-xl font-bold text-white mb-4 md:mb-6">Leads by Status</h2>
+                <ResponsiveContainer width="100%" height={250}>
                   <PieChart>
                     <Pie
                       data={analytics.leadsByStatus}
@@ -221,9 +221,9 @@ export default function AnalyticsPage() {
               </div>
 
               {/* Leads Per Day - Bar Chart */}
-              <div className="backdrop-blur-xl bg-white/5 rounded-2xl border border-white/10 p-6 shadow-2xl">
-                <h2 className="text-xl font-bold text-white mb-6">Leads Added Per Day</h2>
-                <ResponsiveContainer width="100%" height={300}>
+              <div className="backdrop-blur-xl bg-white/5 rounded-2xl border border-white/10 p-4 md:p-6 shadow-2xl">
+                <h2 className="text-lg md:text-xl font-bold text-white mb-4 md:mb-6">Leads Added Per Day</h2>
+                <ResponsiveContainer width="100%" height={250}>
                   <BarChart data={analytics.leadsPerDay}>
                     <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
                     <XAxis 
