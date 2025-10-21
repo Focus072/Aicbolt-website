@@ -322,6 +322,7 @@ export const LeadsTable = ({
               </tbody>
             </table>
           </div>
+          </div>
         )}
       </div>
 
@@ -360,3 +361,4 @@ export const LeadsTable = ({
     </div>
   );
 };
+
