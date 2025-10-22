@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db/drizzle';
 import { leads } from '@/lib/db/schema';
-import { eq, desc, sql } from 'drizzle-orm';
+import { eq, desc, sql, and } from 'drizzle-orm';
 import { getUser } from '@/lib/db/queries';
 import { checkRateLimit, getClientIdentifier, RateLimits } from '@/lib/rate-limit';
 
@@ -224,10 +224,13 @@ export async function GET(request: NextRequest) {
     // Cap maximum limit for performance
     const cappedLimit = Math.min(limit, 1000);
     
+    // Filter by status if provided
+    const whereClause = status ? eq(leads.status, status as any) : undefined;
+    
     const result = await db
       .select()
       .from(leads)
-      .where(status ? eq(leads.status, status as any) : undefined)
+      .where(whereClause)
       .orderBy(desc(leads.createdAt))
       .limit(cappedLimit)
       .offset(offset);
@@ -236,7 +239,7 @@ export async function GET(request: NextRequest) {
     const [countResult] = await db
       .select({ count: sql`COUNT(*)::int` })
       .from(leads)
-      .where(status ? eq(leads.status, status as any) : undefined);
+      .where(whereClause);
     
     const total = Number(countResult?.count) || 0;
     

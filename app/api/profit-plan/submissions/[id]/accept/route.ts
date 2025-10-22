@@ -2,11 +2,11 @@ import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db/drizzle';
 import { webFormSubmissions, clients } from '@/lib/db/schema';
 import { eq } from 'drizzle-orm';
-import { getUser } from '@/lib/db/queries';
+import { getUser, getTeamForUser } from '@/lib/db/queries';
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: { id: string } }
 ) {
   try {
     // Check authentication
@@ -18,8 +18,7 @@ export async function POST(
       );
     }
 
-    const resolvedParams = await params;
-    const { id } = resolvedParams;
+    const { id } = params;
 
     // Fetch the submission
     const [submission] = await db
@@ -42,10 +41,9 @@ export async function POST(
       );
     }
 
-    // Get user's team ID (assuming user has a team - adjust based on your schema)
-    // For now, we'll use a default team ID of 1 or the first team
-    // You may need to adjust this based on your actual team structure
-    const teamId = 1; // TODO: Get actual team ID from user session
+    // Get user's actual team ID using proper team resolution
+    const team = await getTeamForUser();
+    const teamId = team?.id || 1; // Use resolved team ID, fallback to 1
 
     // Create client from submission
     const [newClient] = await db

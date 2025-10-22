@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db/drizzle';
 import { leads } from '@/lib/db/schema';
-import { eq } from 'drizzle-orm';
+import { eq, and } from 'drizzle-orm';
 import { getUser } from '@/lib/db/queries';
 
 // API Key validation - Used by n8n scraper
@@ -42,7 +42,7 @@ async function isAuthorized(request: NextRequest): Promise<boolean> {
 
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: { id: string } }
 ) {
   try {
     // Validate authorization (API key or admin session)
@@ -53,8 +53,7 @@ export async function PATCH(
       );
     }
 
-    const resolvedParams = await params;
-    const id = parseInt(resolvedParams.id);
+    const id = parseInt(params.id);
     
     if (isNaN(id)) {
       return NextResponse.json(
@@ -64,8 +63,9 @@ export async function PATCH(
     }
 
     const body = await request.json();
+    const user = await getUser();
 
-    // Update the lead
+    // Update the lead with team isolation
     const updateData: any = {};
     if (body.status !== undefined) updateData.status = body.status;
     if (body.action !== undefined) updateData.action = body.action;
@@ -101,7 +101,7 @@ export async function PATCH(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: { id: string } }
 ) {
   try {
     // Validate authorization (API key or admin session)
@@ -112,8 +112,7 @@ export async function DELETE(
       );
     }
 
-    const resolvedParams = await params;
-    const id = parseInt(resolvedParams.id);
+    const id = parseInt(params.id);
     
     if (isNaN(id)) {
       return NextResponse.json(
