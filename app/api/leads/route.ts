@@ -50,10 +50,16 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Validate API key
-    if (!validateApiKey(request)) {
+    // Check for API key (external) or session auth (internal dashboard)
+    const hasValidApiKey = validateApiKey(request);
+    const user = await getUser();
+    const isMainAdmin = user?.username === 'admin';
+    const isAdmin = user?.role === 'admin' || user?.role === 'owner' || isMainAdmin;
+
+    // Allow access if either has valid API key OR is authenticated admin
+    if (!hasValidApiKey && !isAdmin) {
       return NextResponse.json(
-        { error: 'Unauthorized - Invalid or missing API key' },
+        { error: 'Unauthorized - Invalid credentials or insufficient permissions' },
         { status: 401 }
       );
     }
