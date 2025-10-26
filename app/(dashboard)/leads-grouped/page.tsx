@@ -47,6 +47,7 @@ export default function GroupedLeadsPage() {
   const [search, setSearch] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [showCreateLeadModal, setShowCreateLeadModal] = useState(false);
+  const [isMobileOpen, setIsMobileOpen] = useState(false);
   
   const itemsPerPage = 10;
 
@@ -111,7 +112,7 @@ export default function GroupedLeadsPage() {
   if (!isAdmin) {
     return (
       <div className="flex h-screen bg-gray-950">
-        <SessionNavBar />
+        <SessionNavBar isMobileOpen={isMobileOpen} onMobileToggle={setIsMobileOpen} />
         <div className="flex-1 bg-gradient-to-br from-gray-950 via-gray-900 to-orange-950/20 p-6 overflow-auto ml-12 lg:ml-60 transition-all duration-300">
           <div className="backdrop-blur-xl bg-white/5 rounded-2xl border border-white/10 p-12 shadow-2xl">
             <div className="flex flex-col items-center justify-center">
@@ -133,12 +134,14 @@ export default function GroupedLeadsPage() {
 
   return (
     <div className="flex h-screen bg-gray-950">
-      <SessionNavBar />
+      <SessionNavBar isMobileOpen={isMobileOpen} onMobileToggle={setIsMobileOpen} />
       
-      <div className="flex-1 bg-gradient-to-br from-gray-950 via-gray-900 to-orange-950/20 p-4 md:p-6 space-y-6 overflow-auto ml-0 md:ml-12 lg:ml-60 transition-all duration-300 min-h-screen">
+      <div className={`flex-1 bg-gradient-to-br from-gray-950 via-gray-900 to-orange-950/20 p-4 md:p-6 space-y-6 overflow-auto transition-all duration-300 min-h-screen ${
+        isMobileOpen ? 'ml-60' : 'ml-0 md:ml-12 lg:ml-60'
+      }`}>
         {/* Mobile Header */}
         <div className="md:hidden">
-          <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center justify-between mb-4 ml-16">
             <div className="flex items-center gap-3">
               <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-orange-500/20 to-orange-600/20 flex items-center justify-center border border-orange-500/30">
                 <MapPin className="h-4 w-4 text-orange-400" />

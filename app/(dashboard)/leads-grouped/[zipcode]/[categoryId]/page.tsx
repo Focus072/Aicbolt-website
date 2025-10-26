@@ -71,6 +71,7 @@ export default function LeadsDetailPage() {
   const [showClientModal, setShowClientModal] = useState(false);
   const [preFilledData, setPreFilledData] = useState<any>(null);
   const [categoryName, setCategoryName] = useState<string>('Category');
+  const [isMobileOpen, setIsMobileOpen] = useState(false);
   
   const itemsPerPage = 10;
   const [currentPage, setCurrentPage] = useState(1);
@@ -301,12 +302,14 @@ export default function LeadsDetailPage() {
 
   return (
     <div className="flex h-screen bg-gray-950">
-      <SessionNavBar />
+      <SessionNavBar isMobileOpen={isMobileOpen} onMobileToggle={setIsMobileOpen} />
       
-      <div className="flex-1 bg-gradient-to-br from-gray-950 via-gray-900 to-orange-950/20 p-4 md:p-6 space-y-6 overflow-auto ml-0 md:ml-12 lg:ml-60 transition-all duration-300 min-h-screen">
+      <div className={`flex-1 bg-gradient-to-br from-gray-950 via-gray-900 to-orange-950/20 p-4 md:p-6 space-y-6 overflow-auto transition-all duration-300 min-h-screen ${
+        isMobileOpen ? 'ml-60' : 'ml-0 md:ml-12 lg:ml-60'
+      }`}>
         {/* Mobile Header */}
         <div className="md:hidden mb-6">
-          <div className="flex items-center gap-3 mb-4">
+          <div className="flex items-center gap-3 mb-4 ml-16">
             <Button
               variant="outline"
               size="sm"
@@ -400,63 +403,63 @@ export default function LeadsDetailPage() {
         {/* Bulk Actions */}
         {selectedLeads.length > 0 && (
           <div className="mb-6 bg-orange-500/10 border border-orange-500/30 rounded-lg p-4 backdrop-blur-sm">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-4">
+            <div className="flex flex-col space-y-3">
+              <div className="flex items-center justify-between">
                 <span className="text-orange-300 font-medium">
                   {selectedLeads.length} lead{selectedLeads.length > 1 ? 's' : ''} selected
                 </span>
-                <div className="flex space-x-2">
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={() => handleBulkStatusChange('called')}
-                    className="bg-yellow-500/20 border-yellow-500/30 text-yellow-300 hover:bg-yellow-500/30"
-                  >
-                    Mark Called
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={() => handleBulkStatusChange('didnt_answer')}
-                    className="bg-orange-500/20 border-orange-500/30 text-orange-300 hover:bg-orange-500/30"
-                  >
-                    Didn't Answer
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={() => handleBulkStatusChange('success')}
-                    className="bg-green-500/20 border-green-500/30 text-green-300 hover:bg-green-500/30"
-                  >
-                    Mark Success
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={() => handleBulkStatusChange('failed')}
-                    className="bg-red-500/20 border-red-500/30 text-red-300 hover:bg-red-500/30"
-                  >
-                    Mark Failed
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={handleBulkDelete}
-                    className="bg-red-500/20 border-red-500/30 text-red-300 hover:bg-red-500/30"
-                  >
-                    <Trash2 className="h-4 w-4 mr-1" />
-                    Delete
-                  </Button>
-                </div>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  onClick={() => setSelectedLeads([])}
+                  className="text-gray-400 hover:text-white"
+                >
+                  <X className="h-4 w-4" />
+                </Button>
               </div>
-              <Button
-                size="sm"
-                variant="ghost"
-                onClick={() => setSelectedLeads([])}
-                className="text-gray-400 hover:text-white"
-              >
-                <X className="h-4 w-4" />
-              </Button>
+              <div className="flex flex-wrap gap-2">
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => handleBulkStatusChange('called')}
+                  className="bg-yellow-500/20 border-yellow-500/30 text-yellow-300 hover:bg-yellow-500/30"
+                >
+                  Mark Called
+                </Button>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => handleBulkStatusChange('didnt_answer')}
+                  className="bg-orange-500/20 border-orange-500/30 text-orange-300 hover:bg-orange-500/30"
+                >
+                  Didn't Answer
+                </Button>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => handleBulkStatusChange('success')}
+                  className="bg-green-500/20 border-green-500/30 text-green-300 hover:bg-green-500/30"
+                >
+                  Mark Success
+                </Button>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => handleBulkStatusChange('failed')}
+                  className="bg-red-500/20 border-red-500/30 text-red-300 hover:bg-red-500/30"
+                >
+                  Mark Failed
+                </Button>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={handleBulkDelete}
+                  className="bg-red-500/20 border-red-500/30 text-red-300 hover:bg-red-500/30"
+                >
+                  <Trash2 className="h-4 w-4 mr-1" />
+                  Delete
+                </Button>
+              </div>
             </div>
           </div>
         )}

@@ -95,12 +95,21 @@ const staggerVariants = {
 };
 
 
-export function SessionNavBar() {
+interface SessionNavBarProps {
+  isMobileOpen?: boolean;
+  onMobileToggle?: (open: boolean) => void;
+}
+
+export function SessionNavBar({ isMobileOpen: externalMobileOpen, onMobileToggle }: SessionNavBarProps = {}) {
   const [isCollapsed, setIsCollapsed] = useState(false); // Always expanded
   const [isClient, setIsClient] = useState(false);
-  const [isMobileOpen, setIsMobileOpen] = useState(false);
+  const [internalMobileOpen, setInternalMobileOpen] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
+  
+  // Use external mobile state if provided, otherwise use internal state
+  const mobileOpen = externalMobileOpen !== undefined ? externalMobileOpen : internalMobileOpen;
+  const setMobileOpen = onMobileToggle || setInternalMobileOpen;
   
   // Fetch current user data with better error handling
   const { data: user, error: userError, isLoading: userLoading } = useSWR('/api/user', {
@@ -121,12 +130,12 @@ export function SessionNavBar() {
 
   // Close mobile sidebar when clicking outside or on a link
   const closeMobileSidebar = () => {
-    setIsMobileOpen(false);
+    setMobileOpen(false);
   };
 
   // Close sidebar when route changes
   useEffect(() => {
-    setIsMobileOpen(false);
+    setMobileOpen(false);
   }, [pathname]);
 
   const handleSignOut = async () => {
@@ -154,9 +163,9 @@ export function SessionNavBar() {
   return (
     <>
       {/* Mobile Hamburger Button - Only show when sidebar is closed */}
-      {!isMobileOpen && (
+      {!mobileOpen && (
         <button
-          onClick={() => setIsMobileOpen(!isMobileOpen)}
+          onClick={() => setMobileOpen(!mobileOpen)}
           className="md:hidden fixed top-4 left-4 z-50 p-2 rounded-lg bg-gray-900/20 border border-gray-700/50 backdrop-blur-xl hover:bg-orange-600/20 hover:border-orange-400/50 text-white transition-all duration-300"
         >
           <Menu className="h-5 w-5" />
@@ -164,7 +173,7 @@ export function SessionNavBar() {
       )}
 
       {/* Mobile Overlay */}
-      {isMobileOpen && (
+      {mobileOpen && (
         <div
           className="md:hidden fixed inset-0 bg-black/50 z-40"
           onClick={closeMobileSidebar}
@@ -176,7 +185,7 @@ export function SessionNavBar() {
         className={cn(
           "sidebar fixed left-0 z-40 h-full shrink-0 border-r",
           "hidden md:block", // Hidden on mobile by default, visible on desktop
-          isMobileOpen && "md:hidden block" // Show on mobile when open
+          mobileOpen && "md:hidden block" // Show on mobile when open
         )}
         initial="open"
         animate="open"
@@ -243,7 +252,7 @@ export function SessionNavBar() {
                 
                 {/* Mobile Close Button - Inside sidebar header */}
                 <button
-                  onClick={() => setIsMobileOpen(false)}
+                  onClick={() => setMobileOpen(false)}
                   className="md:hidden p-1.5 rounded-lg bg-gray-800/50 border border-gray-600/50 backdrop-blur-xl hover:bg-orange-600/20 hover:border-orange-400/50 text-white transition-all duration-300"
                 >
                   <X className="h-4 w-4" />
