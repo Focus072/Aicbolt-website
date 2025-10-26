@@ -2,12 +2,11 @@
 
 import { cn } from "@/lib/utils";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { Badge } from "@/components/ui/badge"
 import {
   Blocks,
   ChevronsUpDown,
-  ChevronRight,
   FileClock,
   GraduationCap,
   Layout,
@@ -100,9 +99,6 @@ export function SessionNavBar() {
   const [isCollapsed, setIsCollapsed] = useState(false); // Always expanded
   const [isClient, setIsClient] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
-  const [expandedSections, setExpandedSections] = useState({
-    leads: false,
-  });
   const pathname = usePathname();
   const router = useRouter();
   
@@ -126,14 +122,6 @@ export function SessionNavBar() {
   // Close mobile sidebar when clicking outside or on a link
   const closeMobileSidebar = () => {
     setIsMobileOpen(false);
-  };
-
-  // Toggle expanded sections
-  const toggleSection = (section: keyof typeof expandedSections) => {
-    setExpandedSections(prev => ({
-      ...prev,
-      [section]: !prev[section]
-    }));
   };
 
   // Close sidebar when route changes
@@ -369,63 +357,21 @@ export function SessionNavBar() {
                         <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Lead Generation</p>
                       </div>
                       
-                      {/* All Leads - Collapsible section (Admin only) */}
+                      {/* All Leads - Direct link to grouped view (Admin only) */}
                       {hasPageAccess(user, 'leads') && (
-                        <div className="space-y-1">
-                          {/* Main All Leads Header */}
-                          <button
-                            onClick={() => toggleSection('leads')}
-                            className="flex h-8 w-full flex-row items-center rounded-md px-2 py-1.5 transition hover:bg-muted hover:text-primary"
-                          >
-                            <Database className="h-4 w-4" />
-                            <motion.span variants={variants}>
-                              <p className="ml-2 text-sm font-medium">All Leads</p>
-                            </motion.span>
-                            <ChevronRight 
-                              className={cn(
-                                "ml-auto h-4 w-4 transition-transform duration-200",
-                                expandedSections.leads && "rotate-90"
-                              )}
-                            />
-                          </button>
-
-                          {/* Sub-menu items */}
-                          <AnimatePresence>
-                            {expandedSections.leads && (
-                              <motion.div
-                                initial={{ opacity: 0, height: 0 }}
-                                animate={{ opacity: 1, height: "auto" }}
-                                exit={{ opacity: 0, height: 0 }}
-                                transition={{ duration: 0.2 }}
-                                className="ml-6 space-y-1"
-                              >
-                                {/* All Leads */}
-                                <Link
-                                  href="/leads"
-                                  className={cn(
-                                    "flex h-7 w-full flex-row items-center rounded-md px-2 py-1.5 text-xs transition hover:bg-muted hover:text-primary",
-                                    isClient && pathname === "/leads" && "bg-muted text-blue-600",
-                                  )}
-                                >
-                                  <Database className="h-3 w-3" />
-                                  <span className="ml-2 text-xs font-medium">All Leads</span>
-                                </Link>
-
-                                {/* Grouped Leads */}
-                                <Link
-                                  href="/leads-grouped"
-                                  className={cn(
-                                    "flex h-7 w-full flex-row items-center rounded-md px-2 py-1.5 text-xs transition hover:bg-muted hover:text-primary",
-                                    isClient && pathname?.includes("leads-grouped") && "bg-muted text-blue-600",
-                                  )}
-                                >
-                                  <Database className="h-3 w-3" />
-                                  <span className="ml-2 text-xs font-medium">Grouped Leads</span>
-                                </Link>
-                              </motion.div>
-                            )}
-                          </AnimatePresence>
-                        </div>
+                        <Link
+                          href="/leads-grouped"
+                          className={cn(
+                            "flex h-8 w-full flex-row items-center rounded-md px-2 py-1.5 transition hover:bg-muted hover:text-primary",
+                            isClient && pathname?.includes("leads-grouped") &&
+                              "bg-muted text-blue-600",
+                          )}
+                        >
+                          <Database className="h-4 w-4" />
+                          <motion.li variants={variants}>
+                            <p className="ml-2 text-sm font-medium">All Leads</p>
+                          </motion.li>
+                        </Link>
                       )}
 
                       {/* Lead Finder - Zip code requests (Admin only) */}
