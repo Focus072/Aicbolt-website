@@ -507,12 +507,17 @@ export const leads = pgTable('leads', {
   address: text('address'),
   gpsCoordinates: text('gps_coordinates'),
   types: text('types'),
+  zipcode: varchar('zipcode', { length: 10 }),
+  categoryId: integer('category_id').references(() => categories.id),
   // notes: text('notes'), // Temporarily disabled - column doesn't exist in DB
   createdAt: timestamp('created_at').notNull().defaultNow(),
 });
 
 export const leadsRelations = relations(leads, ({ one }) => ({
-  // Can add relations later if needed
+  category: one(categories, {
+    fields: [leads.categoryId],
+    references: [categories.id],
+  }),
 }));
 
 export type Lead = typeof leads.$inferSelect;

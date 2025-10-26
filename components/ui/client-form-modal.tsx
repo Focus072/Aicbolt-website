@@ -21,25 +21,30 @@ interface Client {
 interface ClientFormModalProps {
   initialData?: Partial<Client>;
   onClose: () => void;
-  onSubmit: (formData: Client) => void;
+  onSubmit?: (formData: Client) => void;
+  onSuccess?: () => void;
+  preFilledData?: any;
 }
 
-export function ClientFormModal({ initialData, onClose, onSubmit }: ClientFormModalProps) {
+export function ClientFormModal({ initialData, onClose, onSubmit, onSuccess, preFilledData }: ClientFormModalProps) {
   const [formData, setFormData] = useState<Client>({
-    name: '',
-    email: '',
-    company: '',
-    phone: '',
-    status: 'active',
-    lifetimeValue: 0,
-    address: '',
-    notes: '',
-    ...initialData,
+    name: preFilledData?.name || initialData?.name || '',
+    email: preFilledData?.email || initialData?.email || '',
+    company: preFilledData?.company || initialData?.company || '',
+    phone: preFilledData?.phone || initialData?.phone || '',
+    status: initialData?.status || 'active',
+    lifetimeValue: initialData?.lifetimeValue || 0,
+    address: preFilledData?.address || initialData?.address || '',
+    notes: preFilledData?.notes || initialData?.notes || '',
   });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit(formData);
+    if (onSubmit) {
+      onSubmit(formData);
+    } else if (onSuccess) {
+      onSuccess();
+    }
   };
 
   return (

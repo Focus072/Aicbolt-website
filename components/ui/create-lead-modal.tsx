@@ -10,10 +10,14 @@ import { X, Loader2 } from 'lucide-react';
 
 interface CreateLeadModalProps {
   onClose: () => void;
-  onSubmit: (formData: any) => Promise<void>;
+  onSuccess: () => void;
+  preFilledData?: {
+    zipcode?: string;
+    categoryId?: number;
+  };
 }
 
-export function CreateLeadModal({ onClose, onSubmit }: CreateLeadModalProps) {
+export function CreateLeadModal({ onClose, onSuccess, preFilledData }: CreateLeadModalProps) {
   const [formData, setFormData] = useState({
     title: '',
     phone: '',
@@ -23,6 +27,8 @@ export function CreateLeadModal({ onClose, onSubmit }: CreateLeadModalProps) {
     website: '',
     rating: '',
     reviews: 0,
+    zipcode: preFilledData?.zipcode || '',
+    categoryId: preFilledData?.categoryId || '',
   });
   const [loading, setLoading] = useState(false);
 
@@ -30,7 +36,34 @@ export function CreateLeadModal({ onClose, onSubmit }: CreateLeadModalProps) {
     e.preventDefault();
     setLoading(true);
     try {
-      await onSubmit(formData);
+      const response = await fetch('/api/leads', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          place_id: `manual_${Date.now()}`,
+          title: formData.title,
+          phone: formData.phone,
+          email: formData.email,
+          address: formData.address,
+          website: formData.website,
+          rating: formData.rating,
+          reviews: formData.reviews,
+          zipcode: formData.zipcode || null,
+          category_id: formData.categoryId || null,
+          status: 'new',
+        }),
+      });
+
+      if (response.ok) {
+        onSuccess();
+      } else {
+        throw new Error('Failed to create lead');
+      }
+    } catch (error) {
+      console.error('Error creating lead:', error);
+      // Handle error - you might want to show a toast here
     } finally {
       setLoading(false);
     }
@@ -101,6 +134,28 @@ export function CreateLeadModal({ onClose, onSubmit }: CreateLeadModalProps) {
                 onChange={(e) => setFormData({...formData, address: e.target.value})}
                 placeholder="Business address"
               />
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="zipcode">Zipcode</Label>
+                <Input
+                  id="zipcode"
+                  value={formData.zipcode}
+                  onChange={(e) => setFormData({...formData, zipcode: e.target.value})}
+                  placeholder="e.g., 90210"
+                />
+              </div>
+              <div>
+                <Label htmlFor="category">Category</Label>
+                <Input
+                  id="category"
+                  type="number"
+                  value={formData.categoryId}
+                  onChange={(e) => setFormData({...formData, categoryId: e.target.value})}
+                  placeholder="Category ID"
+                />
+              </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

@@ -98,6 +98,8 @@ export async function POST(request: NextRequest) {
       address: body.address || null,
       gpsCoordinates: body.gps_coordinates || body.gpsCoordinates || null,
       types: body.types || null,
+      zipcode: body.zipcode || body.zip || null,
+      categoryId: body.category_id || body.categoryId || null,
       // notes: body.notes || null, // Temporarily disabled - column doesn't exist in DB
     };
 
@@ -147,6 +149,8 @@ export async function POST(request: NextRequest) {
             address: leadData.address,
             gpsCoordinates: leadData.gpsCoordinates,
             types: leadData.types,
+            zipcode: leadData.zipcode,
+            categoryId: leadData.categoryId,
             // notes: leadData.notes || null, // Temporarily disabled - column doesn't exist in DB
           }
         })

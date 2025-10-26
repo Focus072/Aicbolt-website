@@ -1091,32 +1091,10 @@ export default function LeadsPage() {
         {showCreateLeadModal && (
           <CreateLeadModal
             onClose={() => setShowCreateLeadModal(false)}
-            onSubmit={async (formData) => {
-              try {
-                const response = await fetch('/api/leads', {
-                  method: 'POST',
-                  headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify({
-                    ...formData,
-                    status: 'new',
-                    action: null,
-                    placeId: `manual_${Date.now()}`, // Generate unique placeId for manual leads
-                  }),
-                });
-                
-                if (response.ok) {
-                  toast.success('Lead created successfully!');
-                  setShowCreateLeadModal(false);
-                  // Refresh leads to show the new lead
-                  fetchLeads();
-                } else {
-                  const errorData = await response.json();
-                  toast.error(`Failed to create lead: ${errorData.error || 'Unknown error'}`);
-                }
-              } catch (error) {
-                console.error('Error creating lead:', error);
-                toast.error('Failed to create lead');
-              }
+            onSuccess={() => {
+              setShowCreateLeadModal(false);
+              fetchLeads(); // Refresh the leads
+              toast.success('Lead created successfully!');
             }}
           />
         )}

@@ -8,7 +8,8 @@ import {
   Trash2, 
   MessageSquare, 
   Loader2,
-  MoreHorizontal
+  MoreHorizontal,
+  PhoneOff
 } from 'lucide-react';
 import {
   DropdownMenu,
@@ -57,6 +58,14 @@ export const LeadActions = ({
       bgClassName: 'hover:bg-yellow-500/10'
     },
     {
+      label: "Didn't Answer",
+      icon: PhoneOff,
+      status: 'didnt_answer',
+      action: 'didnt_answer',
+      className: 'text-orange-400 hover:text-orange-300',
+      bgClassName: 'hover:bg-orange-500/10'
+    },
+    {
       label: 'Mark Success',
       icon: CheckCircle,
       status: 'success',
@@ -88,6 +97,20 @@ export const LeadActions = ({
           <Loader2 className="h-3 w-3 animate-spin" />
         ) : (
           <Phone className="h-3 w-3" />
+        )}
+      </Button>
+      
+      <Button
+        size="sm"
+        onClick={() => handleAction('didnt_answer', 'didnt_answer')}
+        disabled={isUpdating}
+        className="bg-orange-500/10 hover:bg-orange-500/20 text-orange-400 border border-orange-500/20 hover:border-orange-500/40 transition-all px-2 py-1 h-8 w-8 p-0"
+        title="Didn't Answer"
+      >
+        {isUpdating ? (
+          <Loader2 className="h-3 w-3 animate-spin" />
+        ) : (
+          <PhoneOff className="h-3 w-3" />
         )}
       </Button>
       
