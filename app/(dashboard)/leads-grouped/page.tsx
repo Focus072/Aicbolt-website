@@ -33,10 +33,11 @@ const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 interface GroupedLead {
   zipcode: string;
-  categoryId: number;
+  categoryId: number | null;
   categoryName: string;
   leadCount: number;
   statusSummary: Record<string, number>;
+  isManual: boolean;
 }
 
 export default function GroupedLeadsPage() {
