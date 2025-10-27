@@ -92,3 +92,4 @@ console.log('1. Check the console output above');
 console.log('2. If API key error, you need to set SCRAPER_API_KEY in your environment');
 console.log('3. If no leads found, the database migration might not have run');
 console.log('4. If leads exist but not grouped, check the zipcode/categoryId values');
+

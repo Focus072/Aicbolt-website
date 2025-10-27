@@ -15,8 +15,6 @@ import {
   MessageSquareText,
   MessagesSquare,
   Plus,
-  UserCircle,
-  UserCog,
   UserSearch,
   Users,
   FolderOpen,
@@ -29,9 +27,9 @@ import {
   MapPin,
   Menu,
   X,
+  Bolt,
 } from "lucide-react";
 import Image from "next/image";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
@@ -40,7 +38,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Separator } from "@/components/ui/separator";
@@ -200,55 +197,19 @@ export function SessionNavBar({ isMobileOpen: externalMobileOpen, onMobileToggle
           <div className="flex grow flex-col items-center">
             <div className="flex h-[54px] w-full shrink-0 border-b p-2">
               <div className="mt-[1.5px] flex w-full items-center justify-between">
-                <DropdownMenu modal={false}>
-                  <DropdownMenuTrigger className="w-full" asChild>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="flex w-fit items-center gap-2 px-2" 
-                    >
-                      <Avatar className='rounded size-4'>
-                        <AvatarFallback>O</AvatarFallback>
-                      </Avatar>
-                      <motion.li
-                        variants={variants}
-                        className="flex w-fit items-center gap-2"
-                      >
-                        <p className="text-sm font-medium">
-                          {"AICBOLT"}
-                        </p>
-                        <ChevronsUpDown className="h-4 w-4 text-muted-foreground/50" />
-                      </motion.li>
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="start">
-                    <DropdownMenuItem
-                      asChild
-                      className="flex items-center gap-2"
-                    >
-                      <Link href="/settings/members">
-                        <UserCog className="h-4 w-4" /> Manage members
-                      </Link>
-                    </DropdownMenuItem>{" "}
-                    <DropdownMenuItem
-                      asChild
-                      className="flex items-center gap-2"
-                    >
-                      <Link href="/settings/integrations">
-                        <Blocks className="h-4 w-4" /> Integrations
-                      </Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem asChild>
-                      <Link
-                        href="/select-org"
-                        className="flex items-center gap-2"
-                      >
-                        <Plus className="h-4 w-4" />
-                        Create or join an organization
-                      </Link>
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
+                <div className="flex w-fit items-center gap-2 px-2">
+                  <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-gradient-to-br from-amber-500/20 to-orange-600/20 border border-amber-500/30">
+                    <Bolt className="h-4 w-4 text-amber-400" />
+                  </div>
+                  <motion.li
+                    variants={variants}
+                    className="flex w-fit items-center gap-2"
+                  >
+                    <p className="text-sm font-medium">
+                      {"AICBOLT"}
+                    </p>
+                  </motion.li>
+                </div>
                 
                 {/* Mobile Close Button - Inside sidebar header */}
                 <button
@@ -465,11 +426,6 @@ export function SessionNavBar({ isMobileOpen: externalMobileOpen, onMobileToggle
                   <DropdownMenu modal={false}>
                     <DropdownMenuTrigger className="w-full">
                       <div className="flex h-8 w-full flex-row items-center gap-2 rounded-md px-2 py-1.5  transition hover:bg-muted hover:text-primary">
-                        <Avatar className="size-4">
-                          <AvatarFallback>
-                            A
-                          </AvatarFallback>
-                        </Avatar>
                         <motion.li
                           variants={variants}
                           className="flex w-full items-center gap-2"
@@ -480,30 +436,6 @@ export function SessionNavBar({ isMobileOpen: externalMobileOpen, onMobileToggle
                       </div>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent sideOffset={5}>
-                      <div className="flex flex-row items-center gap-2 p-2">
-                        <Avatar className="size-6">
-                          <AvatarFallback>
-                            AL
-                          </AvatarFallback>
-                        </Avatar>
-                        <div className="flex flex-col text-left">
-                          <span className="text-sm font-medium">
-                            {`Andrew Luo`}
-                          </span>
-                          <span className="line-clamp-1 text-xs text-muted-foreground">
-                            {`andrew@usehindsight.com`}
-                          </span>
-                        </div>
-                      </div>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem
-                        asChild
-                        className="flex items-center gap-2"
-                      >
-                        <Link href="/settings/profile">
-                          <UserCircle className="h-4 w-4" /> Profile
-                        </Link>
-                      </DropdownMenuItem>
                       <DropdownMenuItem
                         className="flex items-center gap-2 cursor-pointer"
                         onClick={handleSignOut}

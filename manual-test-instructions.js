@@ -34,3 +34,4 @@ fetch('/api/leads', {
 
 console.log('\n5. Then refresh the grouped leads page to see if the new lead appears');
 console.log('6. Check if you see "93308 - Plumber" with the new lead count');
+

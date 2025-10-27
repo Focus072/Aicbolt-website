@@ -45,3 +45,4 @@ fetch('http://localhost:3000/api/leads', {
 .catch(error => {
   console.error('❌ Error:', error);
 });
+

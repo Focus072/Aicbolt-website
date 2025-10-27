@@ -31,6 +31,7 @@ import {
   Edit3,
   Save,
   X,
+  UserPlus,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { useRouter, useParams } from 'next/navigation';
@@ -57,7 +58,7 @@ interface Lead {
 export default function LeadsDetailPage() {
   const router = useRouter();
   const params = useParams();
-  const zipcode = params.zipcode as string;
+  const zipcode = decodeURIComponent(params.zipcode as string);
   const categoryId = params.categoryId as string;
   
   const { data: user } = useSWR('/api/user', fetcher);
@@ -93,13 +94,20 @@ export default function LeadsDetailPage() {
   const fetchLeads = async () => {
     try {
       setLoading(true);
-      const response = await fetch(`/api/leads/by-group?zipcode=${zipcode}&categoryId=${categoryId}`);
+      let url = `/api/leads/by-group?zipcode=${encodeURIComponent(zipcode)}`;
+      if (categoryId !== 'null') {
+        url += `&categoryId=${categoryId}`;
+      }
+      
+      const response = await fetch(url);
       const result = await response.json();
       
       if (result.success) {
         setLeads(result.data);
-        // Try to get category name from first lead or set default
-        if (result.data.length > 0) {
+        // Set category name based on whether it's manual leads or not
+        if (zipcode === 'Manual Leads') {
+          setCategoryName('Manual Leads');
+        } else if (result.data.length > 0) {
           // For now, we'll use a default category name
           setCategoryName('Category');
         }
@@ -321,12 +329,20 @@ export default function LeadsDetailPage() {
             </Button>
           </div>
           <div className="flex items-center space-x-3 mb-4">
-            <div className="h-12 w-12 rounded-lg bg-gradient-to-br from-orange-500/20 to-orange-600/20 flex items-center justify-center border border-orange-500/30">
-              <MapPin className="h-6 w-6 text-orange-400" />
+            <div className={`h-12 w-12 rounded-lg flex items-center justify-center border ${
+              zipcode === 'Manual Leads' 
+                ? 'bg-gradient-to-br from-blue-500/20 to-blue-600/20 border-blue-500/30'
+                : 'bg-gradient-to-br from-orange-500/20 to-orange-600/20 border-orange-500/30'
+            }`}>
+              {zipcode === 'Manual Leads' ? (
+                <UserPlus className="h-6 w-6 text-blue-400" />
+              ) : (
+                <MapPin className="h-6 w-6 text-orange-400" />
+              )}
             </div>
             <div className="flex-1">
               <h1 className="text-xl font-bold text-white mb-1">
-                {zipcode} - {categoryName || 'Category'}
+                {zipcode === 'Manual Leads' ? 'Manual Leads' : `${zipcode} - ${categoryName || 'Category'}`}
               </h1>
               <p className="text-gray-400 text-sm">{leads.length} total leads</p>
             </div>
@@ -353,12 +369,20 @@ export default function LeadsDetailPage() {
                 <ArrowLeft className="h-4 w-4 mr-2" />
                 Back to Grouped Leads
               </Button>
-              <div className="h-16 w-16 rounded-lg bg-gradient-to-br from-orange-500/20 to-orange-600/20 flex items-center justify-center border border-orange-500/30">
-                <MapPin className="h-8 w-8 text-orange-400" />
+              <div className={`h-16 w-16 rounded-lg flex items-center justify-center border ${
+                zipcode === 'Manual Leads' 
+                  ? 'bg-gradient-to-br from-blue-500/20 to-blue-600/20 border-blue-500/30'
+                  : 'bg-gradient-to-br from-orange-500/20 to-orange-600/20 border-orange-500/30'
+              }`}>
+                {zipcode === 'Manual Leads' ? (
+                  <UserPlus className="h-8 w-8 text-blue-400" />
+                ) : (
+                  <MapPin className="h-8 w-8 text-orange-400" />
+                )}
               </div>
               <div>
                 <h1 className="text-3xl font-bold text-white mb-2">
-                  {zipcode} - {categoryName || 'Category'}
+                  {zipcode === 'Manual Leads' ? 'Manual Leads' : `${zipcode} - ${categoryName || 'Category'}`}
                 </h1>
                 <p className="text-gray-400">{leads.length} total leads in this group</p>
               </div>

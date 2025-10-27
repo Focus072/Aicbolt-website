@@ -509,6 +509,7 @@ export const leads = pgTable('leads', {
   types: text('types'),
   zipcode: varchar('zipcode', { length: 10 }),
   categoryId: integer('category_id').references(() => categories.id),
+  isManual: boolean('is_manual').notNull().default(false),
   // notes: text('notes'), // Temporarily disabled - column doesn't exist in DB
   createdAt: timestamp('created_at').notNull().defaultNow(),
 });

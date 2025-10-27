@@ -22,6 +22,7 @@ import {
   MapPin,
   Users,
   ArrowRight,
+  UserPlus,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
@@ -95,8 +96,12 @@ export default function GroupedLeadsPage() {
     setFilteredLeads(filtered);
   };
 
-  const handleRowClick = (zipcode: string, categoryId: number) => {
-    router.push(`/leads-grouped/${zipcode}/${categoryId}`);
+  const handleRowClick = (zipcode: string, categoryId: number | null) => {
+    if (zipcode === 'Manual Leads') {
+      router.push(`/leads-grouped/Manual%20Leads/null`);
+    } else {
+      router.push(`/leads-grouped/${zipcode}/${categoryId}`);
+    }
   };
 
   const handleCreateLead = () => {
@@ -254,8 +259,16 @@ export default function GroupedLeadsPage() {
                         <td className="px-6 py-5">
                           <div className="flex items-center space-x-3">
                             <div className="flex-shrink-0">
-                              <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-orange-500/20 to-orange-600/20 flex items-center justify-center border border-orange-500/30">
-                                <MapPin className="h-5 w-5 text-orange-400" />
+                              <div className={`h-10 w-10 rounded-lg flex items-center justify-center border ${
+                                lead.isManual 
+                                  ? 'bg-gradient-to-br from-blue-500/20 to-blue-600/20 border-blue-500/30'
+                                  : 'bg-gradient-to-br from-orange-500/20 to-orange-600/20 border-orange-500/30'
+                              }`}>
+                                {lead.isManual ? (
+                                  <UserPlus className="h-5 w-5 text-blue-400" />
+                                ) : (
+                                  <MapPin className="h-5 w-5 text-orange-400" />
+                                )}
                               </div>
                             </div>
                             <div>
@@ -324,8 +337,16 @@ export default function GroupedLeadsPage() {
                     className="p-4 bg-gray-800/30 backdrop-blur-sm border-gray-700/50 hover:bg-gray-700/20 cursor-pointer transition-all duration-200 hover:scale-[1.02] hover:shadow-lg"
                   >
                     <div className="flex items-center space-x-3 mb-3">
-                      <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-orange-500/20 to-orange-600/20 flex items-center justify-center border border-orange-500/30">
-                        <MapPin className="h-5 w-5 text-orange-400" />
+                      <div className={`h-10 w-10 rounded-lg flex items-center justify-center border ${
+                        lead.isManual 
+                          ? 'bg-gradient-to-br from-blue-500/20 to-blue-600/20 border-blue-500/30'
+                          : 'bg-gradient-to-br from-orange-500/20 to-orange-600/20 border-orange-500/30'
+                      }`}>
+                        {lead.isManual ? (
+                          <UserPlus className="h-5 w-5 text-blue-400" />
+                        ) : (
+                          <MapPin className="h-5 w-5 text-orange-400" />
+                        )}
                       </div>
                       <div className="flex-1">
                         <div className="text-sm font-semibold text-white">

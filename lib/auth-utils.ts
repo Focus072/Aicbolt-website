@@ -26,3 +26,5 @@ export function clearAuthState() {
   mutate('/api/user', null, { revalidate: false });
   mutate('/api/user', undefined, { revalidate: false });
 }
+
+

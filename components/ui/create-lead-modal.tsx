@@ -53,6 +53,7 @@ export function CreateLeadModal({ onClose, onSuccess, preFilledData }: CreateLea
           zipcode: formData.zipcode || null,
           category_id: formData.categoryId || null,
           status: 'new',
+          is_manual: true,
         }),
       });
 

@@ -26,3 +26,4 @@ export const swrConfig = {
   // refreshInterval: 30000, // DISABLED - No auto-refresh to prevent conflicts with manual updates
 };
 
+

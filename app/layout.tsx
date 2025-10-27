@@ -6,8 +6,8 @@ import { ThemeProvider } from '@/lib/theme-provider';
 import { SWRProvider } from '@/components/providers/swr-provider';
 
 export const metadata: Metadata = {
-  title: 'Next.js SaaS Starter',
-  description: 'Get started quickly with Next.js and Postgres.'
+  title: 'AICBOLT',
+  description: 'AI-powered business automation platform.'
 };
 
 export const viewport: Viewport = {
@@ -28,7 +28,7 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <head>
-        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🤖</text></svg>" />
+        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23f59e0b%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><path d=%22M13 2L3 14h9l-1 8 10-12h-9l1-8z%22/></svg>" />
         <script
           dangerouslySetInnerHTML={{
             __html: `
@@ -52,3 +52,5 @@ export default function RootLayout({
     </html>
   );
 }
+
+

@@ -19,37 +19,62 @@ export async function GET(request: NextRequest) {
     const limit = parseInt(searchParams.get('limit') || '10');
     const offset = (page - 1) * limit;
 
-    if (!zipcode || !categoryId) {
+    if (!zipcode) {
       return NextResponse.json(
-        { error: 'zipcode and categoryId are required' },
+        { error: 'zipcode is required' },
         { status: 400 }
       );
     }
 
-    // Get leads for specific zipcode and category
-    const leadsData = await db
-      .select()
-      .from(leads)
-      .where(
-        and(
-          eq(leads.zipcode, zipcode),
-          eq(leads.categoryId, parseInt(categoryId))
-        )
-      )
-      .orderBy(desc(leads.createdAt))
-      .limit(limit)
-      .offset(offset);
+    let leadsData;
+    let totalCount;
 
-    // Get total count for pagination
-    const totalCount = await db
-      .select({ count: sql<number>`COUNT(*)::int` })
-      .from(leads)
-      .where(
-        and(
-          eq(leads.zipcode, zipcode),
-          eq(leads.categoryId, parseInt(categoryId))
+    // Handle manual leads
+    if (zipcode === 'Manual Leads') {
+      leadsData = await db
+        .select()
+        .from(leads)
+        .where(eq(leads.isManual, true))
+        .orderBy(desc(leads.createdAt))
+        .limit(limit)
+        .offset(offset);
+
+      totalCount = await db
+        .select({ count: sql<number>`COUNT(*)::int` })
+        .from(leads)
+        .where(eq(leads.isManual, true));
+    } else {
+      // Handle regular zipcode/category groups
+      if (!categoryId) {
+        return NextResponse.json(
+          { error: 'categoryId is required for non-manual leads' },
+          { status: 400 }
+        );
+      }
+
+      leadsData = await db
+        .select()
+        .from(leads)
+        .where(
+          and(
+            eq(leads.zipcode, zipcode),
+            eq(leads.categoryId, parseInt(categoryId))
+          )
         )
-      );
+        .orderBy(desc(leads.createdAt))
+        .limit(limit)
+        .offset(offset);
+
+      totalCount = await db
+        .select({ count: sql<number>`COUNT(*)::int` })
+        .from(leads)
+        .where(
+          and(
+            eq(leads.zipcode, zipcode),
+            eq(leads.categoryId, parseInt(categoryId))
+          )
+        );
+    }
 
     return NextResponse.json({
       success: true,

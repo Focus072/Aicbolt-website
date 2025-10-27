@@ -12,7 +12,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    // Get grouped leads with counts
+    // Get grouped leads with counts (scraped leads)
     const groupedLeads = await db
       .select({
         zipcode: leads.zipcode,
@@ -25,13 +25,22 @@ export async function GET(request: NextRequest) {
       .where(
         and(
           isNotNull(leads.zipcode),
-          isNotNull(leads.categoryId)
+          isNotNull(leads.categoryId),
+          eq(leads.isManual, false)
         )
       )
       .groupBy(leads.zipcode, leads.categoryId, categories.name)
       .orderBy(desc(sql`COUNT(*)`));
 
-    // Get status counts for each group
+    // Get manual leads count
+    const manualLeadsCount = await db
+      .select({
+        leadCount: sql<number>`COUNT(*)::int`,
+      })
+      .from(leads)
+      .where(eq(leads.isManual, true));
+
+    // Get status counts for scraped groups
     const statusCounts = await db
       .select({
         zipcode: leads.zipcode,
@@ -43,10 +52,21 @@ export async function GET(request: NextRequest) {
       .where(
         and(
           isNotNull(leads.zipcode),
-          isNotNull(leads.categoryId)
+          isNotNull(leads.categoryId),
+          eq(leads.isManual, false)
         )
       )
       .groupBy(leads.zipcode, leads.categoryId, leads.status);
+
+    // Get status counts for manual leads
+    const manualStatusCounts = await db
+      .select({
+        status: leads.status,
+        count: sql<number>`COUNT(*)::int`,
+      })
+      .from(leads)
+      .where(eq(leads.isManual, true))
+      .groupBy(leads.status);
 
     // Transform data to include status summaries
     const transformedData = groupedLeads.map(group => {
@@ -65,8 +85,27 @@ export async function GET(request: NextRequest) {
         categoryName: group.categoryName || 'Unknown Category',
         leadCount: group.leadCount,
         statusSummary,
+        isManual: false,
       };
     });
+
+    // Add manual leads group if there are any manual leads
+    const manualCount = manualLeadsCount[0]?.leadCount || 0;
+    if (manualCount > 0) {
+      const manualStatusSummary: Record<string, number> = {};
+      manualStatusCounts.forEach(sc => {
+        manualStatusSummary[sc.status] = sc.count;
+      });
+
+      transformedData.unshift({
+        zipcode: 'Manual Leads',
+        categoryId: null,
+        categoryName: 'Manual Leads',
+        leadCount: manualCount,
+        statusSummary: manualStatusSummary,
+        isManual: true,
+      });
+    }
 
     return NextResponse.json({ 
       success: true, 

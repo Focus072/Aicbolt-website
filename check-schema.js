@@ -69,3 +69,4 @@ async function checkDatabaseSchema() {
 }
 
 checkDatabaseSchema();
+

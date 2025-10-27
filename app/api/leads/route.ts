@@ -106,6 +106,7 @@ export async function POST(request: NextRequest) {
       types: body.types || null,
       zipcode: body.zipcode || body.zip || null,
       categoryId: body.category_id || body.categoryId || null,
+      isManual: body.is_manual || body.isManual || false,
       // notes: body.notes || null, // Temporarily disabled - column doesn't exist in DB
     };
 
