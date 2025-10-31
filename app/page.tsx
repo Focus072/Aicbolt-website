@@ -12,6 +12,7 @@ import useSWR from 'swr';
 import { AgentDemoCard } from '@/components/ui/agent-demo-card';
 import { AgentDetailModal } from '@/components/ui/agent-detail-modal';
 import { TestimonialsSectionDemo } from '@/components/ui/testimonials-demo';
+import { Footer } from '@/components/ui/footer';
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
@@ -403,6 +404,9 @@ export default function HomePage() {
               <TestimonialsSectionDemo />
             </div>
           </section>
+
+          {/* Footer */}
+          <Footer />
 
           {/* Modals for Agent Details */}
           <AgentDetailModal
