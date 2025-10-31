@@ -4,11 +4,14 @@ import ShaderBackground from '@/components/ui/shader-background';
 import Link from 'next/link';
 import { ArrowLeft, Mail, MessageSquare, MapPin } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { Footer } from '@/components/ui/footer';
 
 export default function ContactPage() {
   const [isAnimating, setIsAnimating] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState<{ type: 'success' | 'error' | null; message: string }>({ type: null, message: '' });
+  const formRef = useRef<HTMLFormElement>(null);
 
   return (
     <div className="relative min-h-screen">
@@ -24,7 +27,7 @@ export default function ContactPage() {
               <Button
                 variant="outline"
                 size="sm"
-                className="mb-8 bg-gray-900/20 border-gray-700/50 backdrop-blur-xl hover:bg-orange-600/20 hover:border-orange-400/50 text-white hover:text-white transition-all duration-300"
+                className="mb-8 bg-gray-900/20 border-gray-700/50 backdrop-blur-xl hover:bg-orange-600/20 hover:border-orange-400/50 text-white hover:text-white transition-all duration-300 cursor-pointer"
               >
                 <ArrowLeft className="h-4 w-4 mr-2" />
                 Back to Home
@@ -90,7 +93,86 @@ export default function ContactPage() {
               >
                 Send us a Message
               </h2>
-              <form className="space-y-6">
+              
+              {submitStatus.type && (
+                <div
+                  className={`mb-6 p-4 rounded-lg ${
+                    submitStatus.type === 'success'
+                      ? 'bg-green-500/20 border border-green-500/50 text-green-300'
+                      : 'bg-red-500/20 border border-red-500/50 text-red-300'
+                  }`}
+                >
+                  {submitStatus.message}
+                </div>
+              )}
+
+              <form 
+                ref={formRef}
+                className="space-y-6"
+                onSubmit={async (e) => {
+                  e.preventDefault();
+                  setIsSubmitting(true);
+                  setSubmitStatus({ type: null, message: '' });
+
+                  const formData = new FormData(e.currentTarget);
+                  const data = {
+                    name: formData.get('name'),
+                    email: formData.get('email'),
+                    message: formData.get('message'),
+                  };
+
+                  try {
+                    const response = await fetch('/api/contact', {
+                      method: 'POST',
+                      headers: {
+                        'Content-Type': 'application/json',
+                      },
+                      body: JSON.stringify(data),
+                    });
+
+                    let result;
+                    try {
+                      result = await response.json();
+                    } catch (parseError) {
+                      console.error('Failed to parse response:', parseError);
+                      setSubmitStatus({
+                        type: 'error',
+                        message: 'Invalid response from server. Please try again.',
+                      });
+                      setIsSubmitting(false);
+                      return;
+                    }
+
+                    console.log('Response status:', response.status);
+                    console.log('Response data:', result);
+
+                    if (response.ok && result.success) {
+                      setSubmitStatus({
+                        type: 'success',
+                        message: result.message || 'Thank you for your message! We\'ll get back to you soon.',
+                      });
+                      // Reset form using ref
+                      if (formRef.current) {
+                        formRef.current.reset();
+                      }
+                    } else {
+                      console.error('Error response:', result);
+                      setSubmitStatus({
+                        type: 'error',
+                        message: result.error || 'Failed to send message. Please try again.',
+                      });
+                    }
+                  } catch (error) {
+                    console.error('Form submission error:', error);
+                    setSubmitStatus({
+                      type: 'error',
+                      message: 'An error occurred. Please try again later.',
+                    });
+                  } finally {
+                    setIsSubmitting(false);
+                  }
+                }}
+              >
                 <div>
                   <label htmlFor="name" className="block text-sm font-medium text-gray-300 mb-2">
                     Name
@@ -132,17 +214,20 @@ export default function ContactPage() {
 
                 <button
                   type="submit"
+                  disabled={isSubmitting}
                   className="w-full px-8 py-4 rounded-xl
                     bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900
                     hover:from-orange-600 hover:via-orange-500 hover:to-amber-500
+                    disabled:from-gray-700 disabled:via-gray-700 disabled:to-gray-700
+                    disabled:cursor-not-allowed disabled:opacity-50
                     text-white text-base sm:text-lg font-semibold
                     shadow-[0_8px_32px_rgba(0,0,0,0.4)] hover:shadow-[0_12px_48px_rgba(251,146,60,0.25)]
                     transition-all duration-500 hover:scale-[1.02] active:scale-[0.98]
                     border border-gray-700/50 hover:border-orange-400/50
-                    backdrop-blur-sm
+                    backdrop-blur-sm cursor-pointer
                     focus:outline-none focus:ring-4 focus:ring-orange-500/20"
                 >
-                  Send Message
+                  {isSubmitting ? 'Sending...' : 'Send Message'}
                 </button>
               </form>
             </div>

@@ -38,16 +38,17 @@ const AgentDemoCard = React.forwardRef<HTMLDivElement, AgentDemoCardProps>(
           // @ts-ignore - CSS custom properties are valid
           "--theme-color": themeColor,
         } as React.CSSProperties}
-        className={cn("group w-full h-full", className)}
+        className={cn("group w-full h-full flex flex-col", className)}
         {...props}
       >
         <div
-          className="relative block w-full h-[800px] rounded-[2.5rem] overflow-hidden 
+          className="relative block w-full h-full min-h-[600px] sm:min-h-[700px] md:min-h-[750px] lg:min-h-[800px] xl:min-h-[850px] rounded-[2.5rem] overflow-hidden 
                      border border-gray-700/30
                      transition-all duration-500 ease-out 
                      hover:scale-[1.02] hover:-translate-y-2
                      backdrop-blur-xl
-                     bg-gradient-to-br from-gray-900/20 via-gray-800/10 to-gray-900/20"
+                     bg-gradient-to-br from-gray-900/20 via-gray-800/10 to-gray-900/20
+                     flex flex-col"
           style={{
              boxShadow: `0 20px 60px -12px rgba(0, 0, 0, 0.4), 0 8px 24px -4px rgba(0, 0, 0, 0.2), inset 0 1px 0 0 rgba(255, 255, 255, 0.1)`,
           }}
