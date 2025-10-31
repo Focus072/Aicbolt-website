@@ -4,6 +4,9 @@ import { leads, categories } from '@/lib/db/schema';
 import { eq, desc, sql, and, isNotNull } from 'drizzle-orm';
 import { getUser } from '@/lib/db/queries';
 
+// Force dynamic rendering since we use cookies for authentication
+export const dynamic = 'force-dynamic';
+
 export async function GET(request: NextRequest) {
   try {
     // Check authentication
